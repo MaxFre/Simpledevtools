@@ -2,12 +2,160 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=uuid-generator.html" />
-  <link rel="canonical" href="uuid-generator.html" />
-  <title>UUID Generator — SimpleDevTools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random String Generator — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .rs-list { list-style:none; display:flex; flex-direction:column; gap:0.4rem; }
+    .rs-item {
+      display:flex; align-items:center; gap:0.75rem;
+      background:var(--bg); border:1px solid var(--border); border-radius:10px;
+      padding:0.65rem 1rem; font-family:var(--mono); font-size:0.85rem;
+      transition:all 0.3s var(--ease-out);
+    }
+    .rs-item:hover { border-color:rgba(62,232,192,0.35); box-shadow:0 4px 12px rgba(62,232,192,0.08); }
+    .rs-value { flex:1; word-break:break-all; color:var(--text); }
+    .rs-copy-btn {
+      background:none; border:1px solid transparent; cursor:pointer;
+      color:var(--muted); font-size:0.9rem; padding:0.25rem 0.4rem;
+      border-radius:8px; transition:all 0.2s; flex-shrink:0; line-height:1;
+    }
+    .rs-copy-btn:hover { color:var(--accent2); background:rgba(62,232,192,0.1); border-color:rgba(62,232,192,0.2); }
+    .rs-copy-btn.copied { color:var(--success); }
+    .stat-row { display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.75rem; }
+    .stat {
+      background:var(--bg); border:1px solid var(--border); border-radius:10px;
+      padding:0.55rem 1rem; font-size:0.78rem; color:var(--muted);
+      display:flex; align-items:center; gap:0.5rem;
+    }
+    .stat strong { color:var(--accent2); font-size:0.95rem; font-weight:700; }
+    .charset-grid { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.25rem; }
+    .charset-chip {
+      display:flex; align-items:center; gap:0.4rem;
+      background:var(--bg); border:1px solid var(--border); border-radius:8px;
+      padding:0.3rem 0.75rem; font-size:0.8rem; color:var(--text-secondary);
+      cursor:pointer; transition:all 0.2s; user-select:none;
+    }
+    .charset-chip input { accent-color:var(--accent2); cursor:pointer; }
+    .charset-chip:hover { border-color:var(--border-hover); }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="uuid-generator.html">UUID Generator</a>...</p>
-  <script>window.location.replace("uuid-generator.html");</script>
+  <div class="noise"></div>
+  <nav>
+    <a href="index.html" class="nav-brand"><div class="logo-icon">⚡</div>DevTools</a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme"><span class="theme-icon">☾</span></button>
+    <div class="nav-search-wrap">
+      <div class="nav-search-row">
+        <span class="ns-icon">🔍</span>
+        <input id="nav-search-input" type="text" placeholder="Search tools…" autocomplete="off" spellcheck="false" />
+        <button id="nav-search-clear" aria-label="Clear">✕</button>
+      </div>
+      <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
+    </div>
+    <ul class="nav-links"><li><a href="index.html">← All Tools</a></li></ul>
+  </nav>
+
+  <main class="fade-in">
+    <div class="page-header">
+      <div class="badge">🎲 Generator</div>
+      <h1>Random String Generator</h1>
+      <p>Generate cryptographically random strings with full control over length and character set.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Options</div>
+      <div class="row" style="margin-bottom:1rem;">
+        <div><label for="rs-count">Count</label><input type="number" id="rs-count" value="5" min="1" max="100" /></div>
+        <div><label for="rs-length">Length</label><input type="number" id="rs-length" value="16" min="1" max="256" /></div>
+      </div>
+      <label>Character set</label>
+      <div class="charset-grid">
+        <label class="charset-chip"><input type="checkbox" id="cs-upper" checked /> Uppercase A–Z</label>
+        <label class="charset-chip"><input type="checkbox" id="cs-lower" checked /> Lowercase a–z</label>
+        <label class="charset-chip"><input type="checkbox" id="cs-digits" checked /> Digits 0–9</label>
+        <label class="charset-chip"><input type="checkbox" id="cs-symbols" /> Symbols !@#$…</label>
+      </div>
+      <div class="btn-group" style="margin-top:1.25rem;">
+        <button class="btn btn-primary" onclick="generate()">⚡ Generate</button>
+        <button class="btn btn-secondary" onclick="copyAll()">📋 Copy all</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+      </div>
+    </div>
+
+    <div class="stat-row" id="rs-stats" style="display:none;"></div>
+    <div class="card" id="rs-output" style="display:none;">
+      <div class="card-title">Generated Strings</div>
+      <ul class="rs-list" id="rs-list"></ul>
+    </div>
+  </main>
+
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const UPPER='ABCDEFGHIJKLMNOPQRSTUVWXYZ', LOWER='abcdefghijklmnopqrstuvwxyz';
+    const DIGITS='0123456789', SYMBOLS='!@#$%^&*()-_=+[]{}|;:,.<>?';
+
+    function randomString(len, charset) {
+      const arr = new Uint32Array(len);
+      crypto.getRandomValues(arr);
+      return Array.from(arr).map(n => charset[n % charset.length]).join('');
+    }
+
+    function generate() {
+      const count  = Math.min(Math.max(parseInt(document.getElementById('rs-count').value)||1,1),100);
+      const length = Math.min(Math.max(parseInt(document.getElementById('rs-length').value)||16,1),256);
+      let charset = '';
+      if (document.getElementById('cs-upper').checked)   charset += UPPER;
+      if (document.getElementById('cs-lower').checked)   charset += LOWER;
+      if (document.getElementById('cs-digits').checked)  charset += DIGITS;
+      if (document.getElementById('cs-symbols').checked) charset += SYMBOLS;
+      if (!charset) { showToast('Select at least one character set', 'error'); return; }
+
+      const list = document.getElementById('rs-list');
+      list.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const s = randomString(length, charset);
+        const li = document.createElement('li');
+        li.className = 'rs-item';
+        li.innerHTML = `<span class="rs-value">${esc(s)}</span><button class="rs-copy-btn" title="Copy" onclick="copyItem(this)">⧉</button>`;
+        list.appendChild(li);
+      }
+      document.getElementById('rs-output').style.display = '';
+      const stats = document.getElementById('rs-stats');
+      stats.style.display = 'flex';
+      stats.innerHTML = `<div class="stat"><strong>${count}</strong> string${count!==1?'s':''}</div><div class="stat"><strong>${length}</strong> chars each</div><div class="stat"><strong>${charset.length}</strong> possible chars</div>`;
+      showToast(`Generated ${count} string${count!==1?'s':''}`, 'success');
+    }
+
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function copyItem(btn) {
+      navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => {
+        btn.textContent='✓'; btn.classList.add('copied');
+        setTimeout(()=>{ btn.textContent='⧉'; btn.classList.remove('copied'); },1500);
+      });
+    }
+    function copyAll() {
+      const items = document.querySelectorAll('.rs-value');
+      if (!items.length) { showToast('Nothing to copy','error'); return; }
+      navigator.clipboard.writeText(Array.from(items).map(el=>el.textContent).join('\n'))
+        .then(()=>showToast(`Copied ${items.length} string${items.length!==1?'s':''}`, 'success'));
+    }
+    function clearAll() {
+      document.getElementById('rs-list').innerHTML='';
+      document.getElementById('rs-output').style.display='none';
+      document.getElementById('rs-stats').style.display='none';
+    }
+    function showToast(msg,type='') {
+      const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type;
+      clearTimeout(t._timer); t._timer=setTimeout(()=>{ t.className='toast'; },2500);
+    }
+  </script>
+  <script src="search.js"></script>
 </body>
 </html>

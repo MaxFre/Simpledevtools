@@ -2,12 +2,155 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=uuid-generator.html" />
-  <link rel="canonical" href="uuid-generator.html" />
-  <title>UUID Generator — SimpleDevTools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UUID Validator — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .result-box {
+      border-radius: 12px; padding: 1.25rem 1.5rem;
+      border: 1px solid var(--border); margin-bottom: 1rem;
+      display: none;
+    }
+    .result-box.valid   { border-color: var(--success); background: rgba(62,232,192,0.06); }
+    .result-box.invalid { border-color: var(--danger);  background: rgba(245,100,122,0.06); }
+    .result-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .result-status { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .result-status.valid   { color: var(--success); }
+    .result-status.invalid { color: var(--danger); }
+    .detail-grid {
+      display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 1rem;
+      font-size: 0.83rem;
+    }
+    .detail-key { color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.72rem; }
+    .detail-val { font-family: var(--mono); color: var(--text); }
+    .bulk-result {
+      font-family: var(--mono); font-size: 0.82rem; line-height: 1.9;
+    }
+    .bulk-line { display:flex; gap: 0.75rem; padding: 0.2rem 0; }
+    .bulk-line .valid-tag   { color: var(--success); font-weight:600; min-width:3rem; }
+    .bulk-line .invalid-tag { color: var(--danger);  font-weight:600; min-width:3rem; }
+    .bulk-line .uuid-text   { color: var(--text); word-break:break-all; }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="uuid-generator.html">UUID Generator</a>...</p>
-  <script>window.location.replace("uuid-generator.html");</script>
+  <div class="noise"></div>
+  <nav>
+    <a href="index.html" class="nav-brand"><div class="logo-icon">⚡</div>DevTools</a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme"><span class="theme-icon">☾</span></button>
+    <div class="nav-search-wrap">
+      <div class="nav-search-row">
+        <span class="ns-icon">🔍</span>
+        <input id="nav-search-input" type="text" placeholder="Search tools…" autocomplete="off" spellcheck="false" />
+        <button id="nav-search-clear" aria-label="Clear">✕</button>
+      </div>
+      <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
+    </div>
+    <ul class="nav-links"><li><a href="index.html">← All Tools</a></li></ul>
+  </nav>
+
+  <main class="fade-in">
+    <div class="page-header">
+      <div class="badge">✓ Validator</div>
+      <h1>UUID Validator</h1>
+      <p>Validate one or multiple UUIDs. Detects version (v1–v5), variant, and formatting issues.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Input</div>
+      <textarea id="uuid-input" class="output-area" rows="5"
+        placeholder="Paste one UUID per line…
+&#10;e.g. 550e8400-e29b-41d4-a716-446655440000"></textarea>
+      <div class="btn-group" style="margin-top:1rem;">
+        <button class="btn btn-primary" onclick="validateAll()">✓ Validate</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+      </div>
+    </div>
+
+    <div id="single-result" class="result-box">
+      <div class="result-icon" id="res-icon"></div>
+      <div class="result-status" id="res-status"></div>
+      <div class="detail-grid" id="res-details"></div>
+    </div>
+
+    <div class="card" id="bulk-card" style="display:none;">
+      <div class="card-title" id="bulk-title">Results</div>
+      <div class="bulk-result" id="bulk-results"></div>
+    </div>
+  </main>
+
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // UUID v1-v5 regex
+    const RE = /^[0-9a-f]{8}-[0-9a-f]{4}-([1-5])[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const RE_NIL = /^0{8}-0{4}-0{4}-0{4}-0{12}$/;
+
+    function parseUUID(s) {
+      const clean = s.trim().replace(/^\{|\}$/g,'');
+      if (RE_NIL.test(clean)) return { valid:true, version:'Nil (all zeros)', variant:'N/A', canonical:clean };
+      const m = RE.exec(clean);
+      if (!m) return { valid:false };
+      const version = 'v' + m[1];
+      const variantHex = parseInt(clean[19],16);
+      const variant = variantHex >= 8 && variantHex <= 11 ? 'RFC 4122' : 'Other';
+      return { valid:true, version, variant, canonical:clean.toLowerCase() };
+    }
+
+    function validateAll() {
+      const raw = document.getElementById('uuid-input').value.trim();
+      if (!raw) { showToast('Paste at least one UUID','error'); return; }
+      const lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+
+      if (lines.length === 1) {
+        // Single — show detailed result
+        const r = parseUUID(lines[0]);
+        const box = document.getElementById('single-result');
+        document.getElementById('bulk-card').style.display = 'none';
+        box.className = 'result-box ' + (r.valid ? 'valid' : 'invalid');
+        box.style.display = '';
+        document.getElementById('res-icon').textContent = r.valid ? '✅' : '❌';
+        const st = document.getElementById('res-status');
+        st.textContent = r.valid ? 'Valid UUID' : 'Invalid UUID';
+        st.className = 'result-status ' + (r.valid ? 'valid' : 'invalid');
+        document.getElementById('res-details').innerHTML = r.valid
+          ? `<span class="detail-key">Version</span><span class="detail-val">${r.version}</span>
+             <span class="detail-key">Variant</span><span class="detail-val">${r.variant}</span>
+             <span class="detail-key">Canonical</span><span class="detail-val">${r.canonical}</span>`
+          : `<span class="detail-key">Input</span><span class="detail-val" style="color:var(--danger)">${esc(lines[0])}</span>`;
+      } else {
+        // Bulk
+        document.getElementById('single-result').style.display = 'none';
+        const validCount   = lines.filter(l=>parseUUID(l).valid).length;
+        const invalidCount = lines.length - validCount;
+        document.getElementById('bulk-title').textContent = `Results — ${validCount} valid, ${invalidCount} invalid`;
+        document.getElementById('bulk-results').innerHTML = lines.map(l => {
+          const r = parseUUID(l);
+          return `<div class="bulk-line">
+            <span class="${r.valid?'valid-tag':'invalid-tag'}">${r.valid?'✓ OK':'✕ BAD'}</span>
+            <span class="uuid-text">${esc(l.trim())}</span>
+          </div>`;
+        }).join('');
+        document.getElementById('bulk-card').style.display = '';
+        showToast(`${validCount} valid, ${invalidCount} invalid`, validCount===lines.length?'success':'error');
+      }
+    }
+
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function clearAll() {
+      document.getElementById('uuid-input').value='';
+      document.getElementById('single-result').style.display='none';
+      document.getElementById('bulk-card').style.display='none';
+    }
+    function showToast(msg,type='') {
+      const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type;
+      clearTimeout(t._timer); t._timer=setTimeout(()=>{ t.className='toast'; },2500);
+    }
+  </script>
+  <script src="search.js"></script>
 </body>
 </html>

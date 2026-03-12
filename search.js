@@ -10,6 +10,9 @@
     { name: 'Timestamp Converter',  desc: 'Convert Unix timestamps to readable dates.',          icon: '⏱', url: 'timestamp-converter.html',     tags: ['timestamp','unix','epoch','date','time'] },
     { name: 'Regex Tester',         desc: 'Test regular expressions live with match highlights.',icon: '.*', url: 'regex-tester.html',            tags: ['regex','regexp','pattern','match','test'] },
     { name: 'Hash Generator',       desc: 'SHA-1, SHA-256, SHA-384, SHA-512 hashes.',            icon: '⬡',  url: 'hash-generator.html',          tags: ['hash','sha','md5','sha256','sha512','checksum'] },
+    { name: 'Random String Generator', desc: 'Generate cryptographically random strings with custom charset.', icon: '🎲', url: 'random-string-generator.html', tags: ['random','string','token','secret','charset'] },
+    { name: 'Password Generator',  desc: 'Generate strong random passwords with entropy score.',   icon: '🔐', url: 'password-generator.html',      tags: ['password','random','secure','strong','generator'] },
+    { name: 'UUID Validator',       desc: 'Validate UUIDs and detect version and variant.',          icon: '✓',  url: 'uuid-validator.html',          tags: ['uuid','guid','validate','check','version'] },
   ];
 
   function init() {
