@@ -1,9 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timestamp Converter — DevTools</title>
+  <meta name="description" content="Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds, ISO 8601, UTC, and relative time. Free tool." />
+  <meta name="theme-color" content="#1a1a2e" />
+  <link rel="canonical" href="https://simpledevtools.net/timestamp-converter.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Unix Timestamp Converter — SimpleDevTools" />
+  <meta property="og:description" content="Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds, ISO 8601, UTC, and relative time. Free tool." />
+  <meta property="og:url" content="https://simpledevtools.net/timestamp-converter.html" />
+  <meta property="og:site_name" content="SimpleDevTools" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Unix Timestamp Converter — SimpleDevTools" />
+  <meta name="twitter:description" content="Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds, ISO 8601, UTC, and relative time. Free tool." />
+  <title>Unix Timestamp Converter — SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -50,6 +62,34 @@
     }
     .r-value.accent { color: #0a8c66; font-weight: 600; }
 
+    /* Date picker styling */
+    input[type="datetime-local"]#date-picker {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color-scheme: dark;
+    }
+    [data-theme="light"] input[type="datetime-local"]#date-picker {
+      color-scheme: light;
+    }
+    input[type="datetime-local"]#date-picker:focus {
+      border-color: rgba(12,166,120,0.5);
+      box-shadow: 0 0 0 3px rgba(12,166,120,0.1);
+    }
+    input[type="datetime-local"]#date-picker::-webkit-calendar-picker-indicator {
+      filter: invert(0.7);
+      cursor: pointer;
+    }
+    [data-theme="light"] input[type="datetime-local"]#date-picker::-webkit-calendar-picker-indicator {
+      filter: none;
+    }
+
     .live-badge {
       display: inline-flex;
       align-items: center;
@@ -71,6 +111,19 @@
     }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Unix Timestamp Converter",
+    "url": "https://simpledevtools.net/timestamp-converter.html",
+    "description": "Convert between Unix timestamps and human-readable dates.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.net/" }
+  }
+  </script>
 </head>
 <body>
   <div class="noise"></div>
@@ -203,9 +256,11 @@
     function renderResults(containerId, d, ts, isMs) {
       const container = document.getElementById(containerId);
       const rel = relativeTime(d);
+      const sec = isMs ? Math.floor(ts / 1000) : ts;
+      const ms  = isMs ? ts : ts * 1000;
       const rows = [
-        ['Unix (seconds)',      ts.toString()],
-        ['Unix (milliseconds)', (ts * 1000).toString()],
+        ['Unix (seconds)',      sec.toString()],
+        ['Unix (milliseconds)', ms.toString()],
         ['ISO 8601',            d.toISOString()],
         ['UTC',                 d.toUTCString()],
         ['Local time',          d.toLocaleString()],
