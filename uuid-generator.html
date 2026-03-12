@@ -10,81 +10,111 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
+    /* ── List ── */
     .guid-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
 
     .guid-item {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.6rem;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 0.65rem 1rem;
+      padding: 0.6rem 0.75rem 0.6rem 1rem;
       font-family: var(--mono);
       font-size: 0.85rem;
-      transition: all 0.3s var(--ease-out);
-      position: relative;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+      animation: itemIn 0.28s var(--ease-out) both;
     }
 
-    .guid-item::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 10px;
-      background: linear-gradient(90deg, rgba(108,92,231,0.04), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
+    @keyframes itemIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .guid-item:hover {
-      border-color: rgba(108,92,231,0.3);
-      box-shadow: 0 4px 12px rgba(108,92,231,0.08);
+      border-color: rgba(108,92,231,0.35);
+      background: rgba(108,92,231,0.03);
+      box-shadow: 0 4px 16px rgba(108,92,231,0.08);
     }
 
-    .guid-item:hover::before { opacity: 1; }
-
-    .guid-value {
-      flex: 1;
-      word-break: break-all;
-      color: var(--text);
-      position: relative;
-      z-index: 1;
+    .guid-item.flash {
+      border-color: rgba(0,184,148,0.45) !important;
+      background: rgba(0,184,148,0.07) !important;
+      transition: none;
     }
 
+    /* Index number */
+    .guid-idx {
+      color: var(--muted);
+      font-size: 0.7rem;
+      min-width: 1.5rem;
+      text-align: right;
+      user-select: none;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    /* Segment colours */
+    .guid-value { flex: 1; word-break: break-all; }
+    .gs1 { color: var(--accent); }
+    .gs2 { color: var(--accent2); }
+    .gs3 { color: var(--accent3); }
+    .gs4 { color: var(--danger); }
+    .gs5 { color: var(--text-secondary); }
+    .gsep { color: var(--muted); }
+
+    /* Copy button */
     .guid-copy-btn {
       background: none;
       border: 1px solid transparent;
       cursor: pointer;
       color: var(--muted);
-      font-size: 0.9rem;
-      padding: 0.25rem 0.4rem;
+      font-size: 0.85rem;
+      padding: 0.25rem 0.5rem;
       border-radius: 8px;
-      transition: all 0.2s var(--ease);
+      transition: all 0.15s;
       flex-shrink: 0;
       line-height: 1;
-      position: relative;
-      z-index: 1;
     }
-
     .guid-copy-btn:hover {
       color: var(--accent);
       background: var(--accent-soft);
-      border-color: rgba(108,92,231,0.15);
+      border-color: rgba(108,92,231,0.2);
     }
     .guid-copy-btn.copied { color: var(--success); }
 
+    /* Preset count chips */
+    .preset-chips { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .preset-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.73rem;
+      font-weight: 600;
+      padding: 0.18rem 0.55rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.6;
+    }
+    .preset-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+    .preset-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* Stats */
     .stat-row {
       display: flex;
       gap: 0.75rem;
       flex-wrap: wrap;
       margin-bottom: 0.75rem;
     }
-
     .stat {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -96,19 +126,10 @@
       align-items: center;
       gap: 0.5rem;
     }
+    .stat strong { color: var(--accent); font-size: 0.95rem; font-weight: 700; }
 
-    .stat strong {
-      color: var(--accent);
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .format-tabs {
-      display: flex;
-      gap: 0.35rem;
-      margin-bottom: 0;
-    }
-
+    /* Format tabs */
+    .format-tabs { display: flex; gap: 0.35rem; }
     .format-tab {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -120,9 +141,7 @@
       cursor: pointer;
       transition: all 0.2s var(--ease);
     }
-
     .format-tab:hover { border-color: var(--border-hover); color: var(--text-secondary); }
-
     .format-tab.active {
       background: linear-gradient(135deg, var(--accent), #8577ed);
       border-color: var(--accent);
@@ -137,13 +156,15 @@
   <div class="noise"></div>
 
   <nav>
-    <a href="index.html" class="nav-brand">
-      <div class="logo-icon">⚡</div>
-      DevTools
-    </a>
-    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
-      <span class="theme-icon">☾</span>
-    </button>
+    <div class="nav-left">
+      <a href="index.html" class="nav-brand">
+        <div class="logo-icon">⚡</div>
+        DevTools
+      </a>
+      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+        <span class="theme-icon">☾</span>
+      </button>
+    </div>
     <div class="nav-search-wrap">
       <div class="nav-search-row">
         <span class="ns-icon">🔍</span>
@@ -165,13 +186,19 @@
       <p>Generate RFC 4122 compliant version 4 UUIDs instantly.</p>
     </div>
 
-    <!-- Controls -->
     <div class="card">
       <div class="card-title">Options</div>
-      <div class="row" style="margin-bottom:1rem;">
+      <div class="row" style="margin-bottom:0.75rem; align-items:flex-start;">
         <div>
           <label for="count">Count</label>
-          <input type="number" id="count" value="1" min="1" max="100" />
+          <input type="number" id="count" value="10" min="1" max="100" style="width:6.5rem;" />
+          <div class="preset-chips">
+            <button class="preset-chip" onclick="setPreset(1)">1</button>
+            <button class="preset-chip" onclick="setPreset(5)">5</button>
+            <button class="preset-chip active" onclick="setPreset(10)">10</button>
+            <button class="preset-chip" onclick="setPreset(25)">25</button>
+            <button class="preset-chip" onclick="setPreset(50)">50</button>
+          </div>
         </div>
         <div>
           <label>Format</label>
@@ -184,18 +211,18 @@
 
       <div style="margin-bottom:1rem;">
         <div class="toggle-row">
-          <label class="toggle-label">Include braces <span style="color:var(--muted);font-family:var(--mono);font-size:0.8em">{…}</span></label>
           <label class="toggle">
             <input type="checkbox" id="braces" />
             <span class="toggle-slider"></span>
           </label>
+          <label class="toggle-label" for="braces" style="cursor:pointer;">Include braces <span style="color:var(--muted);font-family:var(--mono);font-size:0.8em">{…}</span></label>
         </div>
         <div class="toggle-row">
-          <label class="toggle-label">Include hyphens</label>
           <label class="toggle">
             <input type="checkbox" id="hyphens" checked />
             <span class="toggle-slider"></span>
           </label>
+          <label class="toggle-label" for="hyphens" style="cursor:pointer;">Include hyphens</label>
         </div>
       </div>
 
@@ -206,10 +233,8 @@
       </div>
     </div>
 
-    <!-- Stats -->
     <div class="stat-row" id="stats" style="display:none;"></div>
 
-    <!-- Output -->
     <div class="card" id="output-card" style="display:none;">
       <div class="card-title">Generated GUIDs</div>
       <ul class="guid-list" id="guid-list"></ul>
@@ -221,118 +246,158 @@
     Built with precision — <a href="index.html">DevTools</a>
   </footer>
 
+  <!-- Scrollable tool rail -->
+  <aside class="tool-rail">
+    <div class="tool-rail-label">Tools</div>
+    <a href="uuid-generator.html"        class="tool-rail-btn active" title="GUID Generator">🔑 UUID</a>
+    <a href="json-formatter.html"        class="tool-rail-btn" title="JSON Formatter">{ } JSON</a>
+    <a href="json-validator.html"        class="tool-rail-btn" title="JSON Validator">✓ JSON Lint</a>
+    <a href="base64-encoder.html"        class="tool-rail-btn" title="Base64 Encoder">↔ Base64</a>
+    <a href="url-encoder.html"           class="tool-rail-btn" title="URL Encoder">🔗 URL</a>
+    <a href="hash-generator.html"        class="tool-rail-btn" title="Hash Generator">⬡ Hash</a>
+    <a href="regex-tester.html"          class="tool-rail-btn" title="Regex Tester">.* Regex</a>
+    <a href="timestamp-converter.html"   class="tool-rail-btn" title="Timestamp">⌚ Timestamp</a>
+    <a href="case-converter.html"        class="tool-rail-btn" title="Case Converter">Aa Case</a>
+    <a href="lorem-ipsum-generator.html" class="tool-rail-btn" title="Lorem Ipsum">📝 Lorem</a>
+    <a href="random-string-generator.html" class="tool-rail-btn" title="Random String">🎲 Random</a>
+    <a href="password-generator.html"    class="tool-rail-btn" title="Password">🔐 Password</a>
+    <a href="uuid-validator.html"        class="tool-rail-btn" title="UUID Validator">✓ UUID Val</a>
+  </aside>
+
   <div class="toast" id="toast"></div>
 
   <script>
     let currentCase = 'lower';
 
+    // ── UUID generation ──
+    function uuidv4() {
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+      const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+      return [hex.slice(0,4).join(''), hex.slice(4,6).join(''), hex.slice(6,8).join(''), hex.slice(8,10).join(''), hex.slice(10,16).join('')].join('-');
+    }
+
+    // Plain text output (for clipboard)
+    function formatGuid(raw) {
+      let r = raw;
+      if (!document.getElementById('hyphens').checked) r = r.replaceAll('-', '');
+      if (document.getElementById('braces').checked)  r = '{' + r + '}';
+      return currentCase === 'upper' ? r.toUpperCase() : r;
+    }
+
+    // HTML with coloured segments (for display)
+    function renderSegments(raw) {
+      const parts = raw.split('-');
+      const uc = currentCase === 'upper';
+      const useHyphens = document.getElementById('hyphens').checked;
+      const useBraces  = document.getElementById('braces').checked;
+      const spans = parts.map((p, i) => `<span class="gs${i+1}">${uc ? p.toUpperCase() : p}</span>`);
+      const sep   = useHyphens ? '<span class="gsep">-</span>' : '';
+      const inner = spans.join(sep);
+      return useBraces ? `<span class="gsep">{</span>${inner}<span class="gsep">}</span>` : inner;
+    }
+
+    // ── Controls ──
     function setCase(c) {
       currentCase = c;
       document.getElementById('tab-lower').classList.toggle('active', c === 'lower');
       document.getElementById('tab-upper').classList.toggle('active', c === 'upper');
-      // re-render existing list with new case
-      const items = document.querySelectorAll('.guid-value');
-      items.forEach(el => {
-        el.textContent = currentCase === 'upper'
-          ? el.textContent.toUpperCase()
-          : el.textContent.toLowerCase();
+      rerender();
+    }
+
+    function setPreset(n) {
+      document.getElementById('count').value = n;
+      document.querySelectorAll('.preset-chip').forEach(ch => {
+        ch.classList.toggle('active', parseInt(ch.textContent) === n);
+      });
+      generate();
+    }
+
+    function rerender() {
+      document.querySelectorAll('.guid-item').forEach(li => {
+        li.querySelector('.guid-value').innerHTML = renderSegments(li.dataset.guid);
+        li.dataset.plain = formatGuid(li.dataset.guid);
       });
     }
 
-    function uuidv4() {
-      // Cryptographically random UUID v4
-      const bytes = new Uint8Array(16);
-      crypto.getRandomValues(bytes);
-      bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
-      bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant bits
-      const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
-      return [
-        hex.slice(0,4).join(''),
-        hex.slice(4,6).join(''),
-        hex.slice(6,8).join(''),
-        hex.slice(8,10).join(''),
-        hex.slice(10,16).join('')
-      ].join('-');
-    }
-
-    function formatGuid(raw) {
-      let result = raw;
-      if (!document.getElementById('hyphens').checked) {
-        result = result.replaceAll('-', '');
-      }
-      if (document.getElementById('braces').checked) {
-        result = '{' + result + '}';
-      }
-      return currentCase === 'upper' ? result.toUpperCase() : result;
-    }
-
+    // ── Generate ──
     function generate() {
       const count = Math.min(Math.max(parseInt(document.getElementById('count').value) || 1, 1), 100);
-      const list = document.getElementById('guid-list');
-      const outputCard = document.getElementById('output-card');
-      const statsEl = document.getElementById('stats');
-
+      const list  = document.getElementById('guid-list');
       list.innerHTML = '';
 
+      const frag = document.createDocumentFragment();
       for (let i = 0; i < count; i++) {
-        const guid = formatGuid(uuidv4());
-        const li = document.createElement('li');
-        li.className = 'guid-item';
-        li.innerHTML = `
-          <span class="guid-value">${escapeHtml(guid)}</span>
-          <button class="guid-copy-btn" title="Copy" onclick="copyGuid(this)">⧉</button>
-        `;
-        list.appendChild(li);
+        const raw   = uuidv4();
+        const plain = formatGuid(raw);
+        const li    = document.createElement('li');
+        li.className    = 'guid-item';
+        li.dataset.guid  = raw;
+        li.dataset.plain = plain;
+        li.title = 'Click to copy';
+        li.style.animationDelay = `${Math.min(i * 22, 350)}ms`;
+        li.onclick = function() { copyRow(this); };
+        li.innerHTML = `<span class="guid-idx">${i + 1}</span><span class="guid-value">${renderSegments(raw)}</span><button class="guid-copy-btn" title="Copy" onclick="event.stopPropagation();copyBtn(this)">⧉</button>`;
+        frag.appendChild(li);
       }
+      list.appendChild(frag);
 
-      outputCard.style.display = '';
+      const sampleLen = formatGuid('00000000-0000-0000-0000-000000000000').length;
+      const statsEl = document.getElementById('stats');
       statsEl.style.display = 'flex';
-      statsEl.innerHTML = `
-        <div class="stat"><strong>${count}</strong> GUID${count !== 1 ? 's' : ''} generated</div>
-        <div class="stat"><strong>${formatGuid(uuidv4()).length}</strong> chars each</div>
-      `;
-
+      statsEl.innerHTML = `<div class="stat"><strong>${count}</strong> GUID${count !== 1 ? 's' : ''} generated</div><div class="stat"><strong>${sampleLen}</strong> chars each</div>`;
+      document.getElementById('output-card').style.display = '';
       showToast(`Generated ${count} GUID${count !== 1 ? 's' : ''}`, 'success');
     }
 
-    function escapeHtml(str) {
-      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    function copyGuid(btn) {
-      const val = btn.previousElementSibling.textContent;
-      navigator.clipboard.writeText(val).then(() => {
-        btn.textContent = '✓';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.textContent = '⧉'; btn.classList.remove('copied'); }, 1500);
+    // ── Copy ──
+    function copyRow(li) {
+      navigator.clipboard.writeText(li.dataset.plain).then(() => {
+        li.classList.add('flash');
+        setTimeout(() => li.classList.remove('flash'), 500);
+        const btn = li.querySelector('.guid-copy-btn');
+        btn.textContent = '✓'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '⧉'; btn.classList.remove('copied'); }, 1200);
       });
     }
+
+    function copyBtn(btn) { copyRow(btn.closest('.guid-item')); }
 
     function copyAll() {
-      const items = document.querySelectorAll('.guid-value');
+      const items = document.querySelectorAll('.guid-item');
       if (!items.length) { showToast('Nothing to copy', 'error'); return; }
-      const text = Array.from(items).map(el => el.textContent).join('\n');
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(`Copied ${items.length} GUID${items.length !== 1 ? 's' : ''}`, 'success');
-      });
+      const text = Array.from(items).map(li => li.dataset.plain).join('\n');
+      navigator.clipboard.writeText(text).then(() =>
+        showToast(`Copied ${items.length} GUID${items.length !== 1 ? 's' : ''}`, 'success'));
     }
 
     function clearAll() {
       document.getElementById('guid-list').innerHTML = '';
       document.getElementById('output-card').style.display = 'none';
-      document.getElementById('stats').style.display = 'none';
+      document.getElementById('stats').style.display   = 'none';
     }
 
     function showToast(msg, type = '') {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show ' + type;
-      clearTimeout(t._timer);
-      t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
+      t.textContent = msg; t.className = 'toast show ' + type;
+      clearTimeout(t._timer); t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
     }
 
-    // Generate one on load
-    generate();
+    // Re-render when options change
+    document.getElementById('hyphens').addEventListener('change', rerender);
+    document.getElementById('braces').addEventListener('change',  rerender);
+
+    // Count chip sync on manual input
+    document.getElementById('count').addEventListener('input', function() {
+      const n = parseInt(this.value);
+      document.querySelectorAll('.preset-chip').forEach(ch => {
+        ch.classList.toggle('active', parseInt(ch.textContent) === n);
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', generate);
   </script>
   <script src="search.js"></script>
 </body>

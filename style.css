@@ -151,10 +151,86 @@ nav {
   border-bottom: 1px solid var(--border);
   padding: 0 2rem;
   height: 56px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+nav > .nav-search-wrap {
+  justify-self: center;
+  width: 360px;
+  max-width: 100%;
+  flex: none;
+}
+
+/* ── Fixed scrollable tool rail ── */
+.tool-rail {
+  position: fixed;
+  right: calc((100% - 860px) / 2 - 120px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.4rem;
+  width: 112px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+[data-theme="dark"] .tool-rail {
+  box-shadow: 0 4px 32px rgba(0,0,0,0.35);
+}
+.tool-rail-label {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.25rem 0.4rem 0.35rem;
+  text-align: center;
+}
+.tool-rail-btn {
+  display: block;
+  padding: 0.38rem 0.55rem;
+  border-radius: 8px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1.5;
+}
+.tool-rail-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.tool-rail-btn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+/* hide on narrow viewports where it would overlap content */
+@media (max-width: 1100px) {
+  .tool-rail { display: none; }
 }
 
 .nav-brand {
@@ -548,8 +624,8 @@ input[type="range"] {
 .toggle-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: flex-start;
+  gap: 0.65rem;
   padding: 0.6rem 0;
 }
 

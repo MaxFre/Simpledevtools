@@ -76,13 +76,15 @@
   <div class="noise"></div>
 
   <nav>
-    <a href="index.html" class="nav-brand">
-      <div class="logo-icon">⚡</div>
-      DevTools
-    </a>
-    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
-      <span class="theme-icon">☾</span>
-    </button>
+    <div class="nav-left">
+      <a href="index.html" class="nav-brand">
+        <div class="logo-icon">⚡</div>
+        DevTools
+      </a>
+      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+        <span class="theme-icon">☾</span>
+      </button>
+    </div>
     <div class="nav-search-wrap">
       <div class="nav-search-row">
         <span class="ns-icon">🔍</span>
@@ -144,6 +146,23 @@
   </main>
 
   <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <!-- Scrollable tool rail -->
+  <aside class="tool-rail">
+    <div class="tool-rail-label">Tools</div>
+    <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
+    <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
+    <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
+    <a href="base64-encoder.html" class="tool-rail-btn">⇄ Base64</a>
+    <a href="url-encoder.html" class="tool-rail-btn">🔗 URL</a>
+    <a href="hash-generator.html" class="tool-rail-btn">⬡ Hash</a>
+    <a href="regex-tester.html" class="tool-rail-btn">.* Regex</a>
+    <a href="timestamp-converter.html" class="tool-rail-btn active">⌚ Timestamp</a>
+    <a href="case-converter.html" class="tool-rail-btn">Aa Case</a>
+    <a href="lorem-ipsum-generator.html" class="tool-rail-btn">📝 Lorem</a>
+    <a href="random-string-generator.html" class="tool-rail-btn">🎲 Random</a>
+    <a href="password-generator.html" class="tool-rail-btn">🔐 Password</a>
+    <a href="uuid-validator.html" class="tool-rail-btn">✓ UUID Val</a>
+  </aside>
   <div class="toast" id="toast"></div>
 
   <script>

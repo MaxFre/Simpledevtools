@@ -11,7 +11,7 @@
   }
 
   // Apply saved theme immediately (before paint) to avoid flash
-  const saved = localStorage.getItem(STORAGE_KEY) || 'light';
+  const saved = localStorage.getItem(STORAGE_KEY) || 'dark';
   applyTheme(saved);
 
   // Expose toggle for button onclick

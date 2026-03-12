@@ -480,13 +480,23 @@
   <div class="noise"></div>
 
   <nav>
-    <a href="index.html" class="nav-brand">
-      <div class="logo-icon">⚡</div>
-      DevTools
-    </a>
-    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
-      <span class="theme-icon">☾</span>
-    </button>
+    <div class="nav-left">
+      <a href="index.html" class="nav-brand">
+        <div class="logo-icon">⚡</div>
+        DevTools
+      </a>
+      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+        <span class="theme-icon">☾</span>
+      </button>
+    </div>
+    <div class="nav-search-wrap">
+      <div class="nav-search-row">
+        <span class="ns-icon">🔍</span>
+        <input id="nav-search-input" type="text" placeholder="Search tools…" autocomplete="off" spellcheck="false" />
+        <button id="nav-search-clear" aria-label="Clear">✕</button>
+      </div>
+      <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
+    </div>
     <ul class="nav-links">
       <li><a href="index.html" class="active">Home</a></li>
     </ul>
@@ -495,8 +505,8 @@
   <main>
     <section class="hero">
       <div class="hero-eyebrow">Developer Utilities</div>
-      <h1>Tools that get out<br>of your way</h1>
-      <p>Fast, focused utilities for everyday development. No accounts. No tracking. Just tools.</p>
+      <h1>The dev tools you<br>actually need.</h1>
+      <p>Fast, focused utilities for everyday development. No accounts. Just tools.</p>
 
       <div class="search-wrap">
         <div class="search-input-row">
@@ -710,5 +720,6 @@
     Built with precision — <a href="index.html">DevTools</a>
   </footer>
 
+  <script src="search.js"></script>
 </body>
 </html>
