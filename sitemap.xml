@@ -6,67 +6,67 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/uuid-generator.html</loc>
+    <loc>https://simpledevtools.net/uuid-generator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/json-formatter.html</loc>
+    <loc>https://simpledevtools.net/json-formatter</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/json-validator.html</loc>
+    <loc>https://simpledevtools.net/json-validator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/base64-encoder.html</loc>
+    <loc>https://simpledevtools.net/base64-encoder</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/url-encoder.html</loc>
+    <loc>https://simpledevtools.net/url-encoder</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/hash-generator.html</loc>
+    <loc>https://simpledevtools.net/hash-generator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/regex-tester.html</loc>
+    <loc>https://simpledevtools.net/regex-tester</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/timestamp-converter.html</loc>
+    <loc>https://simpledevtools.net/timestamp-converter</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/case-converter.html</loc>
+    <loc>https://simpledevtools.net/case-converter</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/lorem-ipsum-generator.html</loc>
+    <loc>https://simpledevtools.net/lorem-ipsum-generator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/random-string-generator.html</loc>
+    <loc>https://simpledevtools.net/random-string-generator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/password-generator.html</loc>
+    <loc>https://simpledevtools.net/password-generator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/uuid-validator.html</loc>
+    <loc>https://simpledevtools.net/uuid-validator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
