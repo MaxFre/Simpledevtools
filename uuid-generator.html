@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUID Generator — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .guid-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .guid-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      transition: all 0.3s var(--ease-out);
+      position: relative;
+    }
+
+    .guid-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(108,92,231,0.04), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .guid-item:hover {
+      border-color: rgba(108,92,231,0.3);
+      box-shadow: 0 4px 12px rgba(108,92,231,0.08);
+    }
+
+    .guid-item:hover::before { opacity: 1; }
+
+    .guid-value {
+      flex: 1;
+      word-break: break-all;
+      color: var(--text);
+      position: relative;
+      z-index: 1;
+    }
+
+    .guid-copy-btn {
+      background: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 0.25rem 0.4rem;
+      border-radius: 8px;
+      transition: all 0.2s var(--ease);
+      flex-shrink: 0;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .guid-copy-btn:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: rgba(108,92,231,0.15);
+    }
+    .guid-copy-btn.copied { color: var(--success); }
+
+    .stat-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .stat {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat strong {
+      color: var(--accent);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .format-tabs {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 0;
+    }
+
+    .format-tab {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+
+    .format-tab:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+
+    .format-tab.active {
+      background: linear-gradient(135deg, var(--accent), #8577ed);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(108,92,231,0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon">⚡</div>
+      DevTools
+    </a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+      <span class="theme-icon">☾</span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge">🔑 Generator</div>
+      <h1>GUID Generator</h1>
+      <p>Generate RFC 4122 compliant version 4 UUIDs instantly.</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="card">
+      <div class="card-title">Options</div>
+      <div class="row" style="margin-bottom:1rem;">
+        <div>
+          <label for="count">Count</label>
+          <input type="number" id="count" value="1" min="1" max="100" />
+        </div>
+        <div>
+          <label>Format</label>
+          <div class="format-tabs">
+            <button class="format-tab active" id="tab-lower" onclick="setCase('lower')">lowercase</button>
+            <button class="format-tab" id="tab-upper" onclick="setCase('upper')">UPPERCASE</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <div class="toggle-row">
+          <label class="toggle-label">Include braces <span style="color:var(--muted);font-family:var(--mono);font-size:0.8em">{…}</span></label>
+          <label class="toggle">
+            <input type="checkbox" id="braces" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle-label">Include hyphens</label>
+          <label class="toggle">
+            <input type="checkbox" id="hyphens" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="generate()">⚡ Generate</button>
+        <button class="btn btn-secondary" onclick="copyAll()">📋 Copy all</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-row" id="stats" style="display:none;"></div>
+
+    <!-- Output -->
+    <div class="card" id="output-card" style="display:none;">
+      <div class="card-title">Generated GUIDs</div>
+      <ul class="guid-list" id="guid-list"></ul>
+    </div>
+
+  </main>
+
+  <footer>
+    Built with precision — <a href="index.html">DevTools</a>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentCase = 'lower';
+
+    function setCase(c) {
+      currentCase = c;
+      document.getElementById('tab-lower').classList.toggle('active', c === 'lower');
+      document.getElementById('tab-upper').classList.toggle('active', c === 'upper');
+      // re-render existing list with new case
+      const items = document.querySelectorAll('.guid-value');
+      items.forEach(el => {
+        el.textContent = currentCase === 'upper'
+          ? el.textContent.toUpperCase()
+          : el.textContent.toLowerCase();
+      });
+    }
+
+    function uuidv4() {
+      // Cryptographically random UUID v4
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
+      bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant bits
+      const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+      return [
+        hex.slice(0,4).join(''),
+        hex.slice(4,6).join(''),
+        hex.slice(6,8).join(''),
+        hex.slice(8,10).join(''),
+        hex.slice(10,16).join('')
+      ].join('-');
+    }
+
+    function formatGuid(raw) {
+      let result = raw;
+      if (!document.getElementById('hyphens').checked) {
+        result = result.replaceAll('-', '');
+      }
+      if (document.getElementById('braces').checked) {
+        result = '{' + result + '}';
+      }
+      return currentCase === 'upper' ? result.toUpperCase() : result;
+    }
+
+    function generate() {
+      const count = Math.min(Math.max(parseInt(document.getElementById('count').value) || 1, 1), 100);
+      const list = document.getElementById('guid-list');
+      const outputCard = document.getElementById('output-card');
+      const statsEl = document.getElementById('stats');
+
+      list.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const guid = formatGuid(uuidv4());
+        const li = document.createElement('li');
+        li.className = 'guid-item';
+        li.innerHTML = `
+          <span class="guid-value">${escapeHtml(guid)}</span>
+          <button class="guid-copy-btn" title="Copy" onclick="copyGuid(this)">⧉</button>
+        `;
+        list.appendChild(li);
+      }
+
+      outputCard.style.display = '';
+      statsEl.style.display = 'flex';
+      statsEl.innerHTML = `
+        <div class="stat"><strong>${count}</strong> GUID${count !== 1 ? 's' : ''} generated</div>
+        <div class="stat"><strong>${formatGuid(uuidv4()).length}</strong> chars each</div>
+      `;
+
+      showToast(`Generated ${count} GUID${count !== 1 ? 's' : ''}`, 'success');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function copyGuid(btn) {
+      const val = btn.previousElementSibling.textContent;
+      navigator.clipboard.writeText(val).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '⧉'; btn.classList.remove('copied'); }, 1500);
+      });
+    }
+
+    function copyAll() {
+      const items = document.querySelectorAll('.guid-value');
+      if (!items.length) { showToast('Nothing to copy', 'error'); return; }
+      const text = Array.from(items).map(el => el.textContent).join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`Copied ${items.length} GUID${items.length !== 1 ? 's' : ''}`, 'success');
+      });
+    }
+
+    function clearAll() {
+      document.getElementById('guid-list').innerHTML = '';
+      document.getElementById('output-card').style.display = 'none';
+      document.getElementById('stats').style.display = 'none';
+    }
+
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + type;
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
+    }
+
+    // Generate one on load
+    generate();
+  </script>
+</body>
+</html>

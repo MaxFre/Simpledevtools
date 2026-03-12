@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regex Tester — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .pattern-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 1rem;
+    }
+    .pattern-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .pattern-slash {
+      padding: 0 0.7rem;
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--muted);
+      user-select: none;
+      flex-shrink: 0;
+    }
+    #pattern {
+      flex: 1;
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      padding: 0.65rem 0;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      color: var(--text);
+      outline: none;
+      box-shadow: none;
+    }
+    #pattern:focus { border-color: transparent; box-shadow: none; background: transparent; }
+    .pattern-row.invalid { border-color: rgba(220,70,90,0.4); }
+    .pattern-row.invalid:focus-within { box-shadow: 0 0 0 3px rgba(220,70,90,0.08); }
+
+    .flags-row { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+
+    .flag-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .flag-btn:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+    .flag-btn.active {
+      background: rgba(194,37,92,0.07);
+      border-color: rgba(194,37,92,0.3);
+      color: #c2255c;
+    }
+
+    #test-string {
+      min-height: 160px;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      resize: vertical;
+    }
+
+    .test-preview {
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      line-height: 1.8;
+      padding: 1.25rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      min-height: 80px;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    mark.match {
+      background: rgba(194,37,92,0.15);
+      border-radius: 2px;
+      outline: 1.5px solid rgba(194,37,92,0.35);
+      color: inherit;
+    }
+
+    .match-list { display: flex; flex-direction: column; gap: 0.35rem; }
+
+    .match-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+
+    .match-index {
+      background: rgba(194,37,92,0.08);
+      color: #c2255c;
+      border-radius: 6px;
+      padding: 0.1rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .match-text  { color: var(--text); flex: 1; word-break: break-all; }
+    .match-pos   { color: var(--muted); font-size: 0.72rem; white-space: nowrap; }
+
+    .match-summary {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    .match-summary strong { color: #c2255c; }
+
+    .error-hint {
+      font-size: 0.78rem;
+      color: var(--danger);
+      font-family: var(--mono);
+      margin-top: 0.35rem;
+      display: none;
+    }
+    .error-hint.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon">⚡</div>
+      DevTools
+    </a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+      <span class="theme-icon">☾</span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(194,37,92,0.07);color:#c2255c;border-color:rgba(194,37,92,0.2);">.* Tester</div>
+      <h1>Regex Tester</h1>
+      <p>Test regular expressions live. Matches are highlighted with positions and groups.</p>
+    </div>
+
+    <!-- Pattern & flags -->
+    <div class="card">
+      <div class="card-title">Pattern</div>
+      <div class="pattern-row" id="pattern-wrap">
+        <span class="pattern-slash">/</span>
+        <input type="text" id="pattern" spellcheck="false" placeholder="[a-z]+" autocomplete="off" oninput="run()" />
+        <span class="pattern-slash">/</span>
+      </div>
+      <div class="error-hint" id="pattern-error"></div>
+      <label style="margin-bottom:0.6rem;">Flags</label>
+      <div class="flags-row" id="flags-row">
+        <label class="flag-btn" id="flag-g" onclick="toggleFlag('g')">g <span style="font-size:0.65rem;opacity:0.7;">global</span></label>
+        <label class="flag-btn active" id="flag-i" onclick="toggleFlag('i')">i <span style="font-size:0.65rem;opacity:0.7;">ignore case</span></label>
+        <label class="flag-btn" id="flag-m" onclick="toggleFlag('m')">m <span style="font-size:0.65rem;opacity:0.7;">multiline</span></label>
+        <label class="flag-btn" id="flag-s" onclick="toggleFlag('s')">s <span style="font-size:0.65rem;opacity:0.7;">dot all</span></label>
+        <label class="flag-btn" id="flag-u" onclick="toggleFlag('u')">u <span style="font-size:0.65rem;opacity:0.7;">unicode</span></label>
+      </div>
+    </div>
+
+    <!-- Test string -->
+    <div class="card">
+      <div class="card-title">Test String</div>
+      <textarea id="test-string" spellcheck="false" placeholder="Enter text to test against the pattern…" oninput="run()"></textarea>
+    </div>
+
+    <!-- Results -->
+    <div class="card" id="results-card" style="display:none;">
+      <div class="card-title">Matches</div>
+      <div class="match-summary" id="match-summary"></div>
+
+      <div style="margin-bottom:1.25rem;">
+        <label style="margin-bottom:0.5rem;">Highlighted text</label>
+        <div class="test-preview" id="preview"></div>
+      </div>
+
+      <div class="match-list" id="match-list"></div>
+    </div>
+
+  </main>
+
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const activeFlags = new Set(['i']);
+
+    function toggleFlag(f) {
+      if (activeFlags.has(f)) activeFlags.delete(f);
+      else activeFlags.add(f);
+      document.getElementById('flag-' + f).classList.toggle('active', activeFlags.has(f));
+      run();
+    }
+
+    function getFlags() { return [...activeFlags].join(''); }
+
+    function run() {
+      const patternStr = document.getElementById('pattern').value;
+      const testStr    = document.getElementById('test-string').value;
+      const wrap       = document.getElementById('pattern-wrap');
+      const errHint    = document.getElementById('pattern-error');
+      const resultsCard = document.getElementById('results-card');
+
+      errHint.classList.remove('show');
+      wrap.classList.remove('invalid');
+
+      if (!patternStr) { resultsCard.style.display = 'none'; return; }
+
+      let regex;
+      try {
+        regex = new RegExp(patternStr, getFlags());
+        errHint.classList.remove('show');
+        wrap.classList.remove('invalid');
+      } catch(e) {
+        errHint.textContent = '⚠ ' + e.message;
+        errHint.classList.add('show');
+        wrap.classList.add('invalid');
+        resultsCard.style.display = 'none';
+        return;
+      }
+
+      if (!testStr) { resultsCard.style.display = 'none'; return; }
+      resultsCard.style.display = '';
+
+      const matches = [];
+      if (activeFlags.has('g')) {
+        let m;
+        regex.lastIndex = 0;
+        while ((m = regex.exec(testStr)) !== null) {
+          matches.push(m);
+          if (!activeFlags.has('g') || m[0].length === 0) { regex.lastIndex++; }
+        }
+      } else {
+        const m = regex.exec(testStr);
+        if (m) matches.push(m);
+      }
+
+      // Summary
+      const summary = document.getElementById('match-summary');
+      if (matches.length === 0) {
+        summary.innerHTML = 'No matches found.';
+      } else {
+        summary.innerHTML = `<strong>${matches.length}</strong> match${matches.length !== 1 ? 'es' : ''} found`;
+      }
+
+      // Highlighted preview
+      const preview = document.getElementById('preview');
+      if (matches.length === 0) {
+        preview.textContent = testStr;
+      } else {
+        let html = '';
+        let last = 0;
+        for (const m of matches) {
+          html += escHtml(testStr.slice(last, m.index));
+          html += `<mark class="match">${escHtml(m[0] || ' ')}</mark>`;
+          last = m.index + Math.max(m[0].length, 1);
+        }
+        html += escHtml(testStr.slice(last));
+        preview.innerHTML = html;
+      }
+
+      // Match list
+      const list = document.getElementById('match-list');
+      list.innerHTML = matches.map((m, i) => {
+        const groups = m.slice(1).filter(g => g !== undefined);
+        const groupStr = groups.length ? ` · groups: ${groups.map(g => `"${escHtml(g)}"`).join(', ')}` : '';
+        return `
+          <div class="match-item">
+            <span class="match-index">#${i + 1}</span>
+            <span class="match-text">${escHtml(JSON.stringify(m[0]))}</span>
+            <span class="match-pos">idx ${m.index}${groupStr}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+  </script>
+</body>
+</html>

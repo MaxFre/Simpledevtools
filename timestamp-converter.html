@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timestamp Converter — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+    @media (max-width: 560px) { .results-grid { grid-template-columns: 1fr; } }
+
+    .result-row {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .result-row:hover {
+      border-color: rgba(12,166,120,0.3);
+      box-shadow: 0 2px 8px rgba(12,166,120,0.07);
+    }
+    .result-row:hover .r-label::after { content: ' — click to copy'; }
+
+    .r-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .r-value {
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+    .r-value.accent { color: #0a8c66; font-weight: 600; }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-left: 0.5rem;
+      font-weight: 500;
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      background: #0ca678;
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon">⚡</div>
+      DevTools
+    </a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+      <span class="theme-icon">☾</span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(12,166,120,0.07);color:#0a8c66;border-color:rgba(12,166,120,0.2);">⏱ Converter</div>
+      <h1>Timestamp Converter</h1>
+      <p>Convert Unix timestamps to human-readable dates and back. Supports seconds and milliseconds.</p>
+    </div>
+
+    <!-- Unix → Date -->
+    <div class="card">
+      <div class="card-title">Unix Timestamp → Date</div>
+      <div class="row" style="margin-bottom:1rem;">
+        <div style="flex:1;">
+          <label for="unix-input">Unix timestamp (seconds or milliseconds)</label>
+          <input type="text" id="unix-input" placeholder="e.g. 1700000000" />
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="convertFromUnix()" style="background:linear-gradient(135deg,#0ca678,#38d9a9);border:none;color:#fff;box-shadow:0 2px 8px rgba(12,166,120,0.25);">Convert</button>
+        <button class="btn btn-secondary" onclick="useNow()">
+          Use now
+          <span class="live-badge"><span class="live-dot"></span></span>
+        </button>
+        <button class="btn btn-ghost" onclick="clearSection('unix')">✕</button>
+      </div>
+      <div id="unix-results"></div>
+    </div>
+
+    <!-- Date → Unix -->
+    <div class="card">
+      <div class="card-title">Date → Unix Timestamp</div>
+      <div style="margin-bottom:1rem;">
+        <label for="date-input">Date string (ISO, natural language, or date picker)</label>
+        <div class="row" style="flex-wrap:nowrap;gap:0.5rem;">
+          <input type="text" id="date-input" placeholder="e.g. 2024-11-15T12:00:00 or Nov 15 2024" style="flex:1;" />
+          <input type="datetime-local" id="date-picker" style="flex:0 0 auto;width:auto;" onchange="syncPicker()" />
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="convertFromDate()" style="background:linear-gradient(135deg,#0ca678,#38d9a9);border:none;color:#fff;box-shadow:0 2px 8px rgba(12,166,120,0.25);">Convert</button>
+        <button class="btn btn-ghost" onclick="clearSection('date')">✕ Clear</button>
+      </div>
+      <div id="date-results"></div>
+    </div>
+
+  </main>
+
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function convertFromUnix() {
+      const raw = document.getElementById('unix-input').value.trim();
+      if (!raw) return;
+      let ts = parseInt(raw, 10);
+      if (isNaN(ts)) return showToast('Enter a valid number');
+      // detect ms vs s: >1e12 is likely ms
+      const isMs = ts > 1e12;
+      const ms = isMs ? ts : ts * 1000;
+      const d = new Date(ms);
+      if (isNaN(d.getTime())) return showToast('Invalid timestamp');
+      renderResults('unix-results', d, ts, isMs);
+    }
+
+    function convertFromDate() {
+      const raw = document.getElementById('date-input').value.trim();
+      if (!raw) return;
+      const d = new Date(raw);
+      if (isNaN(d.getTime())) return showToast('Could not parse date string');
+      const ts = Math.floor(d.getTime() / 1000);
+      renderResults('date-results', d, ts, false);
+    }
+
+    function useNow() {
+      const d = new Date();
+      const ts = Math.floor(d.getTime() / 1000);
+      document.getElementById('unix-input').value = ts;
+      renderResults('unix-results', d, ts, false);
+    }
+
+    function syncPicker() {
+      const val = document.getElementById('date-picker').value;
+      if (val) document.getElementById('date-input').value = val;
+    }
+
+    function renderResults(containerId, d, ts, isMs) {
+      const container = document.getElementById(containerId);
+      const rel = relativeTime(d);
+      const rows = [
+        ['Unix (seconds)',      ts.toString()],
+        ['Unix (milliseconds)', (ts * 1000).toString()],
+        ['ISO 8601',            d.toISOString()],
+        ['UTC',                 d.toUTCString()],
+        ['Local time',          d.toLocaleString()],
+        ['Relative',            rel],
+        ['Day of week',         d.toLocaleDateString('en', {weekday:'long'})],
+        ['Week number',         'Week ' + getWeek(d) + ' of ' + d.getFullYear()],
+      ];
+      container.innerHTML = `<div class="results-grid">` +
+        rows.map(([label, val]) =>
+          `<div class="result-row" onclick="copyVal('${escAttr(val)}')">
+            <div class="r-label">${label}</div>
+            <div class="r-value">${escHtml(val)}</div>
+          </div>`
+        ).join('') +
+        `</div>`;
+    }
+
+    function relativeTime(d) {
+      const diff = Date.now() - d.getTime();
+      const abs = Math.abs(diff);
+      const future = diff < 0;
+      const suf = future ? ' from now' : ' ago';
+      if (abs < 60000)   return Math.round(abs/1000) + ' seconds' + suf;
+      if (abs < 3600000) return Math.round(abs/60000) + ' minutes' + suf;
+      if (abs < 86400000) return Math.round(abs/3600000) + ' hours' + suf;
+      return Math.round(abs/86400000) + ' days' + suf;
+    }
+
+    function getWeek(d) {
+      const start = new Date(d.getFullYear(), 0, 1);
+      return Math.ceil(((d - start) / 86400000 + start.getDay() + 1) / 7);
+    }
+
+    function clearSection(sec) {
+      if (sec === 'unix') { document.getElementById('unix-input').value = ''; document.getElementById('unix-results').innerHTML = ''; }
+      else                { document.getElementById('date-input').value = ''; document.getElementById('date-results').innerHTML = ''; }
+    }
+
+    function copyVal(val) {
+      navigator.clipboard.writeText(val).then(() => showToast('Copied!'));
+    }
+
+    function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function escAttr(s) { return s.replace(/'/g,"\\'"); }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+  </script>
+</body>
+</html>

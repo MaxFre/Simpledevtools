@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Generator — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    #hash-input {
+      min-height: 160px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      resize: vertical;
+    }
+
+    .hash-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+
+    .hash-row {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      transition: border-color 0.2s;
+    }
+    .hash-row:hover { border-color: rgba(112,72,232,0.25); }
+
+    .hash-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .hash-value {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text);
+      word-break: break-all;
+      min-height: 1.2em;
+    }
+
+    .hash-value.placeholder { color: var(--muted); font-style: italic; }
+
+    .hash-copy-btn {
+      background: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 7px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .hash-copy-btn:hover {
+      color: #7048e8;
+      background: rgba(112,72,232,0.07);
+      border-color: rgba(112,72,232,0.2);
+    }
+    .hash-copy-btn.copied { color: var(--success); }
+
+    .input-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+      font-family: var(--mono);
+      margin-top: 0.4rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border: 2px solid rgba(112,72,232,0.2);
+      border-top-color: #7048e8;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon">⚡</div>
+      DevTools
+    </a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+      <span class="theme-icon">☾</span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(112,72,232,0.07);color:#6540c8;border-color:rgba(112,72,232,0.2);">⬡ Hashing</div>
+      <h1>Hash Generator</h1>
+      <p>Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes using the browser's WebCrypto API.</p>
+    </div>
+
+    <!-- Input -->
+    <div class="card">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Input</span>
+        <div class="btn-group">
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="pasteInput()">⧉ Paste</button>
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="clearAll()">✕ Clear</button>
+        </div>
+      </div>
+      <textarea id="hash-input" spellcheck="false" placeholder="Type or paste text to hash…" oninput="onInput()"></textarea>
+      <div class="input-meta" id="input-meta">0 chars</div>
+    </div>
+
+    <!-- Hashes -->
+    <div class="card">
+      <div class="card-title">Hashes</div>
+      <div class="hash-list">
+        <div class="hash-row" id="row-sha1">
+          <span class="hash-name">SHA-1</span>
+          <span class="hash-value placeholder" id="val-sha1">—</span>
+          <button class="hash-copy-btn" id="btn-sha1" onclick="copyHash('sha1')" title="Copy">📋</button>
+        </div>
+        <div class="hash-row" id="row-sha256">
+          <span class="hash-name">SHA-256</span>
+          <span class="hash-value placeholder" id="val-sha256">—</span>
+          <button class="hash-copy-btn" id="btn-sha256" onclick="copyHash('sha256')" title="Copy">📋</button>
+        </div>
+        <div class="hash-row" id="row-sha384">
+          <span class="hash-name">SHA-384</span>
+          <span class="hash-value placeholder" id="val-sha384">—</span>
+          <button class="hash-copy-btn" id="btn-sha384" onclick="copyHash('sha384')" title="Copy">📋</button>
+        </div>
+        <div class="hash-row" id="row-sha512">
+          <span class="hash-name">SHA-512</span>
+          <span class="hash-value placeholder" id="val-sha512">—</span>
+          <button class="hash-copy-btn" id="btn-sha512" onclick="copyHash('sha512')" title="Copy">📋</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const ALGOS = [
+      { key: 'sha1',   name: 'SHA-1'   },
+      { key: 'sha256', name: 'SHA-256' },
+      { key: 'sha384', name: 'SHA-384' },
+      { key: 'sha512', name: 'SHA-512' },
+    ];
+
+    const cached = {};
+    let debounce;
+
+    function onInput() {
+      const text = document.getElementById('hash-input').value;
+      document.getElementById('input-meta').textContent = text.length + ' chars · ' + (new TextEncoder().encode(text).length) + ' bytes';
+
+      clearTimeout(debounce);
+      if (!text) { clearHashes(); return; }
+      ALGOS.forEach(a => setVal(a.key, '<span class="spinner"></span>'));
+      debounce = setTimeout(() => hashAll(text), 180);
+    }
+
+    async function hashAll(text) {
+      const enc = new TextEncoder().encode(text);
+      const algoMap = { sha1: 'SHA-1', sha256: 'SHA-256', sha384: 'SHA-384', sha512: 'SHA-512' };
+      for (const a of ALGOS) {
+        try {
+          const buf = await crypto.subtle.digest(algoMap[a.key], enc);
+          const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+          cached[a.key] = hex;
+          setVal(a.key, hex);
+        } catch(e) {
+          setVal(a.key, 'Error: ' + e.message);
+        }
+      }
+    }
+
+    function clearHashes() {
+      ALGOS.forEach(a => { cached[a.key] = null; setValPlaceholder(a.key); });
+      document.getElementById('input-meta').textContent = '0 chars';
+    }
+
+    function setVal(key, html) {
+      const el = document.getElementById('val-' + key);
+      el.innerHTML = html;
+      el.classList.remove('placeholder');
+    }
+
+    function setValPlaceholder(key) {
+      const el = document.getElementById('val-' + key);
+      el.textContent = '—';
+      el.classList.add('placeholder');
+    }
+
+    function copyHash(key) {
+      const val = cached[key];
+      if (!val) return showToast('Hash not yet computed');
+      const btn = document.getElementById('btn-' + key);
+      navigator.clipboard.writeText(val).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        showToast(key.toUpperCase() + ' copied!');
+        setTimeout(() => { btn.textContent = '📋'; btn.classList.remove('copied'); }, 1800);
+      });
+    }
+
+    async function pasteInput() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('hash-input').value = text;
+        onInput();
+      } catch(e) { showToast('Clipboard access denied'); }
+    }
+
+    function clearAll() {
+      document.getElementById('hash-input').value = '';
+      clearHashes();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+  </script>
+</body>
+</html>

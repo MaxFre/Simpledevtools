@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Converter — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    #case-input {
+      min-height: 120px;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      resize: vertical;
+    }
+
+    .case-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0; }
+
+    .case-row {
+      display: grid;
+      grid-template-columns: 130px 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.7rem 1rem;
+      transition: border-color 0.2s;
+    }
+    .case-row:hover { border-color: rgba(217,72,15,0.2); }
+
+    .case-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .case-value {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text);
+      word-break: break-all;
+      min-height: 1.2em;
+    }
+
+    .case-copy-btn {
+      background: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 7px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .case-copy-btn:hover {
+      color: #d9480f;
+      background: rgba(217,72,15,0.07);
+      border-color: rgba(217,72,15,0.2);
+    }
+    .case-copy-btn.copied { color: var(--success); }
+
+    .input-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+      font-family: var(--mono);
+      margin-top: 0.4rem;
+    }
+
+    @media (max-width: 520px) {
+      .case-row { grid-template-columns: 100px 1fr auto; }
+      .case-label { font-size: 0.62rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon">⚡</div>
+      DevTools
+    </a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+      <span class="theme-icon">☾</span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(217,72,15,0.07);color:#b34010;border-color:rgba(217,72,15,0.2);">Aa Converter</div>
+      <h1>Case Converter</h1>
+      <p>Convert text to camelCase, snake_case, kebab-case, CAPS, and more — all at once.</p>
+    </div>
+
+    <!-- Input -->
+    <div class="card">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Input</span>
+        <div class="btn-group">
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="pasteInput()">⧉ Paste</button>
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="clearAll()">✕ Clear</button>
+        </div>
+      </div>
+      <textarea id="case-input" spellcheck="false" placeholder="Type or paste text here…" oninput="convert()"></textarea>
+      <div class="input-meta" id="input-meta">0 chars · 0 words</div>
+    </div>
+
+    <!-- Results -->
+    <div class="card">
+      <div class="card-title">Converted</div>
+      <div class="case-list" id="case-list">
+        <div class="case-row"><span class="case-label">UPPER CASE</span>   <span class="case-value" id="cv-upper"></span>    <button class="case-copy-btn" onclick="copyCase('upper')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">lower case</span>   <span class="case-value" id="cv-lower"></span>    <button class="case-copy-btn" onclick="copyCase('lower')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">Title Case</span>   <span class="case-value" id="cv-title"></span>    <button class="case-copy-btn" onclick="copyCase('title')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">Sentence case</span><span class="case-value" id="cv-sentence"></span> <button class="case-copy-btn" onclick="copyCase('sentence')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">camelCase</span>    <span class="case-value" id="cv-camel"></span>    <button class="case-copy-btn" onclick="copyCase('camel')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">PascalCase</span>   <span class="case-value" id="cv-pascal"></span>   <button class="case-copy-btn" onclick="copyCase('pascal')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">snake_case</span>   <span class="case-value" id="cv-snake"></span>    <button class="case-copy-btn" onclick="copyCase('snake')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">kebab-case</span>   <span class="case-value" id="cv-kebab"></span>    <button class="case-copy-btn" onclick="copyCase('kebab')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">CONSTANT_CASE</span><span class="case-value" id="cv-constant"></span> <button class="case-copy-btn" onclick="copyCase('constant')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">dot.case</span>     <span class="case-value" id="cv-dot"></span>      <button class="case-copy-btn" onclick="copyCase('dot')" title="Copy">📋</button></div>
+        <div class="case-row"><span class="case-label">path/case</span>    <span class="case-value" id="cv-path"></span>     <button class="case-copy-btn" onclick="copyCase('path')" title="Copy">📋</button></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const results = {};
+
+    function convert() {
+      const raw = document.getElementById('case-input').value;
+      const words = raw.trim().split(/\s+/).length;
+      document.getElementById('input-meta').textContent =
+        raw.length + ' chars · ' + (raw.trim() ? words : 0) + ' words';
+
+      const tokens = tokenize(raw);
+
+      results.upper    = raw.toUpperCase();
+      results.lower    = raw.toLowerCase();
+      results.title    = titleCase(raw);
+      results.sentence = sentenceCase(raw);
+      results.camel    = tokens.map((w,i) => i === 0 ? w.toLowerCase() : capitalize(w)).join('');
+      results.pascal   = tokens.map(w => capitalize(w)).join('');
+      results.snake    = tokens.map(w => w.toLowerCase()).join('_');
+      results.kebab    = tokens.map(w => w.toLowerCase()).join('-');
+      results.constant = tokens.map(w => w.toUpperCase()).join('_');
+      results.dot      = tokens.map(w => w.toLowerCase()).join('.');
+      results.path     = tokens.map(w => w.toLowerCase()).join('/');
+
+      for (const [key, val] of Object.entries(results)) {
+        const el = document.getElementById('cv-' + key);
+        if (el) el.textContent = val;
+      }
+    }
+
+    // Split input into tokens: split on whitespace, hyphens, underscores, dots, slashes, camelCase
+    function tokenize(str) {
+      // Handle camelCase / PascalCase: insert space before uppercase sequences
+      const spaced = str.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+      return spaced.split(/[\s\-_./\\]+/).filter(Boolean);
+    }
+
+    function capitalize(w) {
+      return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+    }
+
+    function titleCase(str) {
+      const minorWords = new Set(['a','an','the','and','but','or','for','nor','on','at','to','by','in','is','of']);
+      return str.replace(/\S+/g, (w, i) => {
+        const lower = w.toLowerCase();
+        return (i === 0 || !minorWords.has(lower)) ? capitalize(w) : lower;
+      });
+    }
+
+    function sentenceCase(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+    function copyCase(key) {
+      const val = results[key];
+      if (!val && val !== '') return showToast('Nothing to copy');
+      const btn = document.querySelector(`[onclick="copyCase('${key}')"]`);
+      navigator.clipboard.writeText(val).then(() => {
+        if (btn) { btn.textContent = '✓'; btn.classList.add('copied'); }
+        showToast('Copied!');
+        setTimeout(() => { if(btn){ btn.textContent = '📋'; btn.classList.remove('copied'); }}, 1800);
+      });
+    }
+
+    async function pasteInput() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('case-input').value = text;
+        convert();
+      } catch(e) { showToast('Clipboard access denied'); }
+    }
+
+    function clearAll() {
+      document.getElementById('case-input').value = '';
+      document.getElementById('input-meta').textContent = '0 chars · 0 words';
+      document.querySelectorAll('.case-value').forEach(el => el.textContent = '');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+  </script>
+</body>
+</html>

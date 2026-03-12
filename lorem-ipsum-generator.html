@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lorem Ipsum Generator — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .type-tabs {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .type-tab {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.45rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+
+    .type-tab:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+
+    .type-tab.active {
+      background: linear-gradient(135deg, var(--accent2), #57f0d4);
+      border-color: var(--accent2);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(0,184,148,0.25);
+    }
+
+    .lorem-output {
+      font-family: var(--font);
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      min-height: 180px;
+      max-height: 450px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .lorem-output p {
+      color: var(--text-secondary);
+      margin-bottom: 1.1rem;
+    }
+
+    .lorem-output p:last-child { margin-bottom: 0; }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .range-row input[type="range"] { flex: 1; }
+
+    .range-value {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent2);
+      min-width: 2.5ch;
+      text-align: right;
+    }
+
+    .word-count-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0,184,148,0.06);
+      color: var(--accent2);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+      border: 1px solid rgba(0,184,148,0.2);
+    }
+
+    .stat {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat strong {
+      color: var(--accent2);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon">⚡</div>
+      DevTools
+    </a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+      <span class="theme-icon">☾</span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(0,184,148,0.06);color:var(--accent2);border-color:rgba(0,184,148,0.2);">📝 Generator</div>
+      <h1>Lorem Ipsum</h1>
+      <p>Generate placeholder text by paragraphs, sentences, or words.</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="card">
+      <div class="card-title">Generate by</div>
+      <div class="type-tabs" style="margin-bottom:1.5rem;">
+        <button class="type-tab active" id="tab-paragraphs" onclick="setType('paragraphs')">Paragraphs</button>
+        <button class="type-tab" id="tab-sentences" onclick="setType('sentences')">Sentences</button>
+        <button class="type-tab" id="tab-words" onclick="setType('words')">Words</button>
+      </div>
+
+      <label id="count-label">Number of paragraphs</label>
+      <div class="range-row" style="margin-bottom:1.25rem;">
+        <input type="range" id="amount" min="1" max="10" value="3" oninput="updateRangeDisplay()" />
+        <span class="range-value" id="amount-display">3</span>
+      </div>
+
+      <div class="toggle-row" style="margin-bottom:1.25rem;">
+        <label class="toggle-label">Start with "Lorem ipsum dolor sit amet…"</label>
+        <label class="toggle">
+          <input type="checkbox" id="classicStart" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="generate()" style="background:linear-gradient(135deg,var(--accent2),#57f0d4);border:none;color:#000;box-shadow:0 2px 8px rgba(0,184,148,0.25);">⚡ Generate</button>
+        <button class="btn btn-secondary" onclick="copyText()">📋 Copy</button>
+        <button class="btn btn-ghost" onclick="clearOutput()">✕ Clear</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="stats-row" style="display:none;margin-bottom:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;"></div>
+
+    <!-- Output -->
+    <div class="card" id="output-card" style="display:none;">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Output</span>
+        <span class="word-count-badge" id="word-badge">0 words</span>
+      </div>
+      <div class="lorem-output" id="lorem-output"></div>
+    </div>
+
+  </main>
+
+  <footer>
+    Built with precision — <a href="index.html">DevTools</a>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const WORDS = [
+      'lorem','ipsum','dolor','sit','amet','consectetur','adipiscing','elit',
+      'sed','do','eiusmod','tempor','incididunt','ut','labore','et','dolore',
+      'magna','aliqua','enim','ad','minim','veniam','quis','nostrud','exercitation',
+      'ullamco','laboris','nisi','aliquip','ex','ea','commodo','consequat','duis',
+      'aute','irure','in','reprehenderit','voluptate','velit','esse','cillum',
+      'eu','fugiat','nulla','pariatur','excepteur','sint','occaecat','cupidatat','non',
+      'proident','sunt','culpa','qui','officia','deserunt','mollit','anim','id','est',
+      'laborum','curabitur','pretium','tincidunt','lacus','nunc','pulvinar','sapien',
+      'ligula','egestas','dictum','ac','blandit','maecenas','volutpat','blandit',
+      'aliquam','etiam','erat','velit','scelerisque','mauris','pellentesque',
+      'pulvinar','congue','nisl','venenatis','a','condimentum','vitae','sapien',
+      'pellentesque','habitant','morbi','tristique','senectus','netus','malesuada',
+      'fames','turpis','egestas','integer','eget','aliquet','nibh','praesent',
+      'tristique','magna','sit','amet','purus','gravida','quis','blandit',
+      'tellus','id','interdum','velit','laoreet','tincidunt','tortor'
+    ];
+
+    const CLASSIC = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
+    let currentType = 'paragraphs';
+
+    function setType(t) {
+      currentType = t;
+      ['paragraphs','sentences','words'].forEach(id => {
+        document.getElementById('tab-' + id).classList.toggle('active', id === t);
+      });
+      const slider = document.getElementById('amount');
+      const label  = document.getElementById('count-label');
+      if (t === 'paragraphs') { slider.max = 10; slider.value = Math.min(slider.value, 10); label.textContent = 'Number of paragraphs'; }
+      if (t === 'sentences')  { slider.max = 20; slider.value = Math.min(slider.value, 20); label.textContent = 'Number of sentences'; }
+      if (t === 'words')      { slider.max = 200; slider.value = Math.min(slider.value, 200); label.textContent = 'Number of words'; }
+      updateRangeDisplay();
+    }
+
+    function updateRangeDisplay() {
+      document.getElementById('amount-display').textContent = document.getElementById('amount').value;
+    }
+
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function randomWord() { return WORDS[Math.floor(Math.random() * WORDS.length)]; }
+
+    function randomSentence(wordCount) {
+      const count = wordCount || randInt(8, 18);
+      const words = [];
+      for (let i = 0; i < count; i++) words.push(randomWord());
+      words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+      return words.join(' ') + '.';
+    }
+
+    function randomParagraph() {
+      const sentenceCount = randInt(4, 8);
+      const sentences = [];
+      for (let i = 0; i < sentenceCount; i++) sentences.push(randomSentence());
+      return sentences.join(' ');
+    }
+
+    function generate() {
+      const amount = parseInt(document.getElementById('amount').value);
+      const classic = document.getElementById('classicStart').checked;
+      const output = document.getElementById('lorem-output');
+      const outputCard = document.getElementById('output-card');
+      const statsRow = document.getElementById('stats-row');
+
+      let resultText = '';
+      let resultHTML = '';
+
+      if (currentType === 'paragraphs') {
+        const paras = [];
+        for (let i = 0; i < amount; i++) {
+          let p = randomParagraph();
+          if (i === 0 && classic) p = CLASSIC + ' ' + p;
+          paras.push(p);
+        }
+        resultText = paras.join('\n\n');
+        resultHTML = paras.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+      } else if (currentType === 'sentences') {
+        const sents = [];
+        for (let i = 0; i < amount; i++) {
+          let s = randomSentence();
+          if (i === 0 && classic) s = CLASSIC;
+          sents.push(s);
+        }
+        resultText = sents.join(' ');
+        resultHTML = `<p>${escapeHtml(resultText)}</p>`;
+      } else {
+        const words = [];
+        const target = amount;
+        if (classic) {
+          const classicWords = CLASSIC.toLowerCase().replace(/[.,]/g,'').split(' ');
+          const take = Math.min(classicWords.length, target);
+          for (let i = 0; i < take; i++) words.push(classicWords[i]);
+        }
+        while (words.length < target) words.push(randomWord());
+        resultText = words.join(' ');
+        resultHTML = `<p>${escapeHtml(resultText)}</p>`;
+      }
+
+      output.innerHTML = resultHTML;
+      outputCard.style.display = '';
+
+      const wc = resultText.trim().split(/\s+/).length;
+      document.getElementById('word-badge').textContent = `${wc} words`;
+
+      statsRow.style.display = 'flex';
+      statsRow.innerHTML = `
+        <div class="stat"><strong>${wc}</strong> words</div>
+        <div class="stat"><strong>${resultText.length}</strong> characters</div>
+      `;
+
+      showToast('Generated!', 'success');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function copyText() {
+      const output = document.getElementById('lorem-output');
+      const text = output.innerText;
+      if (!text.trim()) { showToast('Nothing to copy', 'error'); return; }
+      navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!', 'success'));
+    }
+
+    function clearOutput() {
+      document.getElementById('lorem-output').innerHTML = '';
+      document.getElementById('output-card').style.display = 'none';
+      document.getElementById('stats-row').style.display = 'none';
+    }
+
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + type;
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
+    }
+
+    // initialise display
+    updateRangeDisplay();
+    generate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Formatter — DevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .editor-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    @media (max-width: 680px) {
+      .editor-wrap { grid-template-columns: 1fr; }
+    }
+
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .panel-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    textarea#json-input {
+      min-height: 360px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      resize: vertical;
+      line-height: 1.7;
+      background: var(--bg);
+    }
+
+    .output-pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.7;
+      padding: 1.25rem;
+      min-height: 360px;
+      max-height: 600px;
+      overflow: auto;
+      white-space: pre;
+      color: var(--text);
+      position: relative;
+      transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+    }
+
+    .output-pre.error {
+      border-color: rgba(220,70,90,0.4);
+      box-shadow: 0 0 12px rgba(220,70,90,0.06);
+    }
+
+    .output-pre.valid {
+      border-color: rgba(0,184,148,0.3);
+      box-shadow: 0 0 12px rgba(0,184,148,0.05);
+    }
+
+    .error-banner {
+      background: rgba(220,70,90,0.06);
+      border: 1px solid rgba(220,70,90,0.2);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: var(--danger);
+      font-family: var(--mono);
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .error-banner.show { display: block; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      border: 1px solid transparent;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .status-badge.valid {
+      background: rgba(0,184,148,0.06);
+      color: var(--success);
+      border-color: rgba(0,184,148,0.2);
+    }
+
+    .status-badge.invalid {
+      background: rgba(220,70,90,0.06);
+      color: var(--danger);
+      border-color: rgba(220,70,90,0.2);
+    }
+
+    .status-badge.idle {
+      background: var(--bg);
+      color: var(--muted);
+      border-color: var(--border);
+    }
+
+    .indent-select {
+      width: auto;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.78rem;
+      border-radius: 10px;
+    }
+
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+    }
+
+    .controls-bar label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+      margin: 0;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon">⚡</div>
+      DevTools
+    </a>
+    <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+      <span class="theme-icon">☾</span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in" style="max-width:1100px;">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(225,112,85,0.06);color:#e17055;border-color:rgba(225,112,85,0.2);">🗂 Formatter</div>
+      <h1>JSON Formatter</h1>
+      <p>Paste raw JSON to format, validate, and explore structure with syntax highlighting.</p>
+    </div>
+
+    <!-- Global controls -->
+    <div class="card" style="margin-bottom:1.25rem;">
+      <div class="controls-bar">
+        <div class="btn-group">
+          <button class="btn btn-primary" style="background:linear-gradient(135deg,#e17055,#f0a388);border:none;color:#fff;box-shadow:0 2px 8px rgba(225,112,85,0.25);" onclick="formatJSON()">⚡ Format</button>
+          <button class="btn btn-secondary" onclick="minifyJSON()">⬤ Minify</button>
+          <button class="btn btn-ghost"    onclick="clearAll()">✕ Clear</button>
+        </div>
+        <label>Indent:</label>
+        <select class="indent-select" id="indent-select" onchange="formatJSON()">
+          <option value="2">2 spaces</option>
+          <option value="4" selected>4 spaces</option>
+          <option value="tab">Tab</option>
+        </select>
+        <div class="status-badge idle" id="status-badge">● Idle</div>
+      </div>
+    </div>
+
+    <div class="error-banner" id="error-banner"></div>
+
+    <!-- Side-by-side editor -->
+    <div class="editor-wrap">
+
+      <!-- Input -->
+      <div class="editor-panel">
+        <div class="panel-header">
+          <span class="panel-label">Input</span>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="pasteFromClipboard()" title="Paste from clipboard">⧉ Paste</button>
+            <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="loadSample()">Sample</button>
+          </div>
+        </div>
+        <textarea id="json-input" spellcheck="false" placeholder='Paste JSON here…&#10;{&#10;  "hello": "world"&#10;}'></textarea>
+      </div>
+
+      <!-- Output -->
+      <div class="editor-panel">
+        <div class="panel-header">
+          <span class="panel-label">Output</span>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="copyOutput()">📋 Copy</button>
+          </div>
+        </div>
+        <pre class="output-pre" id="json-output"><span style="color:var(--muted)">Formatted JSON will appear here…</span></pre>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    Built with precision — <a href="index.html">DevTools</a>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const SAMPLE = {
+      "name": "devtools",
+      "version": "1.0.0",
+      "description": "A collection of developer utilities",
+      "tools": [
+        { "id": 1, "name": "GUID Generator", "url": "guid.html", "tags": ["uuid", "random"] },
+        { "id": 2, "name": "Lorem Ipsum",    "url": "lorem.html","tags": ["text", "placeholder"] },
+        { "id": 3, "name": "JSON Formatter", "url": "json.html", "tags": ["json", "format", "validate"] }
+      ],
+      "meta": {
+        "author": null,
+        "open_source": true,
+        "stars": 42
+      }
+    };
+
+    function getIndent() {
+      const v = document.getElementById('indent-select').value;
+      return v === 'tab' ? '\t' : parseInt(v);
+    }
+
+    function setStatus(state, label) {
+      const el = document.getElementById('status-badge');
+      el.className = 'status-badge ' + state;
+      el.textContent = label;
+    }
+
+    function showError(msg) {
+      const banner = document.getElementById('error-banner');
+      banner.textContent = '⚠ ' + msg;
+      banner.classList.add('show');
+      const out = document.getElementById('json-output');
+      out.classList.add('error');
+      out.classList.remove('valid');
+      setStatus('invalid', '✕ Invalid JSON');
+    }
+
+    function clearError() {
+      const banner = document.getElementById('error-banner');
+      banner.classList.remove('show');
+      const out = document.getElementById('json-output');
+      out.classList.remove('error');
+    }
+
+    function formatJSON() {
+      const raw = document.getElementById('json-input').value.trim();
+      if (!raw) {
+        clearError();
+        document.getElementById('json-output').innerHTML = '<span style="color:var(--muted)">Formatted JSON will appear here…</span>';
+        setStatus('idle', '● Idle');
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        showError(e.message);
+        document.getElementById('json-output').innerHTML = escapeHtml(raw);
+        return;
+      }
+
+      clearError();
+      const formatted = JSON.stringify(parsed, null, getIndent());
+      document.getElementById('json-output').innerHTML = syntaxHighlight(formatted);
+      document.getElementById('json-output').classList.add('valid');
+      setStatus('valid', '✓ Valid JSON');
+    }
+
+    function minifyJSON() {
+      const raw = document.getElementById('json-input').value.trim();
+      if (!raw) return;
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        showError(e.message);
+        return;
+      }
+
+      clearError();
+      const minified = JSON.stringify(parsed);
+      document.getElementById('json-output').innerHTML = syntaxHighlight(minified);
+      document.getElementById('json-output').classList.add('valid');
+      setStatus('valid', '✓ Minified');
+      showToast('Minified!', 'success');
+    }
+
+    function clearAll() {
+      document.getElementById('json-input').value = '';
+      document.getElementById('json-output').innerHTML = '<span style="color:var(--muted)">Formatted JSON will appear here…</span>';
+      document.getElementById('json-output').className = 'output-pre';
+      clearError();
+      setStatus('idle', '● Idle');
+    }
+
+    function loadSample() {
+      document.getElementById('json-input').value = JSON.stringify(SAMPLE, null, 2);
+      formatJSON();
+      showToast('Sample loaded', 'success');
+    }
+
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('json-input').value = text;
+        formatJSON();
+      } catch {
+        showToast('Clipboard access denied', 'error');
+      }
+    }
+
+    function copyOutput() {
+      const pre = document.getElementById('json-output');
+      const text = pre.innerText;
+      if (!text.trim() || text.includes('Formatted JSON')) {
+        showToast('Nothing to copy', 'error');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => showToast('Copied!', 'success'));
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function syntaxHighlight(json) {
+      // Escape HTML entities first, then apply classes
+      const escaped = escapeHtml(json);
+      return escaped.replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        (match) => {
+          let cls = 'json-number';
+          if (/^"/.test(match)) {
+            cls = /:$/.test(match) ? 'json-key' : 'json-string';
+          } else if (/true|false/.test(match)) {
+            cls = 'json-bool';
+          } else if (/null/.test(match)) {
+            cls = 'json-null';
+          }
+          return `<span class="${cls}">${match}</span>`;
+        }
+      );
+    }
+
+    // Auto-format on input after a debounce
+    let debounceTimer;
+    document.getElementById('json-input').addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(formatJSON, 400);
+    });
+
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + type;
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
+    }
+  </script>
+</body>
+</html>
