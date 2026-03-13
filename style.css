@@ -106,7 +106,7 @@ body::before {
 body::after {
   content: '';
   position: absolute;
-  bottom: -25%;
+  bottom: 0;
   right: -10%;
   width: 65%;
   height: 65%;
@@ -250,12 +250,9 @@ nav > .nav-search-wrap {
 .nav-brand .logo-icon {
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
+  display: block;
+  object-fit: cover;
   box-shadow: 0 2px 8px rgba(108,92,231,0.25);
 }
 
