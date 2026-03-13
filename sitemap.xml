@@ -1,97 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://simpledevtools.net/</loc>
+    <loc>https://simpledevtools.dev/</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/uuid-generator</loc>
+    <loc>https://simpledevtools.dev/uuid-generator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/json-formatter</loc>
+    <loc>https://simpledevtools.dev/json-formatter</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/json-validator</loc>
+    <loc>https://simpledevtools.dev/json-validator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/base64-encoder</loc>
+    <loc>https://simpledevtools.dev/base64-encoder</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/url-encoder</loc>
+    <loc>https://simpledevtools.dev/url-encoder</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/hash-generator</loc>
+    <loc>https://simpledevtools.dev/hash-generator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/regex-tester</loc>
+    <loc>https://simpledevtools.dev/regex-tester</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/timestamp-converter</loc>
+    <loc>https://simpledevtools.dev/timestamp-converter</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/case-converter</loc>
+    <loc>https://simpledevtools.dev/case-converter</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/lorem-ipsum-generator</loc>
+    <loc>https://simpledevtools.dev/lorem-ipsum-generator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/random-string-generator</loc>
+    <loc>https://simpledevtools.dev/random-string-generator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/password-generator</loc>
+    <loc>https://simpledevtools.dev/password-generator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/uuid-validator</loc>
+    <loc>https://simpledevtools.dev/uuid-validator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/jwt-decoder</loc>
+    <loc>https://simpledevtools.dev/jwt-decoder</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://simpledevtools.net/font-generator</loc>
+    <loc>https://simpledevtools.dev/font-generator</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
