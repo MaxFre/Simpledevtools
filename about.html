@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About SimpleDevTools — a free, fast, and privacy-friendly collection of online developer utilities. No signup. No tracking. Just tools." />
+  <meta name="theme-color" content="#1a1a2e" />
+  <link rel="canonical" href="https://simpledevtools.dev/about" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="About SimpleDevTools — Free Online Developer Tools" />
+  <meta property="og:description" content="A free, fast, and privacy-friendly collection of online developer utilities. No signup. No tracking. Just tools." />
+  <meta property="og:url" content="https://simpledevtools.dev/about" />
+  <meta property="og:site_name" content="SimpleDevTools" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="About SimpleDevTools — Free Online Developer Tools" />
+  <meta name="twitter:description" content="A free, fast, and privacy-friendly collection of online developer utilities. No signup. No tracking. Just tools." />
+  <title>About SimpleDevTools — Free Online Developer Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" /></noscript>
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .prose { max-width: 680px; }
+    .prose h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 2rem 0 0.6rem;
+    }
+    .prose p, .prose li {
+      font-size: 0.93rem;
+      line-height: 1.78;
+      color: var(--text-secondary);
+    }
+    .prose ul {
+      padding-left: 1.4rem;
+      margin: 0.5rem 0 0.75rem;
+    }
+    .prose li { margin-bottom: 0.35rem; }
+    .prose a { color: var(--accent); text-decoration: none; }
+    .prose a:hover { text-decoration: underline; }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .tool-entry {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.65rem 0.9rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .tool-entry:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(124,106,255,0.3);
+    }
+    .tool-entry-icon {
+      font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
+      font-size: 1.1rem;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .principle-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem 1.15rem;
+    }
+    .principle-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
+    }
+    .principle-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .principle-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About SimpleDevTools",
+    "url": "https://simpledevtools.dev/about",
+    "description": "A free, fast, and privacy-friendly collection of online developer utilities.",
+    "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
+  }
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-brand">
+        <img src="images/icon.png" alt="" class="logo-icon" />
+        DevTools
+      </a>
+      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+        <span class="theme-icon">☾</span>
+      </button>
+    </div>
+    <div class="nav-search-wrap">
+      <div class="nav-search-row">
+        <span class="ns-icon">🔍</span>
+        <input id="nav-search-input" type="text" placeholder="Search tools…" autocomplete="off" spellcheck="false" />
+        <button id="nav-search-clear" aria-label="Clear">✕</button>
+      </div>
+      <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+    <div class="page-header">
+      <div class="badge">⚡ About</div>
+      <h1>About SimpleDevTools</h1>
+      <p>Free, fast, privacy-first developer utilities that run entirely in your browser.</p>
+    </div>
+
+    <div class="card prose">
+      <h2>What is SimpleDevTools?</h2>
+      <p>SimpleDevTools is a collection of everyday developer utilities designed to be instant, clean, and completely private. There's no signup, no account, no ads that require registration — just open a tool and use it.</p>
+      <p>Every tool runs 100% in your browser. Nothing you type is ever sent to a server. This means your tokens, passwords, JSON payloads, and code snippets stay on your machine, always.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Our Principles</div>
+      <div class="principles">
+        <div class="principle-card">
+          <div class="principle-icon">🔒</div>
+          <div class="principle-title">Privacy First</div>
+          <div class="principle-desc">All processing happens in your browser. We never see your data.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-icon">⚡</div>
+          <div class="principle-title">Instant</div>
+          <div class="principle-desc">No loading screens, no spinners, no server round-trips.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-icon">🆓</div>
+          <div class="principle-title">Always Free</div>
+          <div class="principle-desc">Every tool is free to use with no limits, forever.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-icon">🧹</div>
+          <div class="principle-title">No Clutter</div>
+          <div class="principle-desc">Clean interface, no dark patterns, no forced sign-ups.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Available Tools</div>
+      <div class="tool-grid">
+        <a href="uuid-generator.html" class="tool-entry"><span class="tool-entry-icon">🔑</span> UUID Generator</a>
+        <a href="lorem-ipsum-generator.html" class="tool-entry"><span class="tool-entry-icon">📝</span> Lorem Ipsum</a>
+        <a href="case-converter.html" class="tool-entry"><span class="tool-entry-icon">🔡</span> Case Converter</a>
+        <a href="json-formatter.html" class="tool-entry"><span class="tool-entry-icon">📋</span> JSON Formatter</a>
+        <a href="json-validator.html" class="tool-entry"><span class="tool-entry-icon">✅</span> JSON Validator</a>
+        <a href="base64-encoder.html" class="tool-entry"><span class="tool-entry-icon">🔄</span> Base64 Encoder</a>
+        <a href="url-encoder.html" class="tool-entry"><span class="tool-entry-icon">🔗</span> URL Encoder</a>
+        <a href="timestamp-converter.html" class="tool-entry"><span class="tool-entry-icon">🕒</span> Timestamp</a>
+        <a href="regex-tester.html" class="tool-entry"><span class="tool-entry-icon">🔍</span> Regex Tester</a>
+        <a href="hash-generator.html" class="tool-entry"><span class="tool-entry-icon">#️⃣</span> Hash Generator</a>
+        <a href="random-string-generator.html" class="tool-entry"><span class="tool-entry-icon">🎲</span> Random String</a>
+        <a href="password-generator.html" class="tool-entry"><span class="tool-entry-icon">🔐</span> Password</a>
+        <a href="uuid-validator.html" class="tool-entry"><span class="tool-entry-icon">✅</span> UUID Validator</a>
+        <a href="jwt-decoder.html" class="tool-entry"><span class="tool-entry-icon">🔓</span> JWT Decoder</a>
+        <a href="font-generator.html" class="tool-entry"><span class="tool-entry-icon">✨</span> Font Generator</a>
+      </div>
+    </div>
+
+    <div class="card prose">
+      <h2>Contact</h2>
+      <p>Have a suggestion for a new tool, found a bug, or want to get in touch? Reach out via the <a href="https://github.com" target="_blank" rel="noopener">GitHub repository</a> or submit feedback through the tool pages.</p>
+    </div>
+  </main>
+
+  <footer>
+    Built with precision — <a href="index.html">DevTools</a> ·
+    <a href="privacy-policy.html">Privacy Policy</a> ·
+    <a href="about.html">About</a>
+  </footer>
+
+  <script src="search.js"></script>
+</body>
+</html>
