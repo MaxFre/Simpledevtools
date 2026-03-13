@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free online dev tools: JSON formatter, UUID generator, Base64 encoder, regex tester, hash generator, and more. No signup, no tracking. Just tools." />
+  <meta name="description" content="Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more. No signup, no tracking. Just tools." />
   <meta name="theme-color" content="#1a1a2e" />
   <link rel="canonical" href="https://simpledevtools.net/" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="SimpleDevTools — Free Online Developer Tools" />
-  <meta property="og:description" content="Free online dev tools: JSON formatter, UUID generator, Base64 encoder, regex tester, hash generator, and more. No signup, no tracking. Just tools." />
+  <meta property="og:title" content="Free Online Developer Tools: JSON Formatter, UUID Generator, Regex Tester | SimpleDevTools" />
+  <meta property="og:description" content="Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more. No signup, no tracking. Just tools." />
   <meta property="og:url" content="https://simpledevtools.net/" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="SimpleDevTools — Free Online Developer Tools" />
-  <meta name="twitter:description" content="Free online dev tools: JSON formatter, UUID generator, Base64 encoder, regex tester, hash generator, and more. No signup, no tracking. Just tools." />
-  <title>SimpleDevTools — Free Online Developer Tools</title>
+  <meta name="twitter:title" content="Free Online Developer Tools: JSON Formatter, UUID Generator, Regex Tester | SimpleDevTools" />
+  <meta name="twitter:description" content="Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more. No signup, no tracking. Just tools." />
+  <title>Free Online Developer Tools: JSON Formatter, UUID Generator, Regex Tester | SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -464,6 +464,128 @@
       color: var(--muted);
     }
 
+    .seo-block {
+      margin-top: 3.5rem;
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(255,255,255,0.72);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .seo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .seo-block h2 {
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.9rem;
+      color: var(--text);
+    }
+
+    .seo-block p {
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 0.95rem;
+    }
+
+    .seo-block p:last-child {
+      margin-bottom: 0;
+    }
+
+    .seo-link-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .seo-link-card {
+      display: block;
+      padding: 0.95rem 1rem;
+      border-radius: 14px;
+      text-decoration: none;
+      background: rgba(124,106,255,0.06);
+      border: 1px solid rgba(124,106,255,0.12);
+      transition: transform 0.2s var(--ease-out), border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+    }
+
+    .seo-link-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(124,106,255,0.25);
+      background: rgba(124,106,255,0.09);
+    }
+
+    .seo-link-card strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.88rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .seo-link-card span {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 0.9rem;
+      margin-top: 1.25rem;
+    }
+
+    .faq-item {
+      padding: 1rem 1.1rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .faq-item h3 {
+      font-size: 0.92rem;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .faq-item p {
+      margin: 0;
+      font-size: 0.82rem;
+    }
+
+    [data-theme="dark"] .seo-block {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    [data-theme="dark"] .seo-link-card {
+      background: rgba(124,106,255,0.12);
+      border-color: rgba(124,106,255,0.18);
+    }
+
+    [data-theme="dark"] .seo-link-card:hover {
+      background: rgba(124,106,255,0.18);
+      border-color: rgba(124,106,255,0.28);
+    }
+
+    [data-theme="dark"] .faq-item {
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .seo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .keyboard-hint kbd {
       display: inline-flex;
       align-items: center;
@@ -485,15 +607,91 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "SimpleDevTools",
-    "url": "https://simpledevtools.net/",
-    "description": "Free online dev tools: JSON formatter, UUID generator, Base64 encoder, regex tester, hash generator, and more.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://simpledevtools.net/?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://simpledevtools.net/#organization",
+        "name": "SimpleDevTools",
+        "url": "https://simpledevtools.net/"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://simpledevtools.net/#website",
+        "name": "SimpleDevTools",
+        "url": "https://simpledevtools.net/",
+        "description": "Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more.",
+        "publisher": {
+          "@id": "https://simpledevtools.net/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://simpledevtools.net/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": "https://simpledevtools.net/#webpage",
+        "url": "https://simpledevtools.net/",
+        "name": "Free Online Developer Tools",
+        "description": "A collection of free online developer tools for JSON, UUIDs, Base64, regex, hashing, timestamps, URLs, passwords, and random strings.",
+        "isPartOf": {
+          "@id": "https://simpledevtools.net/#website"
+        },
+        "mainEntity": {
+          "@type": "ItemList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "UUID Generator", "url": "https://simpledevtools.net/uuid-generator" },
+            { "@type": "ListItem", "position": 2, "name": "JSON Formatter", "url": "https://simpledevtools.net/json-formatter" },
+            { "@type": "ListItem", "position": 3, "name": "JSON Validator", "url": "https://simpledevtools.net/json-validator" },
+            { "@type": "ListItem", "position": 4, "name": "Base64 Encoder", "url": "https://simpledevtools.net/base64-encoder" },
+            { "@type": "ListItem", "position": 5, "name": "URL Encoder", "url": "https://simpledevtools.net/url-encoder" },
+            { "@type": "ListItem", "position": 6, "name": "Regex Tester", "url": "https://simpledevtools.net/regex-tester" },
+            { "@type": "ListItem", "position": 7, "name": "Hash Generator", "url": "https://simpledevtools.net/hash-generator" },
+            { "@type": "ListItem", "position": 8, "name": "Timestamp Converter", "url": "https://simpledevtools.net/timestamp-converter" },
+            { "@type": "ListItem", "position": 9, "name": "Password Generator", "url": "https://simpledevtools.net/password-generator" },
+            { "@type": "ListItem", "position": 10, "name": "UUID Validator", "url": "https://simpledevtools.net/uuid-validator" }
+          ]
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are these developer tools free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every tool on SimpleDevTools is free to use with no signup, no account, and no paywall."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do these tools run in the browser?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The tools are designed to run client-side in the browser for quick formatting, encoding, validation, and generation tasks."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which developer tasks can I handle here?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can format and validate JSON, generate UUIDs, test regex patterns, encode Base64 and URLs, generate hashes, convert timestamps, create passwords, and generate random strings."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which tools are most useful for API debugging and data cleanup?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The most commonly used tools for those workflows are JSON Formatter, JSON Validator, Base64 Encoder, URL Encoder, Regex Tester, and Timestamp Converter."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -639,6 +837,56 @@
         <div class="tool-arrow">Open tool →</div>
       </a>
     </div>
+
+    <section class="seo-block" aria-labelledby="dev-tools-overview">
+      <div class="seo-grid">
+        <div>
+          <h2 id="dev-tools-overview">Free online developer tools for daily debugging, formatting, encoding, and validation</h2>
+          <p>SimpleDevTools brings together the browser-based utilities developers reach for every day: a JSON formatter, JSON validator, UUID generator, regex tester, Base64 encoder, URL encoder, hash generator, timestamp converter, password generator, and more. Each tool is designed to open fast, solve one job well, and stay out of the way.</p>
+          <p>These tools are useful for API development, test-data generation, data cleanup, payload inspection, query-string debugging, security workflows, and common frontend or backend support tasks. Because the utilities are focused and client-side, they work well for quick checks during development without extra setup.</p>
+        </div>
+        <div class="seo-link-list" aria-label="Popular tools">
+          <a href="json-formatter.html" class="seo-link-card">
+            <strong>JSON Formatter</strong>
+            <span>Beautify, minify, and inspect JSON payloads while debugging APIs and config files.</span>
+          </a>
+          <a href="uuid-generator.html" class="seo-link-card">
+            <strong>UUID Generator</strong>
+            <span>Generate version 4 UUIDs and GUIDs for IDs, fixtures, and test data.</span>
+          </a>
+          <a href="regex-tester.html" class="seo-link-card">
+            <strong>Regex Tester</strong>
+            <span>Test regular expressions against sample text with live matches and groups.</span>
+          </a>
+          <a href="timestamp-converter.html" class="seo-link-card">
+            <strong>Timestamp Converter</strong>
+            <span>Convert Unix timestamps and ISO dates when tracing logs and backend events.</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-block" aria-labelledby="developer-tools-faq">
+      <h2 id="developer-tools-faq">Common questions about these developer tools</h2>
+      <div class="faq-list">
+        <article class="faq-item">
+          <h3>Are these developer tools free?</h3>
+          <p>Yes. The full collection is free to use, with no account, no signup flow, and no pricing gate.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Which tools are best for JSON and API debugging?</h3>
+          <p><a href="json-formatter.html">JSON Formatter</a>, <a href="json-validator.html">JSON Validator</a>, <a href="base64-encoder.html">Base64 Encoder</a>, and <a href="url-encoder.html">URL Encode / Decode</a> cover the most common payload, encoding, and query-string checks.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Can I use these tools for IDs, test data, and security workflows?</h3>
+          <p>Yes. <a href="uuid-generator.html">UUID Generator</a>, <a href="random-string-generator.html">Random String Generator</a>, <a href="password-generator.html">Password Generator</a>, and <a href="hash-generator.html">Hash Generator</a> are built for those everyday tasks.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Do the tools cover timestamps, text conversion, and regex testing too?</h3>
+          <p>Yes. You can convert Unix timestamps, test regular expressions, and transform text casing without leaving the site.</p>
+        </article>
+      </div>
+    </section>
 
     <div class="bottom-tag">
       <p>100% client-side · Zero dependencies · Open forever</p>
