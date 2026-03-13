@@ -439,6 +439,7 @@
     .card-uuid-val       { --card-accent:rgba(16,185,129,0.25);  --card-glow:rgba(16,185,129,0.12);  --card-icon-bg:rgba(16,185,129,0.22);  --card-icon-border:rgba(16,185,129,0.45);  }
     .card-jwt            { --card-accent:rgba(230,73,128,0.25);  --card-glow:rgba(230,73,128,0.12);  --card-icon-bg:rgba(230,73,128,0.22);  --card-icon-border:rgba(230,73,128,0.45);  }
     .card-font           { --card-accent:rgba(168,85,247,0.25);  --card-glow:rgba(168,85,247,0.12);  --card-icon-bg:rgba(168,85,247,0.22);  --card-icon-border:rgba(168,85,247,0.45);  }
+    .card-yaml           { --card-accent:rgba(253,203,110,0.25);  --card-glow:rgba(253,203,110,0.10);  --card-icon-bg:rgba(253,203,110,0.22);  --card-icon-border:rgba(253,203,110,0.45);  }
 
     /* Dark mode — stronger icon colours */
     [data-theme="dark"] .card-guid           { --card-icon-bg:rgba(108,92,231,0.35);  --card-icon-border:rgba(108,92,231,0.6);  }
@@ -456,6 +457,7 @@
     [data-theme="dark"] .card-uuid-val       { --card-icon-bg:rgba(16,185,129,0.35);   --card-icon-border:rgba(16,185,129,0.6);  }
     [data-theme="dark"] .card-jwt            { --card-icon-bg:rgba(230,73,128,0.38);   --card-icon-border:rgba(230,73,128,0.6);  }
     [data-theme="dark"] .card-font           { --card-icon-bg:rgba(168,85,247,0.38);   --card-icon-border:rgba(168,85,247,0.6);  }
+    [data-theme="dark"] .card-yaml           { --card-icon-bg:rgba(253,203,110,0.35);   --card-icon-border:rgba(253,203,110,0.6);  }
 
     /* Stagger animation */
     .tool-card:nth-child(1) { animation: fadeInUp 0.5s var(--ease-out) 0.2s both; }
@@ -672,7 +674,8 @@
             { "@type": "ListItem", "position": 9, "name": "Password Generator", "url": "https://simpledevtools.dev/password-generator" },
             { "@type": "ListItem", "position": 10, "name": "UUID Validator", "url": "https://simpledevtools.dev/uuid-validator" },
             { "@type": "ListItem", "position": 11, "name": "JWT Decoder", "url": "https://simpledevtools.dev/jwt-decoder" },
-            { "@type": "ListItem", "position": 12, "name": "Font Generator", "url": "https://simpledevtools.dev/font-generator" }
+            { "@type": "ListItem", "position": 12, "name": "Font Generator", "url": "https://simpledevtools.dev/font-generator" },
+            { "@type": "ListItem", "position": 13, "name": "YAML to JSON", "url": "https://simpledevtools.dev/yaml-to-json" }
           ]
         }
       },
@@ -870,6 +873,12 @@
         <p>Convert text to bold, italic, cursive, monospace, bubble, and 20+ Unicode font styles. One-click copy.</p>
         <div class="tool-arrow">Open tool →</div>
       </a>
+      <a href="yaml-to-json.html" class="tool-card card-yaml">
+        <div class="tool-icon">⇅</div>
+        <h2>YAML ↔ JSON</h2>
+        <p>Convert YAML to JSON or JSON to YAML instantly. Bidirectional, client-side, with adjustable indentation.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
     </div>
 
     <section class="seo-block" aria-labelledby="dev-tools-overview">
@@ -945,6 +954,7 @@
       { name: 'UUID Validator',       desc: 'Validate UUIDs and detect version and variant.',          icon: '✓',  url: 'uuid-validator.html',            tags: ['uuid','guid','validate','check','version'] },
       { name: 'JWT Decoder',          desc: 'Decode JWT tokens — header, payload, claims, and expiry.',icon: '🔓', url: 'jwt-decoder.html',               tags: ['jwt','token','decode','auth','claims','bearer','authorization'] },
       { name: 'Font Generator',         desc: 'Copy and paste fancy Unicode fonts — bold, italic, cursive, bubble, and more.', icon: '𝓐', url: 'font-generator.html', tags: ['font','fonts','copy paste','fancy','unicode','generator','style','text','cursive','bold'] },
+      { name: 'YAML to JSON',           desc: 'Convert YAML to JSON or JSON to YAML — bidirectional, instant, client-side.',   icon: '⇅', url: 'yaml-to-json.html',    tags: ['yaml','json','convert','converter','yml','parse'] },
     ];
 
     const input    = document.getElementById('search-input');
