@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Font generator — copy and paste fancy Unicode fonts online. Convert any text to bold, italic, cursive, monospace, bubble, strikethrough, and 20+ more styles instantly. Free, no signup." />
+  <meta name="theme-color" content="#1a1a2e" />
+  <link rel="canonical" href="https://simpledevtools.net/font-generator" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Font Generator — Copy and Paste Fonts | SimpleDevTools" />
+  <meta property="og:description" content="Font generator — copy and paste fancy Unicode fonts online. Convert any text to bold, italic, cursive, monospace, bubble, strikethrough, and 20+ more styles instantly." />
+  <meta property="og:url" content="https://simpledevtools.net/font-generator" />
+  <meta property="og:site_name" content="SimpleDevTools" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Font Generator — Copy and Paste Fonts | SimpleDevTools" />
+  <meta name="twitter:description" content="Font generator — copy and paste fancy Unicode fonts online. Convert any text to bold, italic, cursive, monospace, bubble, strikethrough, and 20+ more styles instantly." />
+  <title>Font Generator — Copy and Paste Fonts Online | SimpleDevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    #font-input {
+      min-height: 90px;
+      font-size: 1rem;
+      line-height: 1.7;
+      resize: vertical;
+    }
+
+    .font-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .font-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      user-select: none;
+    }
+
+    .font-card:hover {
+      border-color: rgba(124,106,255,0.32);
+      background: rgba(124,106,255,0.04);
+      box-shadow: 0 4px 16px rgba(124,106,255,0.08);
+    }
+
+    .font-card.flash {
+      border-color: rgba(0,184,148,0.5) !important;
+      background: rgba(0,184,148,0.07) !important;
+      transition: none;
+    }
+
+    .font-card-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .font-card-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+    }
+
+    .font-card-preview {
+      font-size: 1.1rem;
+      line-height: 1.4;
+      color: var(--text);
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .font-copy-btn {
+      flex-shrink: 0;
+      background: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 0.3rem 0.55rem;
+      border-radius: 8px;
+      transition: all 0.15s;
+      line-height: 1;
+    }
+    .font-copy-btn:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: rgba(108,92,231,0.2);
+    }
+    .font-copy-btn.copied { color: var(--success); }
+
+    .font-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin: 1.25rem 0 0.6rem;
+    }
+
+    .placeholder-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+  </style>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Font Generator",
+    "url": "https://simpledevtools.net/font-generator",
+    "description": "Copy and paste fancy Unicode fonts. Convert text to bold, italic, cursive, monospace, bubble, and 20+ styles.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.net/" }
+  }
+  </script>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-brand">
+        <div class="logo-icon">⚡</div>
+        DevTools
+      </a>
+      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+        <span class="theme-icon">☾</span>
+      </button>
+    </div>
+    <div class="nav-search-wrap">
+      <div class="nav-search-row">
+        <span class="ns-icon">🔍</span>
+        <input id="nav-search-input" type="text" placeholder="Search tools…" autocomplete="off" spellcheck="false" />
+        <button id="nav-search-clear" aria-label="Clear">✕</button>
+      </div>
+      <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(168,85,247,0.07);color:#a855f7;border-color:rgba(168,85,247,0.22);">𝓐 Fonts</div>
+      <h1>Font Generator</h1>
+      <p>Type your text and copy &amp; paste it in any Unicode font style — bold, italic, cursive, monospace, bubble, and more.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your text</div>
+      <textarea id="font-input" placeholder="Type something here…" oninput="update()" spellcheck="false"></textarea>
+      <div class="btn-group" style="margin-top:0.85rem;">
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+        <button class="btn btn-secondary" onclick="loadSample()">Sample text</button>
+      </div>
+    </div>
+
+    <div id="results-wrap">
+      <p class="placeholder-hint">Start typing above to see font styles.</p>
+    </div>
+
+  </main>
+
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+
+  <!-- Scrollable tool rail -->
+  <aside class="tool-rail">
+    <div class="tool-rail-label">Tools</div>
+    <a href="uuid-generator.html"           class="tool-rail-btn" title="GUID Generator">🔑 UUID</a>
+    <a href="json-formatter.html"           class="tool-rail-btn" title="JSON Formatter">{ } JSON</a>
+    <a href="json-validator.html"           class="tool-rail-btn" title="JSON Validator">✓ JSON Lint</a>
+    <a href="base64-encoder.html"           class="tool-rail-btn" title="Base64 Encoder">⇄ Base64</a>
+    <a href="url-encoder.html"              class="tool-rail-btn" title="URL Encoder">🔗 URL</a>
+    <a href="hash-generator.html"           class="tool-rail-btn" title="Hash Generator">⬡ Hash</a>
+    <a href="regex-tester.html"             class="tool-rail-btn" title="Regex Tester">.* Regex</a>
+    <a href="timestamp-converter.html"      class="tool-rail-btn" title="Timestamp">⌚ Timestamp</a>
+    <a href="case-converter.html"           class="tool-rail-btn" title="Case Converter">Aa Case</a>
+    <a href="lorem-ipsum-generator.html"    class="tool-rail-btn" title="Lorem Ipsum">📝 Lorem</a>
+    <a href="random-string-generator.html"  class="tool-rail-btn" title="Random String">🎲 Random</a>
+    <a href="password-generator.html"       class="tool-rail-btn" title="Password">🔐 Password</a>
+    <a href="uuid-validator.html"           class="tool-rail-btn" title="UUID Validator">✓ UUID Val</a>
+    <a href="jwt-decoder.html"              class="tool-rail-btn" title="JWT Decoder">🔓 JWT</a>
+    <a href="font-generator.html"           class="tool-rail-btn active" title="Font Generator">𝓐 Fonts</a>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  // ─────────────────────────────────────────────
+  // Unicode character maps
+  // ─────────────────────────────────────────────
+  const MAPS = (() => {
+    const A = 65, a = 97, zero = 48;
+
+    function map(upperStart, lowerStart, digitStart) {
+      const m = {};
+      for (let i = 0; i < 26; i++) {
+        m[String.fromCharCode(A + i)] = String.fromCodePoint(upperStart + i);
+        m[String.fromCharCode(a + i)] = String.fromCodePoint(lowerStart + i);
+      }
+      if (digitStart != null) {
+        for (let i = 0; i < 10; i++)
+          m[String.fromCharCode(zero + i)] = String.fromCodePoint(digitStart + i);
+      }
+      return m;
+    }
+
+    return [
+      { label: 'Bold',                  group: 'Serif',       m: map(0x1D400, 0x1D41A, 0x1D7CE) },
+      { label: 'Italic',                group: 'Serif',       m: { ...map(0x1D434, 0x1D44E), h: '\u210E' } },
+      { label: 'Bold Italic',           group: 'Serif',       m: map(0x1D468, 0x1D482) },
+      { label: 'Bold',                  group: 'Sans-Serif',  m: map(0x1D5D4, 0x1D5EE, 0x1D7EC) },
+      { label: 'Italic',                group: 'Sans-Serif',  m: map(0x1D608, 0x1D622) },
+      { label: 'Bold Italic',           group: 'Sans-Serif',  m: map(0x1D63C, 0x1D656) },
+      { label: 'Script / Cursive',      group: 'Decorative',  m: (() => {
+          const mm = map(0x1D49C, 0x1D4B6);
+          // overrides for missing codepoints in Mathematical Script block
+          const ov = {B:'\u212C',E:'\u2130',F:'\u2131',H:'\u210B',I:'\u2110',L:'\u2112',M:'\u2133',R:'\u211B',e:'\u212F',g:'\u210A',o:'\u2134'};
+          return { ...mm, ...ov };
+        })()
+      },
+      { label: 'Bold Script',           group: 'Decorative',  m: map(0x1D4D0, 0x1D4EA) },
+      { label: 'Fraktur',               group: 'Decorative',  m: (() => {
+          const mm = map(0x1D504, 0x1D51E);
+          const ov = {C:'\u212D',H:'\u210C',I:'\u2111',R:'\u211C',Z:'\u2128'};
+          return { ...mm, ...ov };
+        })()
+      },
+      { label: 'Bold Fraktur',          group: 'Decorative',  m: map(0x1D56C, 0x1D586) },
+      { label: 'Double-Struck',         group: 'Decorative',  m: (() => {
+          const mm = map(0x1D538, 0x1D552, 0x1D7D8);
+          const ov = {C:'\u2102',H:'\u210D',N:'\u2115',P:'\u2119',Q:'\u211A',R:'\u211D',Z:'\u2124'};
+          return { ...mm, ...ov };
+        })()
+      },
+      { label: 'Monospace',             group: 'Code',        m: map(0x1D670, 0x1D68A, 0x1D7F6) },
+      { label: 'Circled',               group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0x24B6+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0x24D0+i);
+          }
+          for (let i = 0; i < 10; i++)
+            mm[String.fromCharCode(zero+i)] = String.fromCodePoint(i === 0 ? 0x24EA : 0x2460+i-1);
+          return mm;
+        })()
+      },
+      { label: 'Negative Circled',      group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0x1F150+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0x1F150+i);
+          }
+          for (let i = 1; i <= 10; i++)
+            mm[String.fromCharCode(zero+(i%10))] = String.fromCodePoint(0x2776+i-1);
+          return mm;
+        })()
+      },
+      { label: 'Squared',               group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0x1F130+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0x1F130+i);
+          }
+          return mm;
+        })()
+      },
+      { label: 'Bubble / Fullwidth',    group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0xFF21+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0xFF41+i);
+          }
+          for (let i = 0; i < 10; i++)
+            mm[String.fromCharCode(zero+i)] = String.fromCodePoint(0xFF10+i);
+          return mm;
+        })()
+      },
+      { label: 'Small Caps',            group: 'Stylised',    m: (() => {
+          const SC = 'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ';
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = SC[i];
+            mm[String.fromCharCode(a+i)] = SC[i];
+          }
+          return mm;
+        })()
+      },
+      { label: 'Superscript',           group: 'Stylised',    m: (() => {
+          const sup = 'ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖᑫʳˢᵗᵘᵛʷˣʸᶻ';
+          const supU = 'ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᑫᴿˢᵀᵁᵛᵂˣʸᶻ';
+          const supD = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = supU[i];
+            mm[String.fromCharCode(a+i)] = sup[i];
+          }
+          for (let i = 0; i < 10; i++) mm[String.fromCharCode(zero+i)] = supD[i];
+          return mm;
+        })()
+      },
+      { label: 'Strikethrough',         group: 'Effects',     special: 'strike' },
+      { label: 'Underline',             group: 'Effects',     special: 'underline' },
+      { label: 'Double Underline',      group: 'Effects',     special: 'double-underline' },
+      { label: 'Slash Through',         group: 'Effects',     special: 'slash' },
+      { label: 'Upside Down',           group: 'Effects',     special: 'flip' },
+      { label: 'Mirror / Reverse',      group: 'Effects',     special: 'reverse' },
+    ];
+  })();
+
+  const FLIP_MAP = {
+    a:'ɐ',b:'q',c:'ɔ',d:'p',e:'ǝ',f:'ɟ',g:'ƃ',h:'ɥ',i:'ᴉ',j:'ɾ',k:'ʞ',l:'l',m:'ɯ',
+    n:'u',o:'o',p:'d',q:'b',r:'ɹ',s:'s',t:'ʇ',u:'n',v:'ʌ',w:'ʍ',x:'x',y:'ʎ',z:'z',
+    A:'∀',B:'ᗺ',C:'Ɔ',D:'ᗡ',E:'Ǝ',F:'Ⅎ',G:'פ',H:'H',I:'I',J:'ſ',K:'ʞ',L:'˥',M:'W',
+    N:'N',O:'O',P:'Ԁ',Q:'Q',R:'ᴚ',S:'S',T:'┴',U:'∩',V:'Λ',W:'M',X:'X',Y:'⅄',Z:'Z',
+    '0':'0','1':'Ɩ','2':'ᄅ','3':'Ɛ','4':'ㄣ','5':'ϛ','6':'9','7':'Ɫ','8':'8','9':'6',
+    '!':'¡','?':'¿',',':'\u2018','.':'˙','(':')',')':'(','[':']',']':'[','<':'>',' ':' ',
+  };
+
+  function applyMap(text, mObj) {
+    return [...text].map(ch => mObj[ch] ?? ch).join('');
+  }
+
+  function applySpecial(text, type) {
+    switch (type) {
+      case 'strike':          return [...text].map(c => c === ' ' ? ' ' : c + '\u0336').join('');
+      case 'underline':       return [...text].map(c => c === ' ' ? ' ' : c + '\u0332').join('');
+      case 'double-underline':return [...text].map(c => c === ' ' ? ' ' : c + '\u0333').join('');
+      case 'slash':           return [...text].map(c => c === ' ' ? ' ' : c + '\u0338').join('');
+      case 'flip':            return [...text].map(c => FLIP_MAP[c] ?? c).reverse().join('');
+      case 'reverse':         return [...text].reverse().join('');
+    }
+    return text;
+  }
+
+  function convert(text, style) {
+    if (style.special) return applySpecial(text, style.special);
+    return applyMap(text, style.m);
+  }
+
+  // ─────────────────────────────────────────────
+  // Rendering
+  // ─────────────────────────────────────────────
+  const GROUPS = ['Serif', 'Sans-Serif', 'Decorative', 'Code', 'Stylised', 'Effects'];
+
+  function update() {
+    const text = document.getElementById('font-input').value;
+    const wrap = document.getElementById('results-wrap');
+
+    if (!text) {
+      wrap.innerHTML = '<p class="placeholder-hint">Start typing above to see font styles.</p>';
+      return;
+    }
+
+    const byGroup = {};
+    for (const g of GROUPS) byGroup[g] = [];
+    for (const style of MAPS) {
+      const out = convert(text, style);
+      (byGroup[style.group] || (byGroup['Stylised'] = byGroup['Stylised'] || [])).push({ style, out });
+    }
+
+    let html = '';
+    for (const g of GROUPS) {
+      if (!byGroup[g] || !byGroup[g].length) continue;
+      html += `<div class="font-section-label">${g}</div><div class="font-grid">`;
+      for (const { style, out } of byGroup[g]) {
+        const escaped = out.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        html += `
+          <div class="font-card" onclick="copyFont(this, '${escaped.replace(/'/g,'&#39;')}')">
+            <div class="font-card-meta">
+              <div class="font-card-label">${style.label}</div>
+              <div class="font-card-preview">${escaped}</div>
+            </div>
+            <button class="font-copy-btn" title="Copy">📋</button>
+          </div>`;
+      }
+      html += '</div>';
+    }
+    wrap.innerHTML = html;
+  }
+
+  function copyFont(card, text) {
+    const decoded = text
+      .replace(/&amp;/g,'&')
+      .replace(/&lt;/g,'<')
+      .replace(/&gt;/g,'>')
+      .replace(/&quot;/g,'"')
+      .replace(/&#39;/g,"'");
+    navigator.clipboard.writeText(decoded).then(() => {
+      card.classList.add('flash');
+      const btn = card.querySelector('.font-copy-btn');
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        card.classList.remove('flash');
+        btn.textContent = '📋';
+        btn.classList.remove('copied');
+      }, 1200);
+      showToast('Copied!', 'success');
+    });
+  }
+
+  function clearAll() {
+    document.getElementById('font-input').value = '';
+    document.getElementById('results-wrap').innerHTML = '<p class="placeholder-hint">Start typing above to see font styles.</p>';
+  }
+
+  function loadSample() {
+    document.getElementById('font-input').value = 'Hello World';
+    update();
+  }
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast show ' + type;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = 'toast'; }, 2000);
+  }
+  </script>
+  <script src="search.js"></script>
+</body>
+</html>

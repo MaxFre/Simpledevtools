@@ -421,6 +421,8 @@
     .card-rand           { --card-accent:rgba(62,232,192,0.25);  --card-glow:rgba(62,232,192,0.12);  --card-icon-bg:rgba(62,232,192,0.08);  --card-icon-border:rgba(62,232,192,0.15);  }
     .card-pwd            { --card-accent:rgba(245,184,85,0.25);  --card-glow:rgba(245,184,85,0.12);  --card-icon-bg:rgba(245,184,85,0.08);  --card-icon-border:rgba(245,184,85,0.15);  }
     .card-uuid-val       { --card-accent:rgba(16,185,129,0.25);  --card-glow:rgba(16,185,129,0.12);  --card-icon-bg:rgba(16,185,129,0.08);  --card-icon-border:rgba(16,185,129,0.15);  }
+    .card-jwt            { --card-accent:rgba(230,73,128,0.25);  --card-glow:rgba(230,73,128,0.12);  --card-icon-bg:rgba(230,73,128,0.08);  --card-icon-border:rgba(230,73,128,0.15);  }
+    .card-font           { --card-accent:rgba(168,85,247,0.25);  --card-glow:rgba(168,85,247,0.12);  --card-icon-bg:rgba(168,85,247,0.08);  --card-icon-border:rgba(168,85,247,0.15);  }
 
     /* Dark mode — stronger icon colours */
     [data-theme="dark"] .card-guid           { --card-icon-bg:rgba(108,92,231,0.35);  --card-icon-border:rgba(108,92,231,0.5);  }
@@ -436,6 +438,8 @@
     [data-theme="dark"] .card-rand           { --card-icon-bg:rgba(62,232,192,0.35);   --card-icon-border:rgba(62,232,192,0.5);  }
     [data-theme="dark"] .card-pwd            { --card-icon-bg:rgba(245,184,85,0.35);   --card-icon-border:rgba(245,184,85,0.5);  }
     [data-theme="dark"] .card-uuid-val       { --card-icon-bg:rgba(16,185,129,0.35);   --card-icon-border:rgba(16,185,129,0.5);  }
+    [data-theme="dark"] .card-jwt            { --card-icon-bg:rgba(230,73,128,0.35);   --card-icon-border:rgba(230,73,128,0.5);  }
+    [data-theme="dark"] .card-font           { --card-icon-bg:rgba(168,85,247,0.35);   --card-icon-border:rgba(168,85,247,0.5);  }
 
     /* Stagger animation */
     .tool-card:nth-child(1) { animation: fadeInUp 0.5s var(--ease-out) 0.2s both; }
@@ -650,7 +654,9 @@
             { "@type": "ListItem", "position": 7, "name": "Hash Generator", "url": "https://simpledevtools.net/hash-generator" },
             { "@type": "ListItem", "position": 8, "name": "Timestamp Converter", "url": "https://simpledevtools.net/timestamp-converter" },
             { "@type": "ListItem", "position": 9, "name": "Password Generator", "url": "https://simpledevtools.net/password-generator" },
-            { "@type": "ListItem", "position": 10, "name": "UUID Validator", "url": "https://simpledevtools.net/uuid-validator" }
+            { "@type": "ListItem", "position": 10, "name": "UUID Validator", "url": "https://simpledevtools.net/uuid-validator" },
+            { "@type": "ListItem", "position": 11, "name": "JWT Decoder", "url": "https://simpledevtools.net/jwt-decoder" },
+            { "@type": "ListItem", "position": 12, "name": "Font Generator", "url": "https://simpledevtools.net/font-generator" }
           ]
         }
       },
@@ -836,6 +842,18 @@
         <p>Validate one or many UUIDs, detect version (v1–v5), variant, and formatting issues.</p>
         <div class="tool-arrow">Open tool →</div>
       </a>
+      <a href="jwt-decoder.html" class="tool-card card-jwt">
+        <div class="tool-icon">🔓</div>
+        <h2>JWT Decoder</h2>
+        <p>Decode JWT tokens and inspect header, payload claims, and expiration status instantly.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="font-generator.html" class="tool-card card-font">
+        <div class="tool-icon">𝓐</div>
+        <h2>Font Generator</h2>
+        <p>Convert text to bold, italic, cursive, monospace, bubble, and 20+ Unicode font styles. One-click copy.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
     </div>
 
     <section class="seo-block" aria-labelledby="dev-tools-overview">
@@ -909,6 +927,8 @@
       { name: 'Random String Generator', desc: 'Generate cryptographically random strings with custom charset.', icon: '🎲', url: 'random-string-generator.html', tags: ['random','string','token','secret','charset'] },
       { name: 'Password Generator',  desc: 'Generate strong random passwords with entropy score.',   icon: '🔐', url: 'password-generator.html',        tags: ['password','random','secure','strong','generator'] },
       { name: 'UUID Validator',       desc: 'Validate UUIDs and detect version and variant.',          icon: '✓',  url: 'uuid-validator.html',            tags: ['uuid','guid','validate','check','version'] },
+      { name: 'JWT Decoder',          desc: 'Decode JWT tokens — header, payload, claims, and expiry.',icon: '🔓', url: 'jwt-decoder.html',               tags: ['jwt','token','decode','auth','claims','bearer','authorization'] },
+      { name: 'Font Generator',         desc: 'Copy and paste fancy Unicode fonts — bold, italic, cursive, bubble, and more.', icon: '𝓐', url: 'font-generator.html', tags: ['font','fonts','copy paste','fancy','unicode','generator','style','text','cursive','bold'] },
     ];
 
     const input    = document.getElementById('search-input');

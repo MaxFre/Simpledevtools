@@ -13,6 +13,8 @@
     { name: 'Random String Generator', desc: 'Generate cryptographically random strings with custom charset.', icon: '🎲', url: 'random-string-generator.html', tags: ['random','string','token','secret','charset'] },
     { name: 'Password Generator',  desc: 'Generate strong random passwords with entropy score.',   icon: '🔐', url: 'password-generator.html',      tags: ['password','random','secure','strong','generator'] },
     { name: 'UUID Validator',       desc: 'Validate UUIDs and detect version and variant.',          icon: '✓',  url: 'uuid-validator.html',          tags: ['uuid','guid','validate','check','version'] },
+    { name: 'JWT Decoder',          desc: 'Decode JWT tokens — header, payload, claims, and expiry.',icon: '🔓', url: 'jwt-decoder.html',             tags: ['jwt','token','decode','auth','claims','bearer','authorization'] },
+    { name: 'Font Generator',         desc: 'Copy and paste fancy Unicode fonts — bold, italic, cursive, bubble, and more.', icon: '𝓐', url: 'font-generator.html', tags: ['font','fonts','copy paste','fancy','unicode','generator','style','text','cursive','bold'] },
   ];
 
   function init() {
