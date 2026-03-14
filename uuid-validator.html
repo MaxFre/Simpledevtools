@@ -5,7 +5,9 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+    <!-- AdSense disabled
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Validate UUID/GUID format online. Detects version (1-5), checks RFC 4122 compliance, and identifies variant. Free instant validation tool." />
   <meta name="theme-color" content="#1a1a2e" />
@@ -50,6 +52,9 @@
     .bulk-line .valid-tag   { color: var(--success); font-weight:600; min-width:3rem; }
     .bulk-line .invalid-tag { color: var(--danger);  font-weight:600; min-width:3rem; }
     .bulk-line .uuid-text   { color: var(--text); word-break:break-all; }
+    .bulk-line .reason-tag  { color: var(--muted); font-size:0.78rem; font-style:italic; }
+    .invalid-reason { margin-top:0.6rem; font-size:0.83rem; color:var(--muted); }
+    .invalid-reason strong { color:var(--danger); font-style:normal; }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
@@ -147,12 +152,32 @@
     // UUID v1-v5 regex
     const RE = /^[0-9a-f]{8}-[0-9a-f]{4}-([1-5])[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     const RE_NIL = /^0{8}-0{4}-0{4}-0{4}-0{12}$/;
+    const HEX = /^[0-9a-f]+$/i;
+
+    function getInvalidReason(s) {
+      const trimmed = s.trim();
+      if (/^urn:uuid:/i.test(trimmed)) return 'URN format not supported';
+      const clean = trimmed.replace(/^\{|\}$/g, '');
+      if (RE_NIL.test(clean)) return null;
+      const parts = clean.split('-');
+      if (parts.length !== 5) return 'Wrong structure — expected 8-4-4-4-12 groups';
+      const [p1, p2, p3, p4, p5] = parts;
+      if (p1.length !== 8 || p2.length !== 4 || p3.length !== 4 || p4.length !== 4 || p5.length !== 12)
+        return 'Wrong group lengths — expected 8-4-4-4-12';
+      if (![p1,p2,p3,p4,p5].every(p => HEX.test(p)))
+        return 'Contains non-hexadecimal characters';
+      const ver = parseInt(p3[0], 16);
+      if (ver < 1 || ver > 5) return `Invalid version (${p3[0].toUpperCase()}) — expected 1–5`;
+      const varNib = parseInt(p4[0], 16);
+      if (varNib < 8 || varNib > 11) return `Invalid variant bits (got ${p4[0].toLowerCase()}, expected 8–b)`;
+      return null;
+    }
 
     function parseUUID(s) {
       const clean = s.trim().replace(/^\{|\}$/g,'');
       if (RE_NIL.test(clean)) return { valid:true, version:'Nil (all zeros)', variant:'N/A', canonical:clean };
       const m = RE.exec(clean);
-      if (!m) return { valid:false };
+      if (!m) return { valid:false, reason: getInvalidReason(s) || 'Does not match UUID format' };
       const version = 'v' + m[1];
       const variantHex = parseInt(clean[19],16);
       const variant = variantHex >= 8 && variantHex <= 11 ? 'RFC 4122' : 'Other';
@@ -179,7 +204,8 @@
           ? `<span class="detail-key">Version</span><span class="detail-val">${r.version}</span>
              <span class="detail-key">Variant</span><span class="detail-val">${r.variant}</span>
              <span class="detail-key">Canonical</span><span class="detail-val">${r.canonical}</span>`
-          : `<span class="detail-key">Input</span><span class="detail-val" style="color:var(--danger)">${esc(lines[0])}</span>`;
+          : `<span class="detail-key">Input</span><span class="detail-val" style="color:var(--danger)">${esc(lines[0])}</span>
+             <span class="detail-key">Reason</span><span class="detail-val" style="color:var(--danger)">${esc(r.reason || 'Does not match UUID format')}</span>`;
       } else {
         // Bulk
         document.getElementById('single-result').style.display = 'none';
@@ -191,6 +217,7 @@
           return `<div class="bulk-line">
             <span class="${r.valid?'valid-tag':'invalid-tag'}">${r.valid?'✓ OK':'✕ BAD'}</span>
             <span class="uuid-text">${esc(l.trim())}</span>
+            ${!r.valid && r.reason ? `<span class="reason-tag">— ${esc(r.reason)}</span>` : ''}
           </div>`;
         }).join('');
         document.getElementById('bulk-card').style.display = '';
