@@ -1,26 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <!-- AdSense disabled
+
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
--->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Format, beautify, and validate JSON online with syntax highlighting. Supports 2-space, 4-space, and tab indentation. Free, instant, no signup." />
+  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/json-formatter" />
+  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="JSON Formatter Online — Beautify & Validate JSON | SimpleDevTools" />
-  <meta property="og:description" content="Format, beautify, and validate JSON online with syntax highlighting. Supports 2-space, 4-space, and tab indentation. Free, instant, no signup." />
-  <meta property="og:url" content="https://simpledevtools.dev/json-formatter" />
+  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
+  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
+  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="JSON Formatter Online — Beautify & Validate JSON | SimpleDevTools" />
-  <meta name="twitter:description" content="Format, beautify, and validate JSON online with syntax highlighting. Supports 2-space, 4-space, and tab indentation. Free, instant, no signup." />
-  <title>JSON Formatter Online — Beautify & Validate JSON | SimpleDevTools</title>
+  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
+  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
+  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -34,159 +33,108 @@
       gap: 1.25rem;
       align-items: start;
     }
-
     @media (max-width: 680px) {
       .editor-wrap { grid-template-columns: 1fr; }
     }
-
-    .editor-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
+    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
     .panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
     }
-
     .panel-label {
       font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       color: var(--muted);
     }
-
-    .panel-actions {
-      display: flex;
-      gap: 0.35rem;
-    }
-
-    textarea#json-input {
-      min-height: 360px;
-      font-family: var(--mono);
-      font-size: 0.82rem;
+    .code-area {
+      width: 100%;
+      min-height: 320px;
       resize: vertical;
-      line-height: 1.7;
       background: var(--bg);
-    }
-
-    .output-pre {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      line-height: 1.7;
-      padding: 1.25rem;
-      min-height: 360px;
-      max-height: 600px;
-      overflow: auto;
-      white-space: pre;
       color: var(--text);
-      position: relative;
-      transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
-    }
-
-    .output-pre.error {
-      border-color: rgba(220,70,90,0.4);
-      box-shadow: 0 0 12px rgba(220,70,90,0.06);
-    }
-
-    .output-pre.valid {
-      border-color: rgba(0,184,148,0.3);
-      box-shadow: 0 0 12px rgba(0,184,148,0.05);
-    }
-
-    .error-banner {
-      background: rgba(220,70,90,0.06);
-      border: 1px solid rgba(220,70,90,0.2);
-      border-radius: var(--radius);
-      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: var(--mono);
       font-size: 0.82rem;
+      padding: 0.85rem 1rem;
+      line-height: 1.7;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .code-area:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .code-area[readonly] {
+      background: var(--surface2);
+      cursor: default;
+    }
+    .error-banner {
+      display: none;
+      padding: 0.7rem 1rem;
+      background: rgba(245,100,122,0.08);
+      border: 1px solid var(--danger);
+      border-radius: 10px;
+      font-size: 0.83rem;
       color: var(--danger);
       font-family: var(--mono);
-      display: none;
-      margin-bottom: 1rem;
     }
-
     .error-banner.show { display: block; }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.25rem 0.75rem;
-      border-radius: 100px;
-      border: 1px solid transparent;
-      transition: all 0.3s var(--ease-out);
-    }
-
-    .status-badge.valid {
-      background: rgba(0,184,148,0.06);
-      color: var(--success);
-      border-color: rgba(0,184,148,0.2);
-    }
-
-    .status-badge.invalid {
-      background: rgba(220,70,90,0.06);
-      color: var(--danger);
-      border-color: rgba(220,70,90,0.2);
-    }
-
-    .status-badge.idle {
-      background: var(--bg);
-      color: var(--muted);
-      border-color: var(--border);
-    }
-
-    .indent-select {
-      width: auto;
-      padding: 0.35rem 0.7rem;
-      font-size: 0.78rem;
-      border-radius: 10px;
-    }
-
-    .controls-bar {
+    .dir-toggle {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.25rem;
+      padding: 0.5rem 0;
     }
-
-    .controls-bar label {
+    .dir-btn {
+      padding: 0.42rem 1rem;
+      border-radius: 8px;
       font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface2);
       color: var(--muted);
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 500;
-      margin: 0;
-      white-space: nowrap;
+      transition: all 0.15s;
     }
+    .dir-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(124,106,255,0.35);
+    }
+    .dir-arrow {
+      font-size: 1.1rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
   </style>
-  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "JSON Formatter & Beautifier",
-    "url": "https://simpledevtools.dev/json-formatter",
-    "description": "Format, beautify, and validate JSON online with syntax highlighting.",
+    "name": "YAML to JSON Converter",
+    "url": "https://simpledevtools.dev/yaml-to-json",
+    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-
   <div class="noise"></div>
 
   <nav>
@@ -212,71 +160,72 @@
     </ul>
   </nav>
 
-  <main class="fade-in" style="max-width:860px;">
-
+  <main class="fade-in">
     <div class="page-header">
-      <div class="badge" style="background:rgba(225,112,85,0.06);color:#e17055;border-color:rgba(225,112,85,0.2);">🗂 Formatter</div>
-      <h1>JSON Formatter</h1>
-      <p>Paste raw JSON to format, validate, and explore structure with syntax highlighting.</p>
+      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
+      <h1>YAML ↔ JSON Converter</h1>
+      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
     </div>
 
-    <!-- Global controls -->
-    <div class="card" style="margin-bottom:1.25rem;">
-      <div class="controls-bar">
-        <div class="btn-group">
-          <button class="btn btn-primary" style="background:linear-gradient(135deg,#e17055,#f0a388);border:none;color:#fff;box-shadow:0 2px 8px rgba(225,112,85,0.25);" onclick="formatJSON()">⚡ Format</button>
-          <button class="btn btn-secondary" onclick="minifyJSON()">⬤ Minify</button>
-          <button class="btn btn-ghost"    onclick="clearAll()">✕ Clear</button>
-        </div>
-        <label>Indent:</label>
-        <select class="indent-select" id="indent-select" onchange="formatJSON()">
-          <option value="2">2 spaces</option>
-          <option value="4" selected>4 spaces</option>
-          <option value="tab">Tab</option>
-        </select>
-        <div class="status-badge idle" id="status-badge">● Idle</div>
+    <!-- Direction selector -->
+    <div class="card" style="padding:1rem 1.75rem;">
+      <div class="dir-toggle">
+        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
+        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
+        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
       </div>
     </div>
 
-    <div class="error-banner" id="error-banner"></div>
-
-    <!-- Side-by-side editor -->
-    <div class="editor-wrap">
-
-      <!-- Input -->
-      <div class="editor-panel">
-        <div class="panel-header">
-          <span class="panel-label">Input</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="pasteFromClipboard()" title="Paste from clipboard">⧉ Paste</button>
-            <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="loadSample()">Sample</button>
+    <!-- Editors -->
+    <div class="card">
+      <div class="error-banner" id="error-banner"></div>
+      <div class="editor-wrap">
+        <div class="editor-panel">
+          <div class="panel-header">
+            <span class="panel-label" id="input-label">YAML Input</span>
+            <div class="btn-group">
+              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
+              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
+        </div>
+        <div class="editor-panel">
+          <div class="panel-header">
+            <span class="panel-label" id="output-label">JSON Output</span>
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
+            </div>
+          </div>
+          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
+          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
+            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
+            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
+            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
+            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
           </div>
         </div>
-        <textarea id="json-input" spellcheck="false" placeholder='Paste JSON here…&#10;{&#10;  "hello": "world"&#10;}'></textarea>
       </div>
+    </div>
 
-      <!-- Output -->
-      <div class="editor-panel">
-        <div class="panel-header">
-          <span class="panel-label">Output</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="copyOutput()">📋 Copy</button>
-          </div>
-        </div>
-        <pre class="output-pre" id="json-output"><span style="color:var(--muted)">Formatted JSON will appear here…</span></pre>
-      </div>
+    <!-- Convert button (mobile friendly) -->
+    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
+      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
     </div>
 
   </main>
 
   <footer>
-    Built with precision — <a href="index.html">DevTools</a>
+    Built with precision — <a href="index.html">DevTools</a> ·
+    <a href="privacy-policy.html">Privacy Policy</a> ·
+    <a href="about.html">About</a>
   </footer>
+
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">Tools</div>
+    <div class="tool-rail-label">TOOLS</div>
     <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
-    <a href="json-formatter.html" class="tool-rail-btn active">{ } JSON</a>
+    <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
     <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
     <a href="base64-encoder.html" class="tool-rail-btn">⇄ Base64</a>
     <a href="url-encoder.html" class="tool-rail-btn">🔗 URL</a>
@@ -289,185 +238,135 @@
     <a href="password-generator.html" class="tool-rail-btn">🔐 Password</a>
     <a href="uuid-validator.html" class="tool-rail-btn">✓ UUID Val</a>
     <a href="jwt-decoder.html" class="tool-rail-btn">🔓 JWT</a>
+    <a href="yaml-to-json.html" class="tool-rail-btn active">⇅ YAML</a>
     <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
+    <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
 
   <div class="toast" id="toast"></div>
 
+  <!-- js-yaml via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+  <script src="search.js"></script>
   <script>
-    const SAMPLE = {
-      "name": "devtools",
-      "version": "1.0.0",
-      "description": "A collection of developer tools",
-      "tools": [
-        { "id": 1, "name": "GUID Generator", "url": "guid.html", "tags": ["uuid", "random"] },
-        { "id": 2, "name": "Lorem Ipsum",    "url": "lorem.html","tags": ["text", "placeholder"] },
-        { "id": 3, "name": "JSON Formatter", "url": "json.html", "tags": ["json", "format", "validate"] }
-      ],
-      "meta": {
-        "author": null,
-        "open_source": true,
-        "stars": 42
-      }
-    };
+    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
+    let indent = 2;
 
-    function getIndent() {
-      const v = document.getElementById('indent-select').value;
-      return v === 'tab' ? '\t' : parseInt(v);
+    const SAMPLE_YAML = `name: SimpleDevTools
+version: 1.0.0
+tools:
+  - name: JSON Formatter
+    url: /json-formatter
+    free: true
+  - name: YAML to JSON
+    url: /yaml-to-json
+    free: true
+settings:
+  theme: dark
+  language: en
+  analytics: false`;
+
+    const SAMPLE_JSON = JSON.stringify({
+      name: 'SimpleDevTools',
+      version: '1.0.0',
+      tools: [
+        { name: 'JSON Formatter', url: '/json-formatter', free: true },
+        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
+      ],
+      settings: { theme: 'dark', language: 'en', analytics: false }
+    }, null, 2);
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
+      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
+      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
+      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
+      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
+      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
+      clearAll();
     }
 
-    function setStatus(state, label) {
-      const el = document.getElementById('status-badge');
-      el.className = 'status-badge ' + state;
-      el.textContent = label;
+    function swapMode() {
+      const out = document.getElementById('output-area').value;
+      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
+      if (out) {
+        document.getElementById('input-area').value = out;
+        convert();
+      }
+    }
+
+    function setIndent(n) {
+      indent = n;
+      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
+      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
+      if (document.getElementById('output-area').value) convert();
+    }
+
+    function getIndentValue() {
+      return indent === 'tab' ? '\t' : indent;
     }
 
     function showError(msg) {
-      const banner = document.getElementById('error-banner');
-      banner.textContent = '⚠ ' + msg;
-      banner.classList.add('show');
-      const out = document.getElementById('json-output');
-      out.classList.add('error');
-      out.classList.remove('valid');
-      setStatus('invalid', '✕ Invalid JSON');
+      const el = document.getElementById('error-banner');
+      el.textContent = msg;
+      el.classList.add('show');
     }
 
     function clearError() {
-      const banner = document.getElementById('error-banner');
-      banner.classList.remove('show');
-      const out = document.getElementById('json-output');
-      out.classList.remove('error');
+      document.getElementById('error-banner').classList.remove('show');
     }
 
-    function formatJSON() {
-      const raw = document.getElementById('json-input').value.trim();
-      if (!raw) {
-        clearError();
-        document.getElementById('json-output').innerHTML = '<span style="color:var(--muted)">Formatted JSON will appear here…</span>';
-        setStatus('idle', '● Idle');
-        return;
-      }
+    function convert() {
+      clearError();
+      const input = document.getElementById('input-area').value.trim();
+      if (!input) { document.getElementById('output-area').value = ''; return; }
 
-      let parsed;
       try {
-        parsed = JSON.parse(raw);
+        let result;
+        if (mode === 'yaml2json') {
+          const parsed = jsyaml.load(input);
+          result = JSON.stringify(parsed, null, getIndentValue());
+        } else {
+          const parsed = JSON.parse(input);
+          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
+        }
+        document.getElementById('output-area').value = result;
       } catch (e) {
-        showError(e.message);
-        document.getElementById('json-output').innerHTML = escapeHtml(raw);
-        return;
+        showError('⚠ ' + e.message);
+        document.getElementById('output-area').value = '';
       }
-
-      clearError();
-      const formatted = JSON.stringify(parsed, null, getIndent());
-      const out = document.getElementById('json-output');
-      out.style.whiteSpace = '';
-      out.style.wordBreak = '';
-      out.innerHTML = syntaxHighlight(formatted);
-      out.classList.add('valid');
-      setStatus('valid', '✓ Valid JSON');
-    }
-
-    function minifyJSON() {
-      const raw = document.getElementById('json-input').value.trim();
-      if (!raw) return;
-
-      let parsed;
-      try {
-        parsed = JSON.parse(raw);
-      } catch (e) {
-        showError(e.message);
-        return;
-      }
-
-      clearError();
-      const minified = JSON.stringify(parsed);
-      const out = document.getElementById('json-output');
-      out.style.whiteSpace = 'pre-wrap';
-      out.style.wordBreak = 'break-all';
-      out.innerHTML = syntaxHighlight(minified);
-      out.classList.add('valid');
-      setStatus('valid', '✓ Minified');
-      showToast('Minified!', 'success');
-    }
-
-    function clearAll() {
-      document.getElementById('json-input').value = '';
-      const outEl = document.getElementById('json-output');
-      outEl.innerHTML = '<span style="color:var(--muted)">Formatted JSON will appear here…</span>';
-      outEl.className = 'output-pre';
-      outEl.style.whiteSpace = '';
-      outEl.style.wordBreak = '';
-      clearError();
-      setStatus('idle', '● Idle');
     }
 
     function loadSample() {
-      document.getElementById('json-input').value = JSON.stringify(SAMPLE, null, 2);
-      formatJSON();
-      showToast('Sample loaded', 'success');
+      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
+      convert();
     }
 
-    async function pasteFromClipboard() {
-      try {
-        const text = await navigator.clipboard.readText();
-        document.getElementById('json-input').value = text;
-        formatJSON();
-      } catch {
-        showToast('Clipboard access denied', 'error');
-      }
+    function clearAll() {
+      document.getElementById('input-area').value = '';
+      document.getElementById('output-area').value = '';
+      clearError();
     }
 
     function copyOutput() {
-      const pre = document.getElementById('json-output');
-      const text = pre.innerText;
-      if (!text.trim() || text.includes('Formatted JSON')) {
-        showToast('Nothing to copy', 'error');
-        return;
-      }
-      navigator.clipboard.writeText(text).then(() => showToast('Copied!', 'success'));
+      const val = document.getElementById('output-area').value;
+      if (!val) return;
+      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
     }
-
-    function escapeHtml(str) {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
-    function syntaxHighlight(json) {
-      // Escape HTML entities first, then apply classes
-      const escaped = escapeHtml(json);
-      return escaped.replace(
-        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-        (match) => {
-          let cls = 'json-number';
-          if (/^"/.test(match)) {
-            cls = /:$/.test(match) ? 'json-key' : 'json-string';
-          } else if (/true|false/.test(match)) {
-            cls = 'json-bool';
-          } else if (/null/.test(match)) {
-            cls = 'json-null';
-          }
-          return `<span class="${cls}">${match}</span>`;
-        }
-      );
-    }
-
-    // Auto-format on input after a debounce
-    let debounceTimer;
-    document.getElementById('json-input').addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(formatJSON, 400);
-    });
 
     function showToast(msg, type = '') {
       const t = document.getElementById('toast');
       t.textContent = msg;
-      t.className = 'toast show ' + type;
-      clearTimeout(t._timer);
-      t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
+      t.className = 'toast show' + (type ? ' ' + type : '');
+      setTimeout(() => t.className = 'toast', 2200);
     }
+
+    // auto-convert on input
+    document.getElementById('input-area').addEventListener('input', convert);
+
+    // init indent highlight
+    setIndent(2);
   </script>
-  <script src="search.js"></script>
 </body>
 </html>

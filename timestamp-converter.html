@@ -1,26 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <!-- AdSense disabled
+
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
--->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds, ISO 8601, UTC, and relative time. Free tool." />
+  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/timestamp-converter" />
+  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Unix Timestamp Converter — SimpleDevTools" />
-  <meta property="og:description" content="Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds, ISO 8601, UTC, and relative time. Free tool." />
-  <meta property="og:url" content="https://simpledevtools.dev/timestamp-converter" />
+  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
+  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
+  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Unix Timestamp Converter — SimpleDevTools" />
-  <meta name="twitter:description" content="Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds, ISO 8601, UTC, and relative time. Free tool." />
-  <title>Unix Timestamp Converter — SimpleDevTools</title>
+  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
+  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
+  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -28,108 +27,112 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .results-grid {
+    .editor-wrap {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.6rem;
-      margin-top: 1.25rem;
+      gap: 1.25rem;
+      align-items: start;
     }
-    @media (max-width: 560px) { .results-grid { grid-template-columns: 1fr; } }
-
-    .result-row {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
+    @media (max-width: 680px) {
+      .editor-wrap { grid-template-columns: 1fr; }
+    }
+    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+    .panel-header {
       display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-      cursor: pointer;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
     }
-    .result-row:hover {
-      border-color: rgba(12,166,120,0.3);
-      box-shadow: 0 2px 8px rgba(12,166,120,0.07);
-    }
-    .result-row:hover .r-label::after { content: ' — click to copy'; }
-
-    .r-label {
-      font-size: 0.67rem;
+    .panel-label {
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       color: var(--muted);
     }
-    .r-value {
-      font-family: var(--mono);
-      font-size: 0.88rem;
-      color: var(--text);
-      word-break: break-all;
-    }
-    .r-value.accent { color: #0a8c66; font-weight: 600; }
-
-    /* Date picker styling */
-    input[type="datetime-local"]#date-picker {
+    .code-area {
+      width: 100%;
+      min-height: 320px;
+      resize: vertical;
       background: var(--bg);
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 0.55rem 0.75rem;
       font-family: var(--mono);
       font-size: 0.82rem;
+      padding: 0.85rem 1rem;
+      line-height: 1.7;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
-      color-scheme: dark;
     }
-    [data-theme="light"] input[type="datetime-local"]#date-picker {
-      color-scheme: light;
+    .code-area:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
     }
-    input[type="datetime-local"]#date-picker:focus {
-      border-color: rgba(12,166,120,0.5);
-      box-shadow: 0 0 0 3px rgba(12,166,120,0.1);
+    .code-area[readonly] {
+      background: var(--surface2);
+      cursor: default;
     }
-    input[type="datetime-local"]#date-picker::-webkit-calendar-picker-indicator {
-      filter: invert(0.7);
-      cursor: pointer;
+    .error-banner {
+      display: none;
+      padding: 0.7rem 1rem;
+      background: rgba(245,100,122,0.08);
+      border: 1px solid var(--danger);
+      border-radius: 10px;
+      font-size: 0.83rem;
+      color: var(--danger);
+      font-family: var(--mono);
     }
-    [data-theme="light"] input[type="datetime-local"]#date-picker::-webkit-calendar-picker-indicator {
-      filter: none;
-    }
-
-    .live-badge {
-      display: inline-flex;
+    .error-banner.show { display: block; }
+    .dir-toggle {
+      display: flex;
       align-items: center;
-      gap: 0.4rem;
-      font-size: 0.72rem;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+    .dir-btn {
+      padding: 0.42rem 1rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface2);
       color: var(--muted);
-      margin-left: 0.5rem;
-      font-weight: 500;
+      transition: all 0.15s;
     }
-    .live-dot {
-      width: 6px; height: 6px;
-      background: #0ca678;
-      border-radius: 50%;
-      animation: pulse-dot 2s ease-in-out infinite;
+    .dir-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(124,106,255,0.35);
     }
-    @keyframes pulse-dot {
-      0%,100% { opacity: 1; }
-      50% { opacity: 0.35; }
+    .dir-arrow {
+      font-size: 1.1rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
+      border: 1px solid var(--border);
+      background: var(--surface2);
     }
+    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
   </style>
-  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Unix Timestamp Converter",
-    "url": "https://simpledevtools.dev/timestamp-converter",
-    "description": "Convert between Unix timestamps and human-readable dates.",
+    "name": "YAML to JSON Converter",
+    "url": "https://simpledevtools.dev/yaml-to-json",
+    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <div class="noise"></div>
@@ -158,56 +161,69 @@
   </nav>
 
   <main class="fade-in">
-
     <div class="page-header">
-      <div class="badge" style="background:rgba(12,166,120,0.07);color:#0a8c66;border-color:rgba(12,166,120,0.2);">⏱ Converter</div>
-      <h1>Timestamp Converter</h1>
-      <p>Convert Unix timestamps to human-readable dates and back. Supports seconds and milliseconds.</p>
+      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
+      <h1>YAML ↔ JSON Converter</h1>
+      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
     </div>
 
-    <!-- Unix → Date -->
-    <div class="card">
-      <div class="card-title">Unix Timestamp → Date</div>
-      <div class="row" style="margin-bottom:1rem;">
-        <div style="flex:1;">
-          <label for="unix-input">Unix timestamp (seconds or milliseconds)</label>
-          <input type="text" id="unix-input" placeholder="e.g. 1700000000" />
-        </div>
+    <!-- Direction selector -->
+    <div class="card" style="padding:1rem 1.75rem;">
+      <div class="dir-toggle">
+        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
+        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
+        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
       </div>
-      <div class="btn-group">
-        <button class="btn btn-primary" onclick="convertFromUnix()" style="background:linear-gradient(135deg,#0ca678,#38d9a9);border:none;color:#fff;box-shadow:0 2px 8px rgba(12,166,120,0.25);">Convert</button>
-        <button class="btn btn-secondary" onclick="useNow()">
-          Use now
-          <span class="live-badge"><span class="live-dot"></span></span>
-        </button>
-        <button class="btn btn-ghost" onclick="clearSection('unix')">✕</button>
-      </div>
-      <div id="unix-results"></div>
     </div>
 
-    <!-- Date → Unix -->
+    <!-- Editors -->
     <div class="card">
-      <div class="card-title">Date → Unix Timestamp</div>
-      <div style="margin-bottom:1rem;">
-        <label for="date-input">Date string (ISO, natural language, or date picker)</label>
-        <div class="row" style="flex-wrap:nowrap;gap:0.5rem;">
-          <input type="text" id="date-input" placeholder="e.g. 2024-11-15T12:00:00 or Nov 15 2024" style="flex:1;" />
-          <input type="datetime-local" id="date-picker" style="flex:0 0 auto;width:auto;" onchange="syncPicker()" />
+      <div class="error-banner" id="error-banner"></div>
+      <div class="editor-wrap">
+        <div class="editor-panel">
+          <div class="panel-header">
+            <span class="panel-label" id="input-label">YAML Input</span>
+            <div class="btn-group">
+              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
+              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
+        </div>
+        <div class="editor-panel">
+          <div class="panel-header">
+            <span class="panel-label" id="output-label">JSON Output</span>
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
+            </div>
+          </div>
+          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
+          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
+            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
+            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
+            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
+            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
+          </div>
         </div>
       </div>
-      <div class="btn-group">
-        <button class="btn btn-primary" onclick="convertFromDate()" style="background:linear-gradient(135deg,#0ca678,#38d9a9);border:none;color:#fff;box-shadow:0 2px 8px rgba(12,166,120,0.25);">Convert</button>
-        <button class="btn btn-ghost" onclick="clearSection('date')">✕ Clear</button>
-      </div>
-      <div id="date-results"></div>
+    </div>
+
+    <!-- Convert button (mobile friendly) -->
+    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
+      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
     </div>
 
   </main>
 
-  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
+  <footer>
+    Built with precision — <a href="index.html">DevTools</a> ·
+    <a href="privacy-policy.html">Privacy Policy</a> ·
+    <a href="about.html">About</a>
+  </footer>
+
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">Tools</div>
+    <div class="tool-rail-label">TOOLS</div>
     <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
     <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
     <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
@@ -215,112 +231,142 @@
     <a href="url-encoder.html" class="tool-rail-btn">🔗 URL</a>
     <a href="hash-generator.html" class="tool-rail-btn">⬡ Hash</a>
     <a href="regex-tester.html" class="tool-rail-btn">.* Regex</a>
-    <a href="timestamp-converter.html" class="tool-rail-btn active">⌚ Timestamp</a>
+    <a href="timestamp-converter.html" class="tool-rail-btn">⌚ Timestamp</a>
     <a href="case-converter.html" class="tool-rail-btn">Aa Case</a>
     <a href="lorem-ipsum-generator.html" class="tool-rail-btn">📝 Lorem</a>
     <a href="random-string-generator.html" class="tool-rail-btn">🎲 Random</a>
     <a href="password-generator.html" class="tool-rail-btn">🔐 Password</a>
     <a href="uuid-validator.html" class="tool-rail-btn">✓ UUID Val</a>
     <a href="jwt-decoder.html" class="tool-rail-btn">🔓 JWT</a>
+    <a href="yaml-to-json.html" class="tool-rail-btn active">⇅ YAML</a>
     <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
+    <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
+
   <div class="toast" id="toast"></div>
 
+  <!-- js-yaml via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+  <script src="search.js"></script>
   <script>
-    function convertFromUnix() {
-      const raw = document.getElementById('unix-input').value.trim();
-      if (!raw) return;
-      let ts = parseInt(raw, 10);
-      if (isNaN(ts)) return showToast('Enter a valid number');
-      // detect ms vs s: >1e12 is likely ms
-      const isMs = ts > 1e12;
-      const ms = isMs ? ts : ts * 1000;
-      const d = new Date(ms);
-      if (isNaN(d.getTime())) return showToast('Invalid timestamp');
-      renderResults('unix-results', d, ts, isMs);
+    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
+    let indent = 2;
+
+    const SAMPLE_YAML = `name: SimpleDevTools
+version: 1.0.0
+tools:
+  - name: JSON Formatter
+    url: /json-formatter
+    free: true
+  - name: YAML to JSON
+    url: /yaml-to-json
+    free: true
+settings:
+  theme: dark
+  language: en
+  analytics: false`;
+
+    const SAMPLE_JSON = JSON.stringify({
+      name: 'SimpleDevTools',
+      version: '1.0.0',
+      tools: [
+        { name: 'JSON Formatter', url: '/json-formatter', free: true },
+        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
+      ],
+      settings: { theme: 'dark', language: 'en', analytics: false }
+    }, null, 2);
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
+      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
+      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
+      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
+      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
+      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
+      clearAll();
     }
 
-    function convertFromDate() {
-      const raw = document.getElementById('date-input').value.trim();
-      if (!raw) return;
-      const d = new Date(raw);
-      if (isNaN(d.getTime())) return showToast('Could not parse date string');
-      const ts = Math.floor(d.getTime() / 1000);
-      renderResults('date-results', d, ts, false);
+    function swapMode() {
+      const out = document.getElementById('output-area').value;
+      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
+      if (out) {
+        document.getElementById('input-area').value = out;
+        convert();
+      }
     }
 
-    function useNow() {
-      const d = new Date();
-      const ts = Math.floor(d.getTime() / 1000);
-      document.getElementById('unix-input').value = ts;
-      renderResults('unix-results', d, ts, false);
+    function setIndent(n) {
+      indent = n;
+      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
+      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
+      if (document.getElementById('output-area').value) convert();
     }
 
-    function syncPicker() {
-      const val = document.getElementById('date-picker').value;
-      if (val) document.getElementById('date-input').value = val;
+    function getIndentValue() {
+      return indent === 'tab' ? '\t' : indent;
     }
 
-    function renderResults(containerId, d, ts, isMs) {
-      const container = document.getElementById(containerId);
-      const rel = relativeTime(d);
-      const sec = isMs ? Math.floor(ts / 1000) : ts;
-      const ms  = isMs ? ts : ts * 1000;
-      const rows = [
-        ['Unix (seconds)',      sec.toString()],
-        ['Unix (milliseconds)', ms.toString()],
-        ['ISO 8601',            d.toISOString()],
-        ['UTC',                 d.toUTCString()],
-        ['Local time',          d.toLocaleString()],
-        ['Relative',            rel],
-        ['Day of week',         d.toLocaleDateString('en', {weekday:'long'})],
-        ['Week number',         'Week ' + getWeek(d) + ' of ' + d.getFullYear()],
-      ];
-      container.innerHTML = `<div class="results-grid">` +
-        rows.map(([label, val]) =>
-          `<div class="result-row" onclick="copyVal('${escAttr(val)}')">
-            <div class="r-label">${label}</div>
-            <div class="r-value">${escHtml(val)}</div>
-          </div>`
-        ).join('') +
-        `</div>`;
+    function showError(msg) {
+      const el = document.getElementById('error-banner');
+      el.textContent = msg;
+      el.classList.add('show');
     }
 
-    function relativeTime(d) {
-      const diff = Date.now() - d.getTime();
-      const abs = Math.abs(diff);
-      const future = diff < 0;
-      const suf = future ? ' from now' : ' ago';
-      if (abs < 60000)   return Math.round(abs/1000) + ' seconds' + suf;
-      if (abs < 3600000) return Math.round(abs/60000) + ' minutes' + suf;
-      if (abs < 86400000) return Math.round(abs/3600000) + ' hours' + suf;
-      return Math.round(abs/86400000) + ' days' + suf;
+    function clearError() {
+      document.getElementById('error-banner').classList.remove('show');
     }
 
-    function getWeek(d) {
-      const start = new Date(d.getFullYear(), 0, 1);
-      return Math.ceil(((d - start) / 86400000 + start.getDay() + 1) / 7);
+    function convert() {
+      clearError();
+      const input = document.getElementById('input-area').value.trim();
+      if (!input) { document.getElementById('output-area').value = ''; return; }
+
+      try {
+        let result;
+        if (mode === 'yaml2json') {
+          const parsed = jsyaml.load(input);
+          result = JSON.stringify(parsed, null, getIndentValue());
+        } else {
+          const parsed = JSON.parse(input);
+          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
+        }
+        document.getElementById('output-area').value = result;
+      } catch (e) {
+        showError('⚠ ' + e.message);
+        document.getElementById('output-area').value = '';
+      }
     }
 
-    function clearSection(sec) {
-      if (sec === 'unix') { document.getElementById('unix-input').value = ''; document.getElementById('unix-results').innerHTML = ''; }
-      else                { document.getElementById('date-input').value = ''; document.getElementById('date-results').innerHTML = ''; }
+    function loadSample() {
+      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
+      convert();
     }
 
-    function copyVal(val) {
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!'));
+    function clearAll() {
+      document.getElementById('input-area').value = '';
+      document.getElementById('output-area').value = '';
+      clearError();
     }
 
-    function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function escAttr(s) { return s.replace(/'/g,"\\'"); }
+    function copyOutput() {
+      const val = document.getElementById('output-area').value;
+      if (!val) return;
+      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
+    }
 
-    function showToast(msg) {
+    function showToast(msg, type = '') {
       const t = document.getElementById('toast');
       t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2200);
+      t.className = 'toast show' + (type ? ' ' + type : '');
+      setTimeout(() => t.className = 'toast', 2200);
     }
+
+    // auto-convert on input
+    document.getElementById('input-area').addEventListener('input', convert);
+
+    // init indent highlight
+    setIndent(2);
   </script>
-  <script src="search.js"></script>
 </body>
 </html>

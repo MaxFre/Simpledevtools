@@ -16,6 +16,7 @@
     { name: 'JWT Decoder',          desc: 'Decode JWT tokens — header, payload, claims, and expiry.',icon: '🔓', url: 'jwt-decoder.html',             tags: ['jwt','token','decode','auth','claims','bearer','authorization'] },
     { name: 'Font Generator',         desc: 'Copy and paste fancy Unicode fonts — bold, italic, cursive, bubble, and more.', icon: '𝓐', url: 'font-generator.html', tags: ['font','fonts','copy paste','fancy','unicode','generator','style','text','cursive','bold'] },
     { name: 'YAML to JSON',           desc: 'Convert YAML to JSON or JSON to YAML — bidirectional, instant, client-side.',   icon: '⇅', url: 'yaml-to-json.html',    tags: ['yaml','json','convert','converter','yml','parse'] },
+    { name: 'Background Changer',     desc: 'Remove and replace image backgrounds — transparent, white, black, or custom image.', icon: '🖼', url: 'bg-changer.html', tags: ['background','image','remove','replace','transparent','bg','photo','png','jpg','jpeg','webp'] },
   ];
 
   function init() {
