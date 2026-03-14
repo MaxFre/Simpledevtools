@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more. No signup, no tracking. Just tools." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="Free Online Developer Tools: JSON Formatter, UUID Generator, Regex Tester | SimpleDevTools" />
+  <meta property="og:description" content="Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more. No signup, no tracking. Just tools." />
+  <meta property="og:url" content="https://simpledevtools.dev/" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="Free Online Developer Tools: JSON Formatter, UUID Generator, Regex Tester | SimpleDevTools" />
+  <meta name="twitter:description" content="Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more. No signup, no tracking. Just tools." />
+  <title>Free Online Developer Tools: JSON Formatter, UUID Generator, Regex Tester | SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,114 +28,706 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
+    /* ── Home-only premium styles ── */
+
+    /* Animated gradient orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orb-drift 20s ease-in-out infinite alternate;
     }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
+
+    .orb-1 {
+      top: -10%;
+      left: 15%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(108,92,231,0.08) 0%, transparent 70%);
     }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
+
+    .orb-2 {
+      bottom: -15%;
+      right: 10%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(0,184,148,0.06) 0%, transparent 70%);
+      animation-delay: -7s;
+      animation-duration: 25s;
+    }
+
+    .orb-3 {
+      top: 40%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(225,112,85,0.05) 0%, transparent 70%);
+      animation-delay: -14s;
+      animation-duration: 18s;
+    }
+
+    @keyframes orb-drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(30px, -20px) scale(1.05); }
+      66%  { transform: translate(-20px, 15px) scale(0.95); }
+      100% { transform: translate(10px, -10px) scale(1.02); }
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 5rem 0 3.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      margin: 0 auto 1.5rem;
+      display: block;
+      box-shadow: 0 8px 32px rgba(108,92,231,0.25);
+      animation: fadeInUp 0.4s var(--ease-out) both;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 1.75rem;
+      animation: fadeInUp 0.5s var(--ease-out) both;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent));
+    }
+
+    .hero-eyebrow::after {
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #1a1a2e 0%, #3d3580 35%, var(--accent) 70%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.6s var(--ease-out) 0.05s both;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 420px;
+      margin: 0 auto 0;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      animation: fadeInUp 0.6s var(--ease-out) 0.1s both;
+    }
+
+    /* Search bar */
+    .search-wrap {
+      max-width: 520px;
+      margin: 2rem auto 0;
+      position: relative;
+      z-index: 500;
+      animation: fadeInUp 0.6s var(--ease-out) 0.15s both;
+    }
+
+    .search-input-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(124,106,255,0.25);
+      border-radius: 14px;
+      padding: 0 1rem;
+      gap: 0.6rem;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
     }
-    .panel-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+
+    .search-input-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft), 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .search-icon { font-size: 1rem; opacity: 0.45; flex-shrink: 0; }
+
+    #search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      color: var(--text);
+      padding: 0.85rem 0;
+    }
+
+    #search-input::placeholder { color: var(--muted); }
+
+    .search-clear {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--muted);
+      padding: 0.2rem;
+      line-height: 1;
+      display: none;
+      transition: color 0.2s;
+    }
+    .search-clear:hover { color: var(--text); }
+    .search-clear.visible { display: flex; }
+
+    /* Dropdown */
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0; right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      z-index: 1000;
+      display: none;
+    }
+
+    .search-dropdown.open { display: block; }
+
+    .search-result {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .search-result:hover,
+    .search-result.active {
+      background: var(--accent-soft);
+    }
+
+    .search-result-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      background: var(--card-icon-bg, rgba(124,106,255,0.08));
+      flex-shrink: 0;
+    }
+
+    .search-result-text { flex: 1; }
+    .search-result-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .search-result-name em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .search-result-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.1rem;
+    }
+
+    .search-no-results {
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.85rem;
       color: var(--muted);
     }
-    .code-area {
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      padding: 0.85rem 1rem;
-      line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
+
+    /* Dark mode search */
+    [data-theme="dark"] .search-input-row {
       background: var(--surface2);
-      cursor: default;
+      border-color: rgba(124,106,255,0.2);
     }
-    .error-banner {
-      display: none;
-      padding: 0.7rem 1rem;
-      background: rgba(245,100,122,0.08);
-      border: 1px solid var(--danger);
-      border-radius: 10px;
-      font-size: 0.83rem;
-      color: var(--danger);
-      font-family: var(--mono);
+    [data-theme="dark"] .search-dropdown {
+      background: var(--surface);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
     }
-    .error-banner.show { display: block; }
-    .dir-toggle {
+
+    /* Divider with label */
+    .divider-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 2.5rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      animation: fadeInUp 0.5s var(--ease-out) 0.15s both;
+    }
+
+    [data-theme="dark"] .divider-label { color: var(--text-secondary); }
+
+    .divider-label::before,
+    .divider-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    /* Tool grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Premium tool cards */
+    .tool-card {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s var(--ease-out);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    /* top shine line */
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+      transition: background 0.4s;
+    }
+
+    /* hover glow */
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 0%, var(--card-glow, rgba(124,106,255,0.08)) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.5s var(--ease-out);
+      pointer-events: none;
+    }
+
+    .tool-card:hover {
+      border-color: var(--card-accent, rgba(0,0,0,0.15));
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.95);
+      box-shadow:
+        0 12px 40px rgba(0,0,0,0.12),
+        0 4px 12px rgba(0,0,0,0.07);
+    }
+
+    .tool-card:hover::before {
+      background: linear-gradient(90deg, transparent, var(--card-accent, rgba(0,0,0,0.06)), transparent);
+    }
+
+    .tool-card:hover::after { opacity: 1; }
+
+    .tool-card:active { transform: translateY(-2px) scale(0.99); }
+
+    /* card icon — frosted glass */
+    .tool-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
+      font-size: 1.8rem;
+      font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
+      line-height: 1;
+      background: var(--card-icon-bg, rgba(124,106,255,0.18));
+      border: 1.5px solid var(--card-icon-border, rgba(124,106,255,0.3));
+      position: relative;
+      z-index: 1;
+      transition: all 0.4s var(--ease-out);
     }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
+
+    .tool-card:hover .tool-icon {
+      box-shadow: 0 4px 12px var(--card-glow, rgba(108,92,231,0.15));
+      transform: scale(1.05);
+    }
+
+    .tool-card h2 {
+      font-size: 1.05rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tool-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Dark mode card overrides */
+    [data-theme="dark"] .tool-card { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; border-color: var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2); }
+    [data-theme="dark"] .tool-card p { color: var(--text-secondary); }
+    [data-theme="dark"] .tool-card h2 { color: var(--text); }
+    [data-theme="dark"] .tool-card:hover {
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .tool-arrow {
       font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface2);
+      color: var(--card-accent, var(--accent));
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+      position: relative;
+      z-index: 1;
+      transition: gap 0.3s var(--ease-out);
+    }
+
+    .tool-card:hover .tool-arrow { gap: 0.6rem; }
+
+    /* Card-specific accents */
+    .card-guid           { --card-accent:rgba(108,92,231,0.25); --card-glow:rgba(108,92,231,0.12); --card-icon-bg:rgba(108,92,231,0.22); --card-icon-border:rgba(108,92,231,0.45); }
+    .card-lorem          { --card-accent:rgba(0,184,148,0.25);  --card-glow:rgba(0,184,148,0.12);  --card-icon-bg:rgba(0,184,148,0.22);  --card-icon-border:rgba(0,184,148,0.45);  }
+    .card-case           { --card-accent:rgba(217,72,15,0.25);  --card-glow:rgba(217,72,15,0.12);  --card-icon-bg:rgba(217,72,15,0.22);  --card-icon-border:rgba(217,72,15,0.45);  }
+    .card-json           { --card-accent:rgba(225,112,85,0.25); --card-glow:rgba(225,112,85,0.12); --card-icon-bg:rgba(225,112,85,0.22); --card-icon-border:rgba(225,112,85,0.45); }
+    .card-json-validator { --card-accent:rgba(240,160,0,0.25);  --card-glow:rgba(240,160,0,0.12);  --card-icon-bg:rgba(240,160,0,0.22);  --card-icon-border:rgba(240,160,0,0.45);  }
+    .card-base64         { --card-accent:rgba(25,113,194,0.25); --card-glow:rgba(25,113,194,0.12); --card-icon-bg:rgba(25,113,194,0.22); --card-icon-border:rgba(25,113,194,0.45); }
+    .card-url            { --card-accent:rgba(47,158,68,0.25);  --card-glow:rgba(47,158,68,0.12);  --card-icon-bg:rgba(47,158,68,0.22);  --card-icon-border:rgba(47,158,68,0.45);  }
+    .card-timestamp      { --card-accent:rgba(12,166,120,0.25); --card-glow:rgba(12,166,120,0.12); --card-icon-bg:rgba(12,166,120,0.22); --card-icon-border:rgba(12,166,120,0.45); }
+    .card-regex          { --card-accent:rgba(194,37,92,0.25);  --card-glow:rgba(194,37,92,0.12);  --card-icon-bg:rgba(194,37,92,0.22);  --card-icon-border:rgba(194,37,92,0.45);  }
+    .card-hash           { --card-accent:rgba(112,72,232,0.25); --card-glow:rgba(112,72,232,0.12); --card-icon-bg:rgba(112,72,232,0.22); --card-icon-border:rgba(112,72,232,0.45); }
+    .card-rand           { --card-accent:rgba(62,232,192,0.25);  --card-glow:rgba(62,232,192,0.12);  --card-icon-bg:rgba(62,232,192,0.22);  --card-icon-border:rgba(62,232,192,0.45);  }
+    .card-pwd            { --card-accent:rgba(245,184,85,0.25);  --card-glow:rgba(245,184,85,0.12);  --card-icon-bg:rgba(245,184,85,0.22);  --card-icon-border:rgba(245,184,85,0.45);  }
+    .card-uuid-val       { --card-accent:rgba(16,185,129,0.25);  --card-glow:rgba(16,185,129,0.12);  --card-icon-bg:rgba(16,185,129,0.22);  --card-icon-border:rgba(16,185,129,0.45);  }
+    .card-jwt            { --card-accent:rgba(230,73,128,0.25);  --card-glow:rgba(230,73,128,0.12);  --card-icon-bg:rgba(230,73,128,0.22);  --card-icon-border:rgba(230,73,128,0.45);  }
+    .card-font           { --card-accent:rgba(168,85,247,0.25);  --card-glow:rgba(168,85,247,0.12);  --card-icon-bg:rgba(168,85,247,0.22);  --card-icon-border:rgba(168,85,247,0.45);  }
+    .card-yaml           { --card-accent:rgba(253,203,110,0.25);  --card-glow:rgba(253,203,110,0.10);  --card-icon-bg:rgba(253,203,110,0.22);  --card-icon-border:rgba(253,203,110,0.45);  }
+
+    /* Dark mode — stronger icon colours */
+    [data-theme="dark"] .card-guid           { --card-icon-bg:rgba(108,92,231,0.35);  --card-icon-border:rgba(108,92,231,0.6);  }
+    [data-theme="dark"] .card-lorem          { --card-icon-bg:rgba(0,184,148,0.32);   --card-icon-border:rgba(0,184,148,0.6);   }
+    [data-theme="dark"] .card-case           { --card-icon-bg:rgba(217,72,15,0.35);   --card-icon-border:rgba(217,72,15,0.6);   }
+    [data-theme="dark"] .card-json           { --card-icon-bg:rgba(225,112,85,0.35);  --card-icon-border:rgba(225,112,85,0.6);  }
+    [data-theme="dark"] .card-json-validator { --card-icon-bg:rgba(240,160,0,0.32);   --card-icon-border:rgba(240,160,0,0.6);   }
+    [data-theme="dark"] .card-base64         { --card-icon-bg:rgba(25,113,194,0.38);  --card-icon-border:rgba(25,113,194,0.6);  }
+    [data-theme="dark"] .card-url            { --card-icon-bg:rgba(47,158,68,0.32);   --card-icon-border:rgba(47,158,68,0.6);   }
+    [data-theme="dark"] .card-timestamp      { --card-icon-bg:rgba(12,166,120,0.32);  --card-icon-border:rgba(12,166,120,0.6);  }
+    [data-theme="dark"] .card-regex          { --card-icon-bg:rgba(194,37,92,0.38);   --card-icon-border:rgba(194,37,92,0.6);   }
+    [data-theme="dark"] .card-hash           { --card-icon-bg:rgba(112,72,232,0.38);  --card-icon-border:rgba(112,72,232,0.6);  }
+    [data-theme="dark"] .card-rand           { --card-icon-bg:rgba(62,232,192,0.35);   --card-icon-border:rgba(62,232,192,0.6);  }
+    [data-theme="dark"] .card-pwd            { --card-icon-bg:rgba(245,184,85,0.35);   --card-icon-border:rgba(245,184,85,0.6);  }
+    [data-theme="dark"] .card-uuid-val       { --card-icon-bg:rgba(16,185,129,0.35);   --card-icon-border:rgba(16,185,129,0.6);  }
+    [data-theme="dark"] .card-jwt            { --card-icon-bg:rgba(230,73,128,0.38);   --card-icon-border:rgba(230,73,128,0.6);  }
+    [data-theme="dark"] .card-font           { --card-icon-bg:rgba(168,85,247,0.38);   --card-icon-border:rgba(168,85,247,0.6);  }
+    [data-theme="dark"] .card-yaml           { --card-icon-bg:rgba(253,203,110,0.35);   --card-icon-border:rgba(253,203,110,0.6);  }
+
+    /* Stagger animation */
+    .tool-card:nth-child(1) { animation: fadeInUp 0.5s var(--ease-out) 0.2s both; }
+    .tool-card:nth-child(2) { animation: fadeInUp 0.5s var(--ease-out) 0.3s both; }
+    .tool-card:nth-child(3) { animation: fadeInUp 0.5s var(--ease-out) 0.4s both; }
+
+    /* Bottom tagline */
+    .bottom-tag {
+      text-align: center;
+      margin-top: 4rem;
+      animation: fadeInUp 0.5s var(--ease-out) 0.5s both;
+    }
+
+    .bottom-tag p {
+      font-size: 0.8rem;
       color: var(--muted);
-      transition: all 0.15s;
+      letter-spacing: 0.02em;
     }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
-    }
-    .dir-arrow {
-      font-size: 1.1rem;
+
+    .bottom-tag .keyboard-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
       color: var(--muted);
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
     }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
+
+    .seo-block {
+      margin-top: 3.5rem;
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(255,255,255,0.72);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .seo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .seo-block h2 {
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.9rem;
+      color: var(--text);
+    }
+
+    .seo-block p {
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 0.95rem;
+    }
+
+    .seo-block p:last-child {
+      margin-bottom: 0;
+    }
+
+    .seo-link-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .seo-link-card {
+      display: block;
+      padding: 0.95rem 1rem;
+      border-radius: 14px;
+      text-decoration: none;
+      background: rgba(124,106,255,0.06);
+      border: 1px solid rgba(124,106,255,0.12);
+      transition: transform 0.2s var(--ease-out), border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+    }
+
+    .seo-link-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(124,106,255,0.25);
+      background: rgba(124,106,255,0.09);
+    }
+
+    .seo-link-card strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.88rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .seo-link-card span {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 0.9rem;
+      margin-top: 1.25rem;
+    }
+
+    .faq-item {
+      padding: 1rem 1.1rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .faq-item h3 {
+      font-size: 0.92rem;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .faq-item p {
+      margin: 0;
+      font-size: 0.82rem;
+    }
+
+    [data-theme="dark"] .seo-block {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    [data-theme="dark"] .seo-link-card {
+      background: rgba(124,106,255,0.12);
+      border-color: rgba(124,106,255,0.18);
+    }
+
+    [data-theme="dark"] .seo-link-card:hover {
+      background: rgba(124,106,255,0.18);
+      border-color: rgba(124,106,255,0.28);
+    }
+
+    [data-theme="dark"] .faq-item {
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .seo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .keyboard-hint kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      background: #f0f0f2;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 6px;
+      font-family: var(--font);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "All",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://simpledevtools.dev/#organization",
+        "name": "SimpleDevTools",
+        "url": "https://simpledevtools.dev/"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://simpledevtools.dev/#website",
+        "name": "SimpleDevTools",
+        "url": "https://simpledevtools.dev/",
+        "description": "Free online developer tools for JSON formatting, UUID generation, Base64 encoding, regex testing, URL encoding, hashing, timestamps, passwords, and more.",
+        "publisher": {
+          "@id": "https://simpledevtools.dev/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://simpledevtools.dev/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": "https://simpledevtools.dev/#webpage",
+        "url": "https://simpledevtools.dev/",
+        "name": "Free Online Developer Tools",
+        "description": "A collection of free online developer tools for JSON, UUIDs, Base64, regex, hashing, timestamps, URLs, passwords, and random strings.",
+        "isPartOf": {
+          "@id": "https://simpledevtools.dev/#website"
+        },
+        "mainEntity": {
+          "@type": "ItemList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "UUID Generator", "url": "https://simpledevtools.dev/uuid-generator" },
+            { "@type": "ListItem", "position": 2, "name": "JSON Formatter", "url": "https://simpledevtools.dev/json-formatter" },
+            { "@type": "ListItem", "position": 3, "name": "JSON Validator", "url": "https://simpledevtools.dev/json-validator" },
+            { "@type": "ListItem", "position": 4, "name": "Base64 Encoder", "url": "https://simpledevtools.dev/base64-encoder" },
+            { "@type": "ListItem", "position": 5, "name": "URL Encoder", "url": "https://simpledevtools.dev/url-encoder" },
+            { "@type": "ListItem", "position": 6, "name": "Regex Tester", "url": "https://simpledevtools.dev/regex-tester" },
+            { "@type": "ListItem", "position": 7, "name": "Hash Generator", "url": "https://simpledevtools.dev/hash-generator" },
+            { "@type": "ListItem", "position": 8, "name": "Timestamp Converter", "url": "https://simpledevtools.dev/timestamp-converter" },
+            { "@type": "ListItem", "position": 9, "name": "Password Generator", "url": "https://simpledevtools.dev/password-generator" },
+            { "@type": "ListItem", "position": 10, "name": "UUID Validator", "url": "https://simpledevtools.dev/uuid-validator" },
+            { "@type": "ListItem", "position": 11, "name": "JWT Decoder", "url": "https://simpledevtools.dev/jwt-decoder" },
+            { "@type": "ListItem", "position": 12, "name": "Font Generator", "url": "https://simpledevtools.dev/font-generator" },
+            { "@type": "ListItem", "position": 13, "name": "YAML to JSON", "url": "https://simpledevtools.dev/yaml-to-json" }
+          ]
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are these developer tools free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every tool on SimpleDevTools is free to use with no signup, no account, and no paywall."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do these tools run in the browser?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The tools are designed to run client-side in the browser for quick formatting, encoding, validation, and generation tasks."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which developer tasks can I handle here?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can format and validate JSON, generate UUIDs, test regex patterns, encode Base64 and URLs, generate hashes, convert timestamps, create passwords, and generate random strings."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which tools are most useful for API debugging and data cleanup?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The most commonly used tools for those workflows are JSON Formatter, JSON Validator, Base64 Encoder, URL Encoder, Regex Tester, and Timestamp Converter."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
+
+  <!-- Ambient orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
   <div class="noise"></div>
 
   <nav>
@@ -156,217 +749,299 @@
       <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
     </div>
     <ul class="nav-links">
-      <li><a href="index.html">← All Tools</a></li>
+      <li><a href="index.html" class="active">Home</a></li>
     </ul>
   </nav>
 
-  <main class="fade-in">
-    <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
-    </div>
+  <main>
+    <section class="hero">
+      <div class="hero-eyebrow">Developer Tools</div>
+      <h1>The dev tools you<br>actually need.</h1>
+      <p>Fast, focused tools for everyday development.<br>16 tools and growing.</p>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
-      </div>
-    </div>
-
-    <!-- Editors -->
-    <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
+      <div class="search-wrap">
+        <div class="search-input-row">
+          <span class="search-icon">🔍</span>
+          <input id="search-input" type="text" placeholder="Search tools…" autocomplete="off" spellcheck="false" />
+          <button class="search-clear" id="search-clear" aria-label="Clear">✕</button>
         </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
-          </div>
+        <div class="search-dropdown" id="search-dropdown"></div>
+      </div>
+    </section>
+    <div class="tools-grid" style="margin-bottom:2rem;">
+      <a href="uuid-generator.html" class="tool-card card-guid">
+        <div class="tool-icon">🔑</div>
+        <h2>GUID Generator</h2>
+        <p>Generate RFC 4122 v4 UUIDs in bulk. Copy individually or all at once.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="lorem-ipsum-generator.html" class="tool-card card-lorem">
+        <div class="tool-icon">📝</div>
+        <h2>Lorem Ipsum</h2>
+        <p>Placeholder text by paragraphs, sentences, or words. Fully customisable.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="case-converter.html" class="tool-card card-case">
+        <div class="tool-icon">🔡</div>
+        <h2>Case Converter</h2>
+        <p>Convert to camelCase, snake_case, CAPS, Title Case, kebab-case, and more.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+    </div>
+
+    <div class="divider-label">JSON</div>
+    <div class="tools-grid" style="margin-bottom:2rem;">
+      <a href="json-formatter.html" class="tool-card card-json">
+        <div class="tool-icon">📋</div>
+        <h2>JSON Formatter</h2>
+        <p>Format, beautify, and minify JSON with syntax highlighting and error detection.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="json-validator.html" class="tool-card card-json-validator">
+        <div class="tool-icon">✅</div>
+        <h2>JSON Validator</h2>
+        <p>Validate JSON structure, pinpoint errors by line, and inspect parsed statistics.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+    </div>
+
+    <div class="divider-label">Encoding</div>
+    <div class="tools-grid" style="margin-bottom:2rem;">
+      <a href="base64-encoder.html" class="tool-card card-base64">
+        <div class="tool-icon">🔄</div>
+        <h2>Base64</h2>
+        <p>Encode and decode Base64 strings instantly — handles Unicode text safely.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="url-encoder.html" class="tool-card card-url">
+        <div class="tool-icon">🔗</div>
+        <h2>URL Encode / Decode</h2>
+        <p>Percent-encode or decode URLs and query parameters with one click.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+    </div>
+
+    <div class="divider-label">Tools</div>
+    <div class="tools-grid">
+      <a href="timestamp-converter.html" class="tool-card card-timestamp">
+        <div class="tool-icon">🕒</div>
+        <h2>Timestamp Converter</h2>
+        <p>Convert Unix timestamps to human-readable dates and back. Seconds or milliseconds.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="regex-tester.html" class="tool-card card-regex">
+        <div class="tool-icon">🔍</div>
+        <h2>Regex Tester</h2>
+        <p>Test regular expressions live. See all matches, groups, and positions highlighted.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="hash-generator.html" class="tool-card card-hash">
+        <div class="tool-icon">#️⃣</div>
+        <h2>Hash Generator</h2>
+        <p>Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes via the WebCrypto API.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+    </div>
+
+    <div class="divider-label">Security &amp; Identity</div>
+    <div class="tools-grid" style="margin-bottom:2rem;">
+      <a href="random-string-generator.html" class="tool-card card-rand">
+        <div class="tool-icon">🎲</div>
+        <h2>Random String Generator</h2>
+        <p>Generate cryptographically random strings — tokens, secrets, keys — with a custom character set.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="password-generator.html" class="tool-card card-pwd">
+        <div class="tool-icon">🔐</div>
+        <h2>Password Generator</h2>
+        <p>Strong random passwords with entropy scoring. Choose length, uppercase, symbols, and more.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="uuid-validator.html" class="tool-card card-uuid-val">
+        <div class="tool-icon">✅</div>
+        <h2>UUID Validator</h2>
+        <p>Validate one or many UUIDs, detect version (v1–v5), variant, and formatting issues.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="jwt-decoder.html" class="tool-card card-jwt">
+        <div class="tool-icon">🔓</div>
+        <h2>JWT Decoder</h2>
+        <p>Decode JWT tokens and inspect header, payload claims, and expiration status instantly.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="font-generator.html" class="tool-card card-font">
+        <div class="tool-icon">✨</div>
+        <h2>Font Generator</h2>
+        <p>Convert text to bold, italic, cursive, monospace, bubble, and 20+ Unicode font styles. One-click copy.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+      <a href="yaml-to-json.html" class="tool-card card-yaml">
+        <div class="tool-icon">⇅</div>
+        <h2>YAML ↔ JSON</h2>
+        <p>Convert YAML to JSON or JSON to YAML instantly. Bidirectional, client-side, with adjustable indentation.</p>
+        <div class="tool-arrow">Open tool →</div>
+      </a>
+    </div>
+
+    <section class="seo-block" aria-labelledby="dev-tools-overview">
+      <div class="seo-grid">
+        <div>
+          <h2 id="dev-tools-overview">Free online developer tools for daily debugging, formatting, encoding, and validation</h2>
+          <p>SimpleDevTools brings together the browser-based utilities developers reach for every day: a JSON formatter, JSON validator, UUID generator, regex tester, Base64 encoder, URL encoder, hash generator, timestamp converter, password generator, and more. Each tool is designed to open fast, solve one job well, and stay out of the way.</p>
+          <p>These tools are useful for API development, test-data generation, data cleanup, payload inspection, query-string debugging, security workflows, and common frontend or backend support tasks. Because the utilities are focused and client-side, they work well for quick checks during development without extra setup.</p>
+        </div>
+        <div class="seo-link-list" aria-label="Popular tools">
+          <a href="json-formatter.html" class="seo-link-card">
+            <strong>JSON Formatter</strong>
+            <span>Beautify, minify, and inspect JSON payloads while debugging APIs and config files.</span>
+          </a>
+          <a href="uuid-generator.html" class="seo-link-card">
+            <strong>UUID Generator</strong>
+            <span>Generate version 4 UUIDs and GUIDs for IDs, fixtures, and test data.</span>
+          </a>
+          <a href="regex-tester.html" class="seo-link-card">
+            <strong>Regex Tester</strong>
+            <span>Test regular expressions against sample text with live matches and groups.</span>
+          </a>
+          <a href="timestamp-converter.html" class="seo-link-card">
+            <strong>Timestamp Converter</strong>
+            <span>Convert Unix timestamps and ISO dates when tracing logs and backend events.</span>
+          </a>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
-    </div>
+    <section class="seo-block" aria-labelledby="developer-tools-faq">
+      <h2 id="developer-tools-faq">Common questions about these developer tools</h2>
+      <div class="faq-list">
+        <article class="faq-item">
+          <h3>Are these developer tools free?</h3>
+          <p>Yes. The full collection is free to use, with no account, no signup flow, and no pricing gate.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Which tools are best for JSON and API debugging?</h3>
+          <p><a href="json-formatter.html">JSON Formatter</a>, <a href="json-validator.html">JSON Validator</a>, <a href="base64-encoder.html">Base64 Encoder</a>, and <a href="url-encoder.html">URL Encode / Decode</a> cover the most common payload, encoding, and query-string checks.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Can I use these tools for IDs, test data, and security workflows?</h3>
+          <p>Yes. <a href="uuid-generator.html">UUID Generator</a>, <a href="random-string-generator.html">Random String Generator</a>, <a href="password-generator.html">Password Generator</a>, and <a href="hash-generator.html">Hash Generator</a> are built for those everyday tasks.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Do the tools cover timestamps, text conversion, and regex testing too?</h3>
+          <p>Yes. You can convert Unix timestamps, test regular expressions, and transform text casing without leaving the site.</p>
+        </article>
+      </div>
+    </section>
 
+    <div class="bottom-tag">
+      <p>100% client-side · Zero dependencies · Open forever</p>
+    </div>
   </main>
 
+  <script>
+  (function() {
+    const TOOLS = [
+      { name: 'GUID Generator',       desc: 'Generate RFC 4122 v4 UUIDs in bulk.',              icon: '🔑', url: 'uuid-generator.html',          tags: ['uuid','guid','id','random'] },
+      { name: 'Lorem Ipsum',          desc: 'Placeholder text by paragraphs or sentences.',       icon: '📝', url: 'lorem-ipsum-generator.html',   tags: ['lorem','placeholder','text','dummy'] },
+      { name: 'Case Converter',       desc: 'camelCase, snake_case, CAPS, kebab-case and more.',  icon: 'Aa', url: 'case-converter.html',           tags: ['case','camel','snake','upper','lower','kebab'] },
+      { name: 'JSON Formatter',       desc: 'Format, beautify and minify JSON.',                  icon: '🗂', url: 'json-formatter.html',           tags: ['json','format','beautify','minify','pretty'] },
+      { name: 'JSON Validator',       desc: 'Validate JSON and pinpoint errors by line.',         icon: '✓',  url: 'json-validator.html',           tags: ['json','validate','lint','check'] },
+      { name: 'Base64 Encoder',       desc: 'Encode and decode Base64 strings.',                  icon: '⇄',  url: 'base64-encoder.html',           tags: ['base64','encode','decode','binary'] },
+      { name: 'URL Encoder',          desc: 'Percent-encode or decode URLs.',                     icon: '🔗', url: 'url-encoder.html',              tags: ['url','encode','decode','percent','query'] },
+      { name: 'Timestamp Converter',  desc: 'Convert Unix timestamps to readable dates.',         icon: '⏱', url: 'timestamp-converter.html',      tags: ['timestamp','unix','epoch','date','time'] },
+      { name: 'Regex Tester',         desc: 'Test regular expressions live with match highlights.',icon: '.*', url: 'regex-tester.html',             tags: ['regex','regexp','pattern','match','test'] },
+      { name: 'Hash Generator',       desc: 'SHA-1, SHA-256, SHA-384, SHA-512 hashes.',           icon: '⬡',  url: 'hash-generator.html',           tags: ['hash','sha','md5','sha256','sha512','checksum'] },
+      { name: 'Random String Generator', desc: 'Generate cryptographically random strings with custom charset.', icon: '🎲', url: 'random-string-generator.html', tags: ['random','string','token','secret','charset'] },
+      { name: 'Password Generator',  desc: 'Generate strong random passwords with entropy score.',   icon: '🔐', url: 'password-generator.html',        tags: ['password','random','secure','strong','generator'] },
+      { name: 'UUID Validator',       desc: 'Validate UUIDs and detect version and variant.',          icon: '✓',  url: 'uuid-validator.html',            tags: ['uuid','guid','validate','check','version'] },
+      { name: 'JWT Decoder',          desc: 'Decode JWT tokens — header, payload, claims, and expiry.',icon: '🔓', url: 'jwt-decoder.html',               tags: ['jwt','token','decode','auth','claims','bearer','authorization'] },
+      { name: 'Font Generator',         desc: 'Copy and paste fancy Unicode fonts — bold, italic, cursive, bubble, and more.', icon: '𝓐', url: 'font-generator.html', tags: ['font','fonts','copy paste','fancy','unicode','generator','style','text','cursive','bold'] },
+      { name: 'YAML to JSON',           desc: 'Convert YAML to JSON or JSON to YAML — bidirectional, instant, client-side.',   icon: '⇅', url: 'yaml-to-json.html',    tags: ['yaml','json','convert','converter','yml','parse'] },
+    ];
+
+    const input    = document.getElementById('search-input');
+    const dropdown = document.getElementById('search-dropdown');
+    const clearBtn = document.getElementById('search-clear');
+    let activeIdx  = -1;
+
+    function highlight(text, query) {
+      if (!query) return text;
+      const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return text.replace(re, '<em>$1</em>');
+    }
+
+    function render(query) {
+      const q = query.trim().toLowerCase();
+      activeIdx = -1;
+      if (!q) { dropdown.classList.remove('open'); dropdown.innerHTML = ''; return; }
+
+      const results = TOOLS.filter(t =>
+        t.name.toLowerCase().includes(q) ||
+        t.desc.toLowerCase().includes(q) ||
+        t.tags.some(tag => tag.includes(q))
+      );
+
+      if (!results.length) {
+        dropdown.innerHTML = '<div class="search-no-results">No tools match "' + query + '"</div>';
+        dropdown.classList.add('open');
+        return;
+      }
+
+      dropdown.innerHTML = results.map((t, i) =>
+        `<a class="search-result" href="${t.url}" data-idx="${i}">
+          <div class="search-result-icon">${t.icon}</div>
+          <div class="search-result-text">
+            <div class="search-result-name">${highlight(t.name, query.trim())}</div>
+            <div class="search-result-desc">${t.desc}</div>
+          </div>
+        </a>`
+      ).join('');
+      dropdown.classList.add('open');
+    }
+
+    function setActive(idx) {
+      const items = dropdown.querySelectorAll('.search-result');
+      items.forEach(el => el.classList.remove('active'));
+      if (idx >= 0 && idx < items.length) {
+        items[idx].classList.add('active');
+        items[idx].scrollIntoView({ block: 'nearest' });
+      }
+      activeIdx = idx;
+    }
+
+    input.addEventListener('input', () => {
+      render(input.value);
+      clearBtn.classList.toggle('visible', input.value.length > 0);
+    });
+
+    input.addEventListener('keydown', e => {
+      const items = dropdown.querySelectorAll('.search-result');
+      if (e.key === 'ArrowDown')  { e.preventDefault(); setActive(Math.min(activeIdx + 1, items.length - 1)); }
+      if (e.key === 'ArrowUp')    { e.preventDefault(); setActive(Math.max(activeIdx - 1, 0)); }
+      if (e.key === 'Enter') { e.preventDefault(); const target = items[activeIdx >= 0 ? activeIdx : 0]; if (target) target.click(); }
+      if (e.key === 'Escape')     { dropdown.classList.remove('open'); input.blur(); }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      clearBtn.classList.remove('visible');
+      dropdown.classList.remove('open');
+      dropdown.innerHTML = '';
+      input.focus();
+    });
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.search-wrap')) dropdown.classList.remove('open');
+    });
+
+    input.addEventListener('focus', () => { if (input.value) render(input.value); });
+  })();
+  </script>
+
   <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
+    Built with precision — <a href="index.html">DevTools</a>
   </footer>
 
-  <!-- Scrollable tool rail -->
-  <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
-    <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
-    <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
-    <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
-    <a href="base64-encoder.html" class="tool-rail-btn">⇄ Base64</a>
-    <a href="url-encoder.html" class="tool-rail-btn">🔗 URL</a>
-    <a href="hash-generator.html" class="tool-rail-btn">⬡ Hash</a>
-    <a href="regex-tester.html" class="tool-rail-btn">.* Regex</a>
-    <a href="timestamp-converter.html" class="tool-rail-btn">⌚ Timestamp</a>
-    <a href="case-converter.html" class="tool-rail-btn">Aa Case</a>
-    <a href="lorem-ipsum-generator.html" class="tool-rail-btn">📝 Lorem</a>
-    <a href="random-string-generator.html" class="tool-rail-btn">🎲 Random</a>
-    <a href="password-generator.html" class="tool-rail-btn">🔐 Password</a>
-    <a href="uuid-validator.html" class="tool-rail-btn">✓ UUID Val</a>
-    <a href="jwt-decoder.html" class="tool-rail-btn">🔓 JWT</a>
-    <a href="yaml-to-json.html" class="tool-rail-btn active">⇅ YAML</a>
-    <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
-    <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
-  </aside>
-
-  <div class="toast" id="toast"></div>
-
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="search.js"></script>
-  <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
-
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
-
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
-      ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
-    }, null, 2);
-
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
-    }
-
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
-      }
-    }
-
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
-    }
-
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('error-banner');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
-
-    function clearError() {
-      document.getElementById('error-banner').classList.remove('show');
-    }
-
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
-      try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
-        }
-        document.getElementById('output-area').value = result;
-      } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
-      }
-    }
-
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
-    }
-
-    function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
-    }
-
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
-    }
-
-    function showToast(msg, type = '') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
-    }
-
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
-
-    // init indent highlight
-    setIndent(2);
-  </script>
 </body>
 </html>
