@@ -1,3 +1,73 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/base64",              "destination": "/base64-encoder", "permanent": true },
+    { "source": "/base-64",             "destination": "/base64-encoder", "permanent": true },
+    { "source": "/base64-converter",    "destination": "/base64-encoder", "permanent": true },
+    { "source": "/base64-encode",       "destination": "/base64-encoder", "permanent": true },
+    { "source": "/base64-decode",       "destination": "/base64-encoder", "permanent": true },
+    { "source": "/base64-decoder",      "destination": "/base64-encoder", "permanent": true },
+    { "source": "/base64decode",        "destination": "/base64-encoder", "permanent": true },
+    { "source": "/encode-base64",       "destination": "/base64-encoder", "permanent": true },
+    { "source": "/decode-base64",       "destination": "/base64-encoder", "permanent": true },
+    { "source": "/html-encode",         "destination": "/base64-encoder", "permanent": true },
+    { "source": "/html-decode",         "destination": "/base64-encoder", "permanent": true },
+
+    { "source": "/url-encode",          "destination": "/url-encoder", "permanent": true },
+    { "source": "/url-decode",          "destination": "/url-encoder", "permanent": true },
+    { "source": "/url-decoder",         "destination": "/url-encoder", "permanent": true },
+    { "source": "/urlencode",           "destination": "/url-encoder", "permanent": true },
+    { "source": "/encode-url",          "destination": "/url-encoder", "permanent": true },
+
+    { "source": "/guid",                "destination": "/uuid-generator", "permanent": true },
+    { "source": "/guid-generator",      "destination": "/uuid-generator", "permanent": true },
+    { "source": "/new-guid",            "destination": "/uuid-generator", "permanent": true },
+    { "source": "/generate-guid",       "destination": "/uuid-generator", "permanent": true },
+    { "source": "/generate-uuid",       "destination": "/uuid-generator", "permanent": true },
+    { "source": "/uuid4-generator",     "destination": "/uuid-generator", "permanent": true },
+
+    { "source": "/format-json",         "destination": "/json-formatter", "permanent": true },
+    { "source": "/json-beautifier",     "destination": "/json-formatter", "permanent": true },
+    { "source": "/json-pretty-printer", "destination": "/json-formatter", "permanent": true },
+    { "source": "/json-viewer",         "destination": "/json-formatter", "permanent": true },
+    { "source": "/xml-formatter",       "destination": "/json-formatter", "permanent": true },
+
+    { "source": "/json-checker",        "destination": "/json-validator", "permanent": true },
+    { "source": "/json-lint",           "destination": "/json-validator", "permanent": true },
+    { "source": "/json-validator-online", "destination": "/json-validator", "permanent": true },
+    { "source": "/validate-json",       "destination": "/json-validator", "permanent": true },
+
+    { "source": "/jwt-decode",          "destination": "/jwt-decoder", "permanent": true },
+    { "source": "/decode-jwt",          "destination": "/jwt-decoder", "permanent": true },
+    { "source": "/jwt-token-decoder",   "destination": "/jwt-decoder", "permanent": true },
+
+    { "source": "/epoch-converter",     "destination": "/timestamp-converter", "permanent": true },
+    { "source": "/epoch-to-date",       "destination": "/timestamp-converter", "permanent": true },
+    { "source": "/unix-timestamp",      "destination": "/timestamp-converter", "permanent": true },
+    { "source": "/unix-time-converter", "destination": "/timestamp-converter", "permanent": true },
+
+    { "source": "/camelcase-converter", "destination": "/case-converter", "permanent": true },
+    { "source": "/snake-case-converter","destination": "/case-converter", "permanent": true },
+    { "source": "/text-case-converter", "destination": "/case-converter", "permanent": true },
+
+    { "source": "/lorem-generator",           "destination": "/lorem-ipsum-generator", "permanent": true },
+    { "source": "/generate-lorem-ipsum",      "destination": "/lorem-ipsum-generator", "permanent": true },
+    { "source": "/placeholder-text-generator","destination": "/lorem-ipsum-generator", "permanent": true },
+
+    { "source": "/md5-generator",       "destination": "/hash-generator", "permanent": true },
+    { "source": "/sha1-generator",      "destination": "/hash-generator", "permanent": true },
+    { "source": "/sha256-generator",    "destination": "/hash-generator", "permanent": true },
+
+    { "source": "/regex-checker",       "destination": "/regex-tester", "permanent": true },
+    { "source": "/regex-validator",     "destination": "/regex-tester", "permanent": true },
+    { "source": "/test-regex",          "destination": "/regex-tester", "permanent": true },
+
+    { "source": "/font-copy-and-paste",  "destination": "/font-generator", "permanent": true },
+    { "source": "/fonts-copy-and-paste", "destination": "/font-generator", "permanent": true },
+    { "source": "/copy-and-paste-fonts", "destination": "/font-generator", "permanent": true },
+
+    { "source": "/json-to-yaml",         "destination": "/yaml-to-json", "permanent": true },
+    { "source": "/yaml-converter",       "destination": "/yaml-to-json", "permanent": true }
+  ]
 }
+
