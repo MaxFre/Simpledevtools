@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="Validate and lint JSON data online. Get detailed error messages, structure stats, and a tree view of your JSON. Free instant validation." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/json-validator" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="JSON Validator & Linter — SimpleDevTools" />
+  <meta property="og:description" content="Validate and lint JSON data online. Get detailed error messages, structure stats, and a tree view of your JSON. Free instant validation." />
+  <meta property="og:url" content="https://simpledevtools.dev/json-validator" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="JSON Validator & Linter — SimpleDevTools" />
+  <meta name="twitter:description" content="Validate and lint JSON data online. Get detailed error messages, structure stats, and a tree view of your JSON. Free instant validation." />
+  <title>JSON Validator & Linter — SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,112 +28,83 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
-    }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
-    }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-    .panel-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-    .code-area {
-      width: 100%;
+    #json-input {
       min-height: 320px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
       resize: vertical;
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      border: 1px solid transparent;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .status-banner.idle    { background: var(--bg); border-color: var(--border); color: var(--muted); }
+    .status-banner.valid   { background: rgba(0,184,148,0.06); border-color: rgba(0,184,148,0.25); color: #0a7a5e; }
+    .status-banner.invalid { background: rgba(220,70,90,0.05); border-color: rgba(220,70,90,0.2); color: #b83048; }
+
+    .status-icon { font-size: 1.15rem; line-height: 1.4; flex-shrink: 0; }
+
+    .error-detail {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      opacity: 0.75;
+      margin-top: 0.2rem;
+    }
+
+    .stats-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+
+    .stat {
       background: var(--bg);
-      color: var(--text);
       border: 1px solid var(--border);
       border-radius: 10px;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.77rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .stat strong { color: var(--text); font-size: 0.9rem; font-weight: 700; }
+
+    .tree-view {
       font-family: var(--mono);
       font-size: 0.82rem;
-      padding: 0.85rem 1rem;
       line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
-      background: var(--surface2);
-      cursor: default;
-    }
-    .error-banner {
-      display: none;
-      padding: 0.7rem 1rem;
-      background: rgba(245,100,122,0.08);
-      border: 1px solid var(--danger);
-      border-radius: 10px;
-      font-size: 0.83rem;
-      color: var(--danger);
-      font-family: var(--mono);
-    }
-    .error-banner.show { display: block; }
-    .dir-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
+      padding: 1.25rem;
+      background: var(--bg);
       border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--muted);
-      transition: all 0.15s;
+      border-radius: var(--radius);
+      min-height: 80px;
+      max-height: 420px;
+      overflow: auto;
+      white-space: pre;
     }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
-    }
-    .dir-arrow {
-      font-size: 1.1rem;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-    }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
+    "name": "JSON Validator & Linter",
+    "url": "https://simpledevtools.dev/json-validator",
+    "description": "Validate and lint JSON data online with detailed error messages and tree view.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <div class="noise"></div>
@@ -161,69 +133,52 @@
   </nav>
 
   <main class="fade-in">
+
     <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
+      <div class="badge" style="background:rgba(240,160,0,0.07);color:#b87800;border-color:rgba(240,160,0,0.2);">✓ Validator</div>
+      <h1>JSON Validator</h1>
+      <p>Paste JSON to instantly validate structure, pinpoint errors, and inspect statistics.</p>
     </div>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
+    <!-- Status -->
+    <div class="status-banner idle" id="status-banner">
+      <span class="status-icon">○</span>
+      <div>
+        <div id="status-text">Waiting for input…</div>
+        <div class="error-detail" id="error-detail"></div>
       </div>
     </div>
 
-    <!-- Editors -->
+    <!-- Input -->
     <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
-        </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
-          </div>
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>JSON Input</span>
+        <div class="btn-group">
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="loadSample()">Sample</button>
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="clearAll()">✕ Clear</button>
         </div>
       </div>
+      <textarea id="json-input" spellcheck="false" placeholder="Paste or type JSON here…"></textarea>
     </div>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
+    <!-- Stats -->
+    <div class="stats-row" id="stats" style="display:none;"></div>
+
+    <!-- Tree output -->
+    <div class="card" id="tree-card" style="display:none;">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Parsed Structure</span>
+        <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="copyTree()">📋 Copy</button>
+      </div>
+      <div class="tree-view" id="tree-view"></div>
     </div>
 
   </main>
 
-  <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
-  </footer>
-
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
+    <div class="tool-rail-label">Tools</div>
     <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
     <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
     <a href="json-validator.html" class="tool-rail-btn active">✓ JSON Lint</a>
@@ -242,131 +197,111 @@
     <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
     <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
-
   <div class="toast" id="toast"></div>
 
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script src="search.js"></script>
   <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
+    const inputEl  = document.getElementById('json-input');
+    const banner   = document.getElementById('status-banner');
+    const statusTx = document.getElementById('status-text');
+    const errorDet = document.getElementById('error-detail');
+    const statsRow = document.getElementById('stats');
+    const treeCard = document.getElementById('tree-card');
+    const treeView = document.getElementById('tree-view');
 
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
-
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
+    const SAMPLE = JSON.stringify({
+      "name": "devtools",
+      "version": "2.0.0",
+      "tools": [
+        { "id": 1, "name": "GUID Generator", "active": true },
+        { "id": 2, "name": "JSON Validator",  "active": true }
       ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
+      "meta": { "open_source": true, "stars": 42, "author": null }
     }, null, 2);
 
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
-    }
+    let debounce;
+    inputEl.addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(validate, 220);
+    });
 
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
+    function validate() {
+      const raw = inputEl.value.trim();
+      if (!raw) {
+        setBanner('idle', '○', 'Waiting for input…', '');
+        statsRow.style.display = 'none';
+        treeCard.style.display = 'none';
+        return;
       }
-    }
-
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
-    }
-
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('error-banner');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
-
-    function clearError() {
-      document.getElementById('error-banner').classList.remove('show');
-    }
-
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
       try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
-        }
-        document.getElementById('output-area').value = result;
+        const parsed = JSON.parse(raw);
+        const lines = raw.split('\n').length;
+        const depth = maxDepth(parsed);
+        const keys  = countKeys(parsed);
+        setBanner('valid', '✓', 'Valid JSON', '');
+        statsRow.style.display = 'flex';
+        statsRow.innerHTML = `
+          <div class="stat"><strong>${lines}</strong> lines</div>
+          <div class="stat"><strong>${raw.length}</strong> chars</div>
+          <div class="stat"><strong>${depth}</strong> max depth</div>
+          <div class="stat"><strong>${keys}</strong> keys</div>
+        `;
+        treeView.innerHTML = syntaxHighlight(JSON.stringify(parsed, null, 2));
+        treeCard.style.display = '';
       } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
+        setBanner('invalid', '✕', 'Invalid JSON', e.message);
+        statsRow.style.display = 'none';
+        treeCard.style.display = 'none';
       }
     }
 
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
+    function setBanner(state, icon, text, detail) {
+      banner.className = 'status-banner ' + state;
+      document.querySelector('.status-icon').textContent = icon;
+      statusTx.textContent = text;
+      errorDet.textContent = detail;
     }
 
-    function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
+    function maxDepth(o, d = 0) {
+      if (o === null || typeof o !== 'object') return d;
+      const vals = Object.values(o);
+      if (!vals.length) return d;
+      return Math.max(...vals.map(v => maxDepth(v, d + 1)));
     }
 
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
+    function countKeys(o) {
+      if (o === null || typeof o !== 'object') return 0;
+      return Object.keys(o).length + Object.values(o).reduce((a, v) => a + countKeys(v), 0);
     }
 
-    function showToast(msg, type = '') {
+    function syntaxHighlight(json) {
+      const escaped = json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return escaped.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+\.?\d*([eE][+-]?\d+)?)/g, m => {
+        if (/^"/.test(m)) return /:$/.test(m) ? `<span class="json-key">${m}</span>` : `<span class="json-string">${m}</span>`;
+        if (/true|false/.test(m)) return `<span class="json-bool">${m}</span>`;
+        if (/null/.test(m)) return `<span class="json-null">${m}</span>`;
+        return `<span class="json-number">${m}</span>`;
+      });
+    }
+
+    function loadSample() { inputEl.value = SAMPLE; validate(); }
+    function clearAll()   { inputEl.value = ''; validate(); }
+
+    function copyTree() {
+      const raw = inputEl.value.trim();
+      if (!raw) return;
+      try {
+        navigator.clipboard.writeText(JSON.stringify(JSON.parse(raw), null, 2))
+          .then(() => showToast('Copied formatted JSON'));
+      } catch(e) { showToast('Nothing valid to copy'); }
+    }
+
+    function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
     }
-
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
-
-    // init indent highlight
-    setIndent(2);
   </script>
+  <script src="search.js"></script>
 </body>
 </html>

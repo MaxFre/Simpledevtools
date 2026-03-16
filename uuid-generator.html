@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="Generate RFC 4122 v4 UUIDs instantly. Bulk generate up to 100 GUIDs with formatting options — uppercase, lowercase, braces, hyphens. Free online tool." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/uuid-generator" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="GUID / UUID Generator — SimpleDevTools" />
+  <meta property="og:description" content="Generate RFC 4122 v4 UUIDs instantly. Bulk generate up to 100 GUIDs with formatting options — uppercase, lowercase, braces, hyphens. Free online tool." />
+  <meta property="og:url" content="https://simpledevtools.dev/uuid-generator" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="GUID / UUID Generator — SimpleDevTools" />
+  <meta name="twitter:description" content="Generate RFC 4122 v4 UUIDs instantly. Bulk generate up to 100 GUIDs with formatting options — uppercase, lowercase, braces, hyphens. Free online tool." />
+  <title>GUID / UUID Generator — SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,114 +28,162 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
+    /* ── List ── */
+    .guid-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
     }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
-    }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
+
+    .guid-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-    .panel-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-    .code-area {
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
+      gap: 0.6rem;
       background: var(--bg);
-      color: var(--text);
       border: 1px solid var(--border);
       border-radius: 10px;
+      padding: 0.6rem 0.75rem 0.6rem 1rem;
       font-family: var(--mono);
-      font-size: 0.82rem;
-      padding: 0.85rem 1rem;
-      line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
-      background: var(--surface2);
-      cursor: default;
-    }
-    .error-banner {
-      display: none;
-      padding: 0.7rem 1rem;
-      background: rgba(245,100,122,0.08);
-      border: 1px solid var(--danger);
-      border-radius: 10px;
-      font-size: 0.83rem;
-      color: var(--danger);
-      font-family: var(--mono);
-    }
-    .error-banner.show { display: block; }
-    .dir-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
+      font-size: 0.85rem;
       cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--muted);
-      transition: all 0.15s;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+      animation: itemIn 0.28s var(--ease-out) both;
     }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
+
+    @keyframes itemIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .dir-arrow {
-      font-size: 1.1rem;
+
+    .guid-item:hover {
+      border-color: rgba(108,92,231,0.35);
+      background: rgba(108,92,231,0.03);
+      box-shadow: 0 4px 16px rgba(108,92,231,0.08);
+    }
+
+    .guid-item.flash {
+      border-color: rgba(0,184,148,0.45) !important;
+      background: rgba(0,184,148,0.07) !important;
+      transition: none;
+    }
+
+    /* Index number */
+    .guid-idx {
       color: var(--muted);
+      font-size: 0.7rem;
+      min-width: 1.5rem;
+      text-align: right;
+      user-select: none;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    /* Segment colours */
+    .guid-value { flex: 1; word-break: break-all; }
+    .gs1 { color: var(--accent); }
+    .gs2 { color: var(--accent2); }
+    .gs3 { color: var(--accent3); }
+    .gs4 { color: var(--danger); }
+    .gs5 { color: var(--text-secondary); }
+    .gsep { color: var(--muted); }
+
+    /* Copy button */
+    .guid-copy-btn {
+      background: none;
+      border: 1px solid transparent;
       cursor: pointer;
+      color: var(--muted);
+      font-size: 0.85rem;
       padding: 0.25rem 0.5rem;
       border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
+      transition: all 0.15s;
+      flex-shrink: 0;
+      line-height: 1;
     }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
+    .guid-copy-btn:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: rgba(108,92,231,0.2);
+    }
+    .guid-copy-btn.copied { color: var(--success); }
+
+    /* Preset count chips */
+    .preset-chips { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .preset-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.73rem;
+      font-weight: 600;
+      padding: 0.18rem 0.55rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.6;
+    }
+    .preset-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+    .preset-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* Stats */
+    .stat-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .stat {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stat strong { color: var(--accent); font-size: 0.95rem; font-weight: 700; }
+
+    /* Format tabs */
+    .format-tabs { display: flex; gap: 0.35rem; }
+    .format-tab {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+    .format-tab:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+    .format-tab.active {
+      background: linear-gradient(135deg, var(--accent), #8577ed);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(108,92,231,0.25);
+    }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
+    "name": "GUID / UUID Generator",
+    "url": "https://simpledevtools.dev/uuid-generator",
+    "description": "Generate RFC 4122 v4 UUIDs instantly. Bulk generate up to 100 GUIDs with formatting options.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
+
   <div class="noise"></div>
 
   <nav>
@@ -161,212 +210,230 @@
   </nav>
 
   <main class="fade-in">
+
     <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
+      <div class="badge">🔑 Generator</div>
+      <h1>GUID Generator</h1>
+      <p>Generate RFC 4122 compliant version 4 UUIDs instantly.</p>
     </div>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
-      </div>
-    </div>
-
-    <!-- Editors -->
     <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
+      <div class="card-title">Options</div>
+      <div class="row" style="margin-bottom:0.75rem; align-items:flex-start;">
+        <div>
+          <label for="count">Count</label>
+          <input type="number" id="count" value="10" min="1" max="100" style="width:6.5rem;" />
+          <div class="preset-chips">
+            <button class="preset-chip" onclick="setPreset(1)">1</button>
+            <button class="preset-chip" onclick="setPreset(5)">5</button>
+            <button class="preset-chip active" onclick="setPreset(10)">10</button>
+            <button class="preset-chip" onclick="setPreset(25)">25</button>
+            <button class="preset-chip" onclick="setPreset(50)">50</button>
           </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
         </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
+        <div>
+          <label>Format</label>
+          <div class="format-tabs">
+            <button class="format-tab active" id="tab-lower" onclick="setCase('lower')">lowercase</button>
+            <button class="format-tab" id="tab-upper" onclick="setCase('upper')">UPPERCASE</button>
           </div>
         </div>
       </div>
+
+      <div style="margin-bottom:1rem;">
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" id="braces" />
+            <span class="toggle-slider"></span>
+          </label>
+          <label class="toggle-label" for="braces" style="cursor:pointer;">Include braces <span style="color:var(--muted);font-family:var(--mono);font-size:0.8em">{…}</span></label>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" id="hyphens" checked />
+            <span class="toggle-slider"></span>
+          </label>
+          <label class="toggle-label" for="hyphens" style="cursor:pointer;">Include hyphens</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="generate()">⚡ Generate</button>
+        <button class="btn btn-secondary" onclick="copyAll()">📋 Copy all</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+      </div>
     </div>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
+    <div class="stat-row" id="stats" style="display:none;"></div>
+
+    <div class="card" id="output-card" style="display:none;">
+      <div class="card-title">Generated GUIDs</div>
+      <ul class="guid-list" id="guid-list"></ul>
     </div>
 
   </main>
 
   <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
+    Built with precision — <a href="index.html">DevTools</a>
   </footer>
 
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
-    <a href="uuid-generator.html" class="tool-rail-btn active">🔑 UUID</a>
-    <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
-    <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
-    <a href="base64-encoder.html" class="tool-rail-btn">⇄ Base64</a>
-    <a href="url-encoder.html" class="tool-rail-btn">🔗 URL</a>
-    <a href="hash-generator.html" class="tool-rail-btn">⬡ Hash</a>
-    <a href="regex-tester.html" class="tool-rail-btn">.* Regex</a>
-    <a href="timestamp-converter.html" class="tool-rail-btn">⌚ Timestamp</a>
-    <a href="case-converter.html" class="tool-rail-btn">Aa Case</a>
-    <a href="lorem-ipsum-generator.html" class="tool-rail-btn">📝 Lorem</a>
-    <a href="random-string-generator.html" class="tool-rail-btn">🎲 Random</a>
-    <a href="password-generator.html" class="tool-rail-btn">🔐 Password</a>
-    <a href="uuid-validator.html" class="tool-rail-btn">✓ UUID Val</a>
-    <a href="jwt-decoder.html" class="tool-rail-btn">🔓 JWT</a>
-    <a href="yaml-to-json.html" class="tool-rail-btn">⇅ YAML</a>
-    <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
+    <div class="tool-rail-label">Tools</div>
+    <a href="uuid-generator.html"        class="tool-rail-btn active" title="GUID Generator">🔑 UUID</a>
+    <a href="json-formatter.html"        class="tool-rail-btn" title="JSON Formatter">{ } JSON</a>
+    <a href="json-validator.html"        class="tool-rail-btn" title="JSON Validator">✓ JSON Lint</a>
+    <a href="base64-encoder.html"        class="tool-rail-btn" title="Base64 Encoder">↔ Base64</a>
+    <a href="url-encoder.html"           class="tool-rail-btn" title="URL Encoder">🔗 URL</a>
+    <a href="hash-generator.html"        class="tool-rail-btn" title="Hash Generator">⬡ Hash</a>
+    <a href="regex-tester.html"          class="tool-rail-btn" title="Regex Tester">.* Regex</a>
+    <a href="timestamp-converter.html"   class="tool-rail-btn" title="Timestamp">⌚ Timestamp</a>
+    <a href="case-converter.html"        class="tool-rail-btn" title="Case Converter">Aa Case</a>
+    <a href="lorem-ipsum-generator.html" class="tool-rail-btn" title="Lorem Ipsum">📝 Lorem</a>
+    <a href="random-string-generator.html" class="tool-rail-btn" title="Random String">🎲 Random</a>
+    <a href="password-generator.html"    class="tool-rail-btn" title="Password">🔐 Password</a>
+    <a href="uuid-validator.html"        class="tool-rail-btn" title="UUID Validator">✓ UUID Val</a>
+    <a href="jwt-decoder.html"              class="tool-rail-btn" title="JWT Decoder">🔓 JWT</a>
+    <a href="yaml-to-json.html"             class="tool-rail-btn" title="YAML ↔ JSON">⇅ YAML</a>
+    <a href="font-generator.html"           class="tool-rail-btn" title="Font Generator">𝓐 Fonts</a>
     <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
 
   <div class="toast" id="toast"></div>
 
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script src="search.js"></script>
   <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
+    let currentCase = 'lower';
 
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
-
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
-      ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
-    }, null, 2);
-
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
+    // ── UUID generation ──
+    function uuidv4() {
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+      const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+      return [hex.slice(0,4).join(''), hex.slice(4,6).join(''), hex.slice(6,8).join(''), hex.slice(8,10).join(''), hex.slice(10,16).join('')].join('-');
     }
 
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
+    // Plain text output (for clipboard)
+    function formatGuid(raw) {
+      let r = raw;
+      if (!document.getElementById('hyphens').checked) r = r.replaceAll('-', '');
+      if (document.getElementById('braces').checked)  r = '{' + r + '}';
+      return currentCase === 'upper' ? r.toUpperCase() : r;
+    }
+
+    // HTML with coloured segments (for display)
+    function renderSegments(raw) {
+      const parts = raw.split('-');
+      const uc = currentCase === 'upper';
+      const useHyphens = document.getElementById('hyphens').checked;
+      const useBraces  = document.getElementById('braces').checked;
+      const spans = parts.map((p, i) => `<span class="gs${i+1}">${uc ? p.toUpperCase() : p}</span>`);
+      const sep   = useHyphens ? '<span class="gsep">-</span>' : '';
+      const inner = spans.join(sep);
+      return useBraces ? `<span class="gsep">{</span>${inner}<span class="gsep">}</span>` : inner;
+    }
+
+    // ── Controls ──
+    function setCase(c) {
+      currentCase = c;
+      document.getElementById('tab-lower').classList.toggle('active', c === 'lower');
+      document.getElementById('tab-upper').classList.toggle('active', c === 'upper');
+      rerender();
+    }
+
+    function setPreset(n) {
+      document.getElementById('count').value = n;
+      document.querySelectorAll('.preset-chip').forEach(ch => {
+        ch.classList.toggle('active', parseInt(ch.textContent) === n);
+      });
+      generate();
+    }
+
+    function rerender() {
+      document.querySelectorAll('.guid-item').forEach(li => {
+        li.querySelector('.guid-value').innerHTML = renderSegments(li.dataset.guid);
+        li.dataset.plain = formatGuid(li.dataset.guid);
+      });
+    }
+
+    // ── Generate ──
+    function generate() {
+      const count = Math.min(Math.max(parseInt(document.getElementById('count').value) || 1, 1), 100);
+      const list  = document.getElementById('guid-list');
+      list.innerHTML = '';
+
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const raw   = uuidv4();
+        const plain = formatGuid(raw);
+        const li    = document.createElement('li');
+        li.className    = 'guid-item';
+        li.dataset.guid  = raw;
+        li.dataset.plain = plain;
+        li.title = 'Click to copy';
+        li.style.animationDelay = `${Math.min(i * 22, 350)}ms`;
+        li.onclick = function() { copyRow(this); };
+        li.innerHTML = `<span class="guid-idx">${i + 1}</span><span class="guid-value">${renderSegments(raw)}</span><button class="guid-copy-btn" title="Copy" onclick="event.stopPropagation();copyBtn(this)">⧉</button>`;
+        frag.appendChild(li);
       }
+      list.appendChild(frag);
+
+      const sampleLen = formatGuid('00000000-0000-0000-0000-000000000000').length;
+      const statsEl = document.getElementById('stats');
+      statsEl.style.display = 'flex';
+      statsEl.innerHTML = `<div class="stat"><strong>${count}</strong> GUID${count !== 1 ? 's' : ''} generated</div><div class="stat"><strong>${sampleLen}</strong> chars each</div>`;
+      document.getElementById('output-card').style.display = '';
+      showToast(`Generated ${count} GUID${count !== 1 ? 's' : ''}`, 'success');
     }
 
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
+    // ── Copy ──
+    function copyRow(li) {
+      navigator.clipboard.writeText(li.dataset.plain).then(() => {
+        li.classList.add('flash');
+        setTimeout(() => li.classList.remove('flash'), 500);
+        const btn = li.querySelector('.guid-copy-btn');
+        btn.textContent = '✓'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '⧉'; btn.classList.remove('copied'); }, 1200);
+      });
     }
 
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
-    }
+    function copyBtn(btn) { copyRow(btn.closest('.guid-item')); }
 
-    function showError(msg) {
-      const el = document.getElementById('error-banner');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
-
-    function clearError() {
-      document.getElementById('error-banner').classList.remove('show');
-    }
-
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
-      try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
-        }
-        document.getElementById('output-area').value = result;
-      } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
-      }
-    }
-
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
+    function copyAll() {
+      const items = document.querySelectorAll('.guid-item');
+      if (!items.length) { showToast('Nothing to copy', 'error'); return; }
+      const text = Array.from(items).map(li => li.dataset.plain).join('\n');
+      navigator.clipboard.writeText(text).then(() =>
+        showToast(`Copied ${items.length} GUID${items.length !== 1 ? 's' : ''}`, 'success'));
     }
 
     function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
-    }
-
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
+      document.getElementById('guid-list').innerHTML = '';
+      document.getElementById('output-card').style.display = 'none';
+      document.getElementById('stats').style.display   = 'none';
     }
 
     function showToast(msg, type = '') {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
+      t.textContent = msg; t.className = 'toast show ' + type;
+      clearTimeout(t._timer); t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
     }
 
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
+    // Re-render when options change
+    document.getElementById('hyphens').addEventListener('change', rerender);
+    document.getElementById('braces').addEventListener('change',  rerender);
 
-    // init indent highlight
-    setIndent(2);
+    // Count chip sync on manual input
+    document.getElementById('count').addEventListener('input', function() {
+      const n = parseInt(this.value);
+      document.querySelectorAll('.preset-chip').forEach(ch => {
+        ch.classList.toggle('active', parseInt(ch.textContent) === n);
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', generate);
   </script>
+  <script src="search.js"></script>
 </body>
 </html>

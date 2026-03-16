@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="Generate lorem ipsum placeholder text — paragraphs, sentences, or words. Customizable count with one-click copy. Free online tool." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/lorem-ipsum-generator" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="Lorem Ipsum Generator — SimpleDevTools" />
+  <meta property="og:description" content="Generate lorem ipsum placeholder text — paragraphs, sentences, or words. Customizable count with one-click copy. Free online tool." />
+  <meta property="og:url" content="https://simpledevtools.dev/lorem-ipsum-generator" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="Lorem Ipsum Generator — SimpleDevTools" />
+  <meta name="twitter:description" content="Generate lorem ipsum placeholder text — paragraphs, sentences, or words. Customizable count with one-click copy. Free online tool." />
+  <title>Lorem Ipsum Generator — SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,114 +28,122 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
+    .type-tabs {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
     }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
+
+    .type-tab {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.45rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
     }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
+
+    .type-tab:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+
+    .type-tab.active {
+      background: linear-gradient(135deg, var(--accent2), #57f0d4);
+      border-color: var(--accent2);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(0,184,148,0.25);
+    }
+
+    .lorem-output {
+      font-family: var(--font);
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      min-height: 180px;
+      max-height: 450px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .lorem-output p {
+      color: var(--text-secondary);
+      margin-bottom: 1.1rem;
+    }
+
+    .lorem-output p:last-child { margin-bottom: 0; }
+
+    .range-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .range-row input[type="range"] { flex: 1; }
+
+    .range-value {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent2);
+      min-width: 2.5ch;
+      text-align: right;
+    }
+
+    .word-count-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0,184,148,0.06);
+      color: var(--accent2);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+      border: 1px solid rgba(0,184,148,0.2);
+    }
+
+    .stat {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
       gap: 0.5rem;
     }
-    .panel-label {
-      font-size: 0.72rem;
+
+    .stat strong {
+      color: var(--accent2);
+      font-size: 0.95rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
     }
-    .code-area {
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      padding: 0.85rem 1rem;
-      line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
-      background: var(--surface2);
-      cursor: default;
-    }
-    .error-banner {
-      display: none;
-      padding: 0.7rem 1rem;
-      background: rgba(245,100,122,0.08);
-      border: 1px solid var(--danger);
-      border-radius: 10px;
-      font-size: 0.83rem;
-      color: var(--danger);
-      font-family: var(--mono);
-    }
-    .error-banner.show { display: block; }
-    .dir-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--muted);
-      transition: all 0.15s;
-    }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
-    }
-    .dir-arrow {
-      font-size: 1.1rem;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-    }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
+    "name": "Lorem Ipsum Generator",
+    "url": "https://simpledevtools.dev/lorem-ipsum-generator",
+    "description": "Generate lorem ipsum placeholder text in paragraphs, sentences, or words.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
+
   <div class="noise"></div>
 
   <nav>
@@ -161,69 +170,63 @@
   </nav>
 
   <main class="fade-in">
+
     <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
+      <div class="badge" style="background:rgba(0,184,148,0.06);color:var(--accent2);border-color:rgba(0,184,148,0.2);">📝 Generator</div>
+      <h1>Lorem Ipsum</h1>
+      <p>Generate placeholder text by paragraphs, sentences, or words.</p>
     </div>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
-      </div>
-    </div>
-
-    <!-- Editors -->
+    <!-- Controls -->
     <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
-        </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
-          </div>
-        </div>
+      <div class="card-title">Generate by</div>
+      <div class="type-tabs" style="margin-bottom:1.5rem;">
+        <button class="type-tab active" id="tab-paragraphs" onclick="setType('paragraphs')">Paragraphs</button>
+        <button class="type-tab" id="tab-sentences" onclick="setType('sentences')">Sentences</button>
+        <button class="type-tab" id="tab-words" onclick="setType('words')">Words</button>
+      </div>
+
+      <label id="count-label">Number of paragraphs</label>
+      <div class="range-row" style="margin-bottom:1.25rem;">
+        <input type="range" id="amount" min="1" max="10" value="3" oninput="updateRangeDisplay()" />
+        <span class="range-value" id="amount-display">3</span>
+      </div>
+
+      <div class="toggle-row" style="margin-bottom:1.25rem;">
+        <label class="toggle-label">Start with "Lorem ipsum dolor sit amet…"</label>
+        <label class="toggle">
+          <input type="checkbox" id="classicStart" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="generate()" style="background:linear-gradient(135deg,var(--accent2),#57f0d4);border:none;color:#000;box-shadow:0 2px 8px rgba(0,184,148,0.25);">⚡ Generate</button>
+        <button class="btn btn-secondary" onclick="copyText()">📋 Copy</button>
+        <button class="btn btn-ghost" onclick="clearOutput()">✕ Clear</button>
       </div>
     </div>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
+    <!-- Stats -->
+    <div id="stats-row" style="display:none;margin-bottom:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;"></div>
+
+    <!-- Output -->
+    <div class="card" id="output-card" style="display:none;">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Output</span>
+        <span class="word-count-badge" id="word-badge">0 words</span>
+      </div>
+      <div class="lorem-output" id="lorem-output"></div>
     </div>
 
   </main>
 
   <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
+    Built with precision — <a href="index.html">DevTools</a>
   </footer>
-
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
+    <div class="tool-rail-label">Tools</div>
     <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
     <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
     <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
@@ -245,128 +248,150 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script src="search.js"></script>
   <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
+    const WORDS = [
+      'lorem','ipsum','dolor','sit','amet','consectetur','adipiscing','elit',
+      'sed','do','eiusmod','tempor','incididunt','ut','labore','et','dolore',
+      'magna','aliqua','enim','ad','minim','veniam','quis','nostrud','exercitation',
+      'ullamco','laboris','nisi','aliquip','ex','ea','commodo','consequat','duis',
+      'aute','irure','in','reprehenderit','voluptate','velit','esse','cillum',
+      'eu','fugiat','nulla','pariatur','excepteur','sint','occaecat','cupidatat','non',
+      'proident','sunt','culpa','qui','officia','deserunt','mollit','anim','id','est',
+      'laborum','curabitur','pretium','tincidunt','lacus','nunc','pulvinar','sapien',
+      'ligula','egestas','dictum','ac','blandit','maecenas','volutpat','blandit',
+      'aliquam','etiam','erat','velit','scelerisque','mauris','pellentesque',
+      'pulvinar','congue','nisl','venenatis','a','condimentum','vitae','sapien',
+      'pellentesque','habitant','morbi','tristique','senectus','netus','malesuada',
+      'fames','turpis','egestas','integer','eget','aliquet','nibh','praesent',
+      'tristique','magna','sit','amet','purus','gravida','quis','blandit',
+      'tellus','id','interdum','velit','laoreet','tincidunt','tortor'
+    ];
 
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
+    const CLASSIC = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
-      ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
-    }, null, 2);
+    let currentType = 'paragraphs';
 
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
+    function setType(t) {
+      currentType = t;
+      ['paragraphs','sentences','words'].forEach(id => {
+        document.getElementById('tab-' + id).classList.toggle('active', id === t);
+      });
+      const slider = document.getElementById('amount');
+      const label  = document.getElementById('count-label');
+      if (t === 'paragraphs') { slider.max = 10; slider.value = Math.min(slider.value, 10); label.textContent = 'Number of paragraphs'; }
+      if (t === 'sentences')  { slider.max = 20; slider.value = Math.min(slider.value, 20); label.textContent = 'Number of sentences'; }
+      if (t === 'words')      { slider.max = 200; slider.value = Math.min(slider.value, 200); label.textContent = 'Number of words'; }
+      updateRangeDisplay();
     }
 
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
-      }
+    function updateRangeDisplay() {
+      document.getElementById('amount-display').textContent = document.getElementById('amount').value;
     }
 
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function randomWord() { return WORDS[Math.floor(Math.random() * WORDS.length)]; }
+
+    function randomSentence(wordCount) {
+      const count = wordCount || randInt(8, 18);
+      const words = [];
+      for (let i = 0; i < count; i++) words.push(randomWord());
+      words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+      return words.join(' ') + '.';
     }
 
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
+    function randomParagraph() {
+      const sentenceCount = randInt(4, 8);
+      const sentences = [];
+      for (let i = 0; i < sentenceCount; i++) sentences.push(randomSentence());
+      return sentences.join(' ');
     }
 
-    function showError(msg) {
-      const el = document.getElementById('error-banner');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
+    function generate() {
+      const amount = parseInt(document.getElementById('amount').value);
+      const classic = document.getElementById('classicStart').checked;
+      const output = document.getElementById('lorem-output');
+      const outputCard = document.getElementById('output-card');
+      const statsRow = document.getElementById('stats-row');
 
-    function clearError() {
-      document.getElementById('error-banner').classList.remove('show');
-    }
+      let resultText = '';
+      let resultHTML = '';
 
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
-      try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
+      if (currentType === 'paragraphs') {
+        const paras = [];
+        for (let i = 0; i < amount; i++) {
+          let p = randomParagraph();
+          if (i === 0 && classic) p = CLASSIC + ' ' + p;
+          paras.push(p);
         }
-        document.getElementById('output-area').value = result;
-      } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
+        resultText = paras.join('\n\n');
+        resultHTML = paras.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+      } else if (currentType === 'sentences') {
+        const sents = [];
+        for (let i = 0; i < amount; i++) {
+          let s = randomSentence();
+          if (i === 0 && classic) s = CLASSIC;
+          sents.push(s);
+        }
+        resultText = sents.join(' ');
+        resultHTML = `<p>${escapeHtml(resultText)}</p>`;
+      } else {
+        const words = [];
+        const target = amount;
+        if (classic) {
+          const classicWords = CLASSIC.toLowerCase().replace(/[.,]/g,'').split(' ');
+          const take = Math.min(classicWords.length, target);
+          for (let i = 0; i < take; i++) words.push(classicWords[i]);
+        }
+        while (words.length < target) words.push(randomWord());
+        resultText = words.join(' ');
+        resultHTML = `<p>${escapeHtml(resultText)}</p>`;
       }
+
+      output.innerHTML = resultHTML;
+      outputCard.style.display = '';
+
+      const wc = resultText.trim().split(/\s+/).length;
+      document.getElementById('word-badge').textContent = `${wc} words`;
+
+      statsRow.style.display = 'flex';
+      statsRow.innerHTML = `
+        <div class="stat"><strong>${wc}</strong> words</div>
+        <div class="stat"><strong>${resultText.length}</strong> characters</div>
+      `;
+
+      showToast('Generated!', 'success');
     }
 
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
+    function copyText() {
+      const output = document.getElementById('lorem-output');
+      const text = output.innerText;
+      if (!text.trim()) { showToast('Nothing to copy', 'error'); return; }
+      navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!', 'success'));
     }
 
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
+    function clearOutput() {
+      document.getElementById('lorem-output').innerHTML = '';
+      document.getElementById('output-card').style.display = 'none';
+      document.getElementById('stats-row').style.display = 'none';
     }
 
     function showToast(msg, type = '') {
       const t = document.getElementById('toast');
       t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
+      t.className = 'toast show ' + type;
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
     }
 
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
-
-    // init indent highlight
-    setIndent(2);
+    // initialise display
+    updateRangeDisplay();
+    generate();
   </script>
+  <script src="search.js"></script>
 </body>
 </html>

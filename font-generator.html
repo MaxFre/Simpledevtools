@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="Font generator — copy and paste fancy Unicode fonts online. Convert any text to bold, italic, cursive, monospace, bubble, strikethrough, and 20+ more styles instantly. Free, no signup." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/font-generator" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="Font Generator — Copy and Paste Fonts | SimpleDevTools" />
+  <meta property="og:description" content="Font generator — copy and paste fancy Unicode fonts online. Convert any text to bold, italic, cursive, monospace, bubble, strikethrough, and 20+ more styles instantly." />
+  <meta property="og:url" content="https://simpledevtools.dev/font-generator" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="Font Generator — Copy and Paste Fonts | SimpleDevTools" />
+  <meta name="twitter:description" content="Font generator — copy and paste fancy Unicode fonts online. Convert any text to bold, italic, cursive, monospace, bubble, strikethrough, and 20+ more styles instantly." />
+  <title>Font Generator — Copy and Paste Fonts Online | SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,112 +28,118 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
+    #font-input {
+      min-height: 90px;
+      font-size: 1rem;
+      line-height: 1.7;
+      resize: vertical;
+    }
+
+    .font-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 0.6rem;
     }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
-    }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
+
+    .font-card {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      user-select: none;
     }
-    .panel-label {
-      font-size: 0.72rem;
+
+    .font-card:hover {
+      border-color: rgba(124,106,255,0.32);
+      background: rgba(124,106,255,0.04);
+      box-shadow: 0 4px 16px rgba(124,106,255,0.08);
+    }
+
+    .font-card.flash {
+      border-color: rgba(0,184,148,0.5) !important;
+      background: rgba(0,184,148,0.07) !important;
+      transition: none;
+    }
+
+    .font-card-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .font-card-label {
+      font-size: 0.67rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--muted);
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
     }
-    .code-area {
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      padding: 0.85rem 1rem;
-      line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
-      background: var(--surface2);
-      cursor: default;
-    }
-    .error-banner {
-      display: none;
-      padding: 0.7rem 1rem;
-      background: rgba(245,100,122,0.08);
-      border: 1px solid var(--danger);
-      border-radius: 10px;
-      font-size: 0.83rem;
-      color: var(--danger);
-      font-family: var(--mono);
-    }
-    .error-banner.show { display: block; }
-    .dir-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--muted);
-      transition: all 0.15s;
-    }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
-    }
-    .dir-arrow {
+
+    .font-card-preview {
       font-size: 1.1rem;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
+      line-height: 1.4;
+      color: var(--text);
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
+
+    .font-copy-btn {
+      flex-shrink: 0;
+      background: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 0.3rem 0.55rem;
+      border-radius: 8px;
+      transition: all 0.15s;
+      line-height: 1;
+    }
+    .font-copy-btn:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: rgba(108,92,231,0.2);
+    }
+    .font-copy-btn.copied { color: var(--success); }
+
+    .font-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin: 1.25rem 0 0.6rem;
+    }
+
+    .placeholder-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 2rem 1rem;
+    }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
+    "name": "Font Generator",
+    "url": "https://simpledevtools.dev/font-generator",
+    "description": "Copy and paste fancy Unicode fonts. Convert text to bold, italic, cursive, monospace, bubble, and 20+ styles.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <div class="noise"></div>
@@ -161,212 +168,286 @@
   </nav>
 
   <main class="fade-in">
+
     <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
+      <div class="badge" style="background:rgba(168,85,247,0.07);color:#a855f7;border-color:rgba(168,85,247,0.22);">𝓐 Fonts</div>
+      <h1>Font Generator</h1>
+      <p>Type your text and copy &amp; paste it in any Unicode font style — bold, italic, cursive, monospace, bubble, and more.</p>
     </div>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
-      </div>
-    </div>
-
-    <!-- Editors -->
     <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
-        </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
-          </div>
-        </div>
+      <div class="card-title">Your text</div>
+      <textarea id="font-input" placeholder="Type something here…" oninput="update()" spellcheck="false"></textarea>
+      <div class="btn-group" style="margin-top:0.85rem;">
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+        <button class="btn btn-secondary" onclick="loadSample()">Sample text</button>
       </div>
     </div>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
+    <div id="results-wrap">
+      <p class="placeholder-hint">Start typing above to see font styles.</p>
     </div>
 
   </main>
 
-  <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
-  </footer>
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
 
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
-    <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
-    <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
-    <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
-    <a href="base64-encoder.html" class="tool-rail-btn">⇄ Base64</a>
-    <a href="url-encoder.html" class="tool-rail-btn">🔗 URL</a>
-    <a href="hash-generator.html" class="tool-rail-btn">⬡ Hash</a>
-    <a href="regex-tester.html" class="tool-rail-btn">.* Regex</a>
-    <a href="timestamp-converter.html" class="tool-rail-btn">⌚ Timestamp</a>
-    <a href="case-converter.html" class="tool-rail-btn">Aa Case</a>
-    <a href="lorem-ipsum-generator.html" class="tool-rail-btn">📝 Lorem</a>
-    <a href="random-string-generator.html" class="tool-rail-btn">🎲 Random</a>
-    <a href="password-generator.html" class="tool-rail-btn">🔐 Password</a>
-    <a href="uuid-validator.html" class="tool-rail-btn">✓ UUID Val</a>
-    <a href="jwt-decoder.html" class="tool-rail-btn">🔓 JWT</a>
-    <a href="yaml-to-json.html" class="tool-rail-btn">⇅ YAML</a>
-    <a href="font-generator.html" class="tool-rail-btn active">𝓐 Fonts</a>
+    <div class="tool-rail-label">Tools</div>
+    <a href="uuid-generator.html"           class="tool-rail-btn" title="GUID Generator">🔑 UUID</a>
+    <a href="json-formatter.html"           class="tool-rail-btn" title="JSON Formatter">{ } JSON</a>
+    <a href="json-validator.html"           class="tool-rail-btn" title="JSON Validator">✓ JSON Lint</a>
+    <a href="base64-encoder.html"           class="tool-rail-btn" title="Base64 Encoder">⇄ Base64</a>
+    <a href="url-encoder.html"              class="tool-rail-btn" title="URL Encoder">🔗 URL</a>
+    <a href="hash-generator.html"           class="tool-rail-btn" title="Hash Generator">⬡ Hash</a>
+    <a href="regex-tester.html"             class="tool-rail-btn" title="Regex Tester">.* Regex</a>
+    <a href="timestamp-converter.html"      class="tool-rail-btn" title="Timestamp">⌚ Timestamp</a>
+    <a href="case-converter.html"           class="tool-rail-btn" title="Case Converter">Aa Case</a>
+    <a href="lorem-ipsum-generator.html"    class="tool-rail-btn" title="Lorem Ipsum">📝 Lorem</a>
+    <a href="random-string-generator.html"  class="tool-rail-btn" title="Random String">🎲 Random</a>
+    <a href="password-generator.html"       class="tool-rail-btn" title="Password">🔐 Password</a>
+    <a href="uuid-validator.html"           class="tool-rail-btn" title="UUID Validator">✓ UUID Val</a>
+    <a href="jwt-decoder.html"              class="tool-rail-btn" title="JWT Decoder">🔓 JWT</a>
+    <a href="yaml-to-json.html"             class="tool-rail-btn" title="YAML ↔ JSON">⇅ YAML</a>
+    <a href="font-generator.html"           class="tool-rail-btn active" title="Font Generator">𝓐 Fonts</a>
     <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
 
   <div class="toast" id="toast"></div>
 
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script src="search.js"></script>
   <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
+  // ─────────────────────────────────────────────
+  // Unicode character maps
+  // ─────────────────────────────────────────────
+  const MAPS = (() => {
+    const A = 65, a = 97, zero = 48;
 
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
-
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
-      ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
-    }, null, 2);
-
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
-    }
-
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
+    function map(upperStart, lowerStart, digitStart) {
+      const m = {};
+      for (let i = 0; i < 26; i++) {
+        m[String.fromCharCode(A + i)] = String.fromCodePoint(upperStart + i);
+        m[String.fromCharCode(a + i)] = String.fromCodePoint(lowerStart + i);
       }
-    }
-
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
-    }
-
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('error-banner');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
-
-    function clearError() {
-      document.getElementById('error-banner').classList.remove('show');
-    }
-
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
-      try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
-        }
-        document.getElementById('output-area').value = result;
-      } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
+      if (digitStart != null) {
+        for (let i = 0; i < 10; i++)
+          m[String.fromCharCode(zero + i)] = String.fromCodePoint(digitStart + i);
       }
+      return m;
     }
 
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
+    return [
+      { label: 'Bold',                  group: 'Serif',       m: map(0x1D400, 0x1D41A, 0x1D7CE) },
+      { label: 'Italic',                group: 'Serif',       m: { ...map(0x1D434, 0x1D44E), h: '\u210E' } },
+      { label: 'Bold Italic',           group: 'Serif',       m: map(0x1D468, 0x1D482) },
+      { label: 'Bold',                  group: 'Sans-Serif',  m: map(0x1D5D4, 0x1D5EE, 0x1D7EC) },
+      { label: 'Italic',                group: 'Sans-Serif',  m: map(0x1D608, 0x1D622) },
+      { label: 'Bold Italic',           group: 'Sans-Serif',  m: map(0x1D63C, 0x1D656) },
+      { label: 'Script / Cursive',      group: 'Decorative',  m: (() => {
+          const mm = map(0x1D49C, 0x1D4B6);
+          // overrides for missing codepoints in Mathematical Script block
+          const ov = {B:'\u212C',E:'\u2130',F:'\u2131',H:'\u210B',I:'\u2110',L:'\u2112',M:'\u2133',R:'\u211B',e:'\u212F',g:'\u210A',o:'\u2134'};
+          return { ...mm, ...ov };
+        })()
+      },
+      { label: 'Bold Script',           group: 'Decorative',  m: map(0x1D4D0, 0x1D4EA) },
+      { label: 'Fraktur',               group: 'Decorative',  m: (() => {
+          const mm = map(0x1D504, 0x1D51E);
+          const ov = {C:'\u212D',H:'\u210C',I:'\u2111',R:'\u211C',Z:'\u2128'};
+          return { ...mm, ...ov };
+        })()
+      },
+      { label: 'Bold Fraktur',          group: 'Decorative',  m: map(0x1D56C, 0x1D586) },
+      { label: 'Double-Struck',         group: 'Decorative',  m: (() => {
+          const mm = map(0x1D538, 0x1D552, 0x1D7D8);
+          const ov = {C:'\u2102',H:'\u210D',N:'\u2115',P:'\u2119',Q:'\u211A',R:'\u211D',Z:'\u2124'};
+          return { ...mm, ...ov };
+        })()
+      },
+      { label: 'Monospace',             group: 'Code',        m: map(0x1D670, 0x1D68A, 0x1D7F6) },
+      { label: 'Circled',               group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0x24B6+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0x24D0+i);
+          }
+          for (let i = 0; i < 10; i++)
+            mm[String.fromCharCode(zero+i)] = String.fromCodePoint(i === 0 ? 0x24EA : 0x2460+i-1);
+          return mm;
+        })()
+      },
+      { label: 'Negative Circled',      group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0x1F150+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0x1F150+i);
+          }
+          for (let i = 1; i <= 10; i++)
+            mm[String.fromCharCode(zero+(i%10))] = String.fromCodePoint(0x2776+i-1);
+          return mm;
+        })()
+      },
+      { label: 'Squared',               group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0x1F130+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0x1F130+i);
+          }
+          return mm;
+        })()
+      },
+      { label: 'Bubble / Fullwidth',    group: 'Stylised',    m: (() => {
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = String.fromCodePoint(0xFF21+i);
+            mm[String.fromCharCode(a+i)] = String.fromCodePoint(0xFF41+i);
+          }
+          for (let i = 0; i < 10; i++)
+            mm[String.fromCharCode(zero+i)] = String.fromCodePoint(0xFF10+i);
+          return mm;
+        })()
+      },
+      { label: 'Small Caps',            group: 'Stylised',    m: (() => {
+          const SC = 'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ';
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = SC[i];
+            mm[String.fromCharCode(a+i)] = SC[i];
+          }
+          return mm;
+        })()
+      },
+      { label: 'Superscript',           group: 'Stylised',    m: (() => {
+          const sup = 'ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖᑫʳˢᵗᵘᵛʷˣʸᶻ';
+          const supU = 'ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᑫᴿˢᵀᵁᵛᵂˣʸᶻ';
+          const supD = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+          const mm = {};
+          for (let i = 0; i < 26; i++) {
+            mm[String.fromCharCode(A+i)] = supU[i];
+            mm[String.fromCharCode(a+i)] = sup[i];
+          }
+          for (let i = 0; i < 10; i++) mm[String.fromCharCode(zero+i)] = supD[i];
+          return mm;
+        })()
+      },
+      { label: 'Strikethrough',         group: 'Effects',     special: 'strike' },
+      { label: 'Underline',             group: 'Effects',     special: 'underline' },
+      { label: 'Double Underline',      group: 'Effects',     special: 'double-underline' },
+      { label: 'Slash Through',         group: 'Effects',     special: 'slash' },
+      { label: 'Upside Down',           group: 'Effects',     special: 'flip' },
+      { label: 'Mirror / Reverse',      group: 'Effects',     special: 'reverse' },
+    ];
+  })();
+
+  const FLIP_MAP = {
+    a:'ɐ',b:'q',c:'ɔ',d:'p',e:'ǝ',f:'ɟ',g:'ƃ',h:'ɥ',i:'ᴉ',j:'ɾ',k:'ʞ',l:'l',m:'ɯ',
+    n:'u',o:'o',p:'d',q:'b',r:'ɹ',s:'s',t:'ʇ',u:'n',v:'ʌ',w:'ʍ',x:'x',y:'ʎ',z:'z',
+    A:'∀',B:'ᗺ',C:'Ɔ',D:'ᗡ',E:'Ǝ',F:'Ⅎ',G:'פ',H:'H',I:'I',J:'ſ',K:'ʞ',L:'˥',M:'W',
+    N:'N',O:'O',P:'Ԁ',Q:'Q',R:'ᴚ',S:'S',T:'┴',U:'∩',V:'Λ',W:'M',X:'X',Y:'⅄',Z:'Z',
+    '0':'0','1':'Ɩ','2':'ᄅ','3':'Ɛ','4':'ㄣ','5':'ϛ','6':'9','7':'Ɫ','8':'8','9':'6',
+    '!':'¡','?':'¿',',':'\u2018','.':'˙','(':')',')':'(','[':']',']':'[','<':'>',' ':' ',
+  };
+
+  function applyMap(text, mObj) {
+    return [...text].map(ch => mObj[ch] ?? ch).join('');
+  }
+
+  function applySpecial(text, type) {
+    switch (type) {
+      case 'strike':          return [...text].map(c => c === ' ' ? ' ' : c + '\u0336').join('');
+      case 'underline':       return [...text].map(c => c === ' ' ? ' ' : c + '\u0332').join('');
+      case 'double-underline':return [...text].map(c => c === ' ' ? ' ' : c + '\u0333').join('');
+      case 'slash':           return [...text].map(c => c === ' ' ? ' ' : c + '\u0338').join('');
+      case 'flip':            return [...text].map(c => FLIP_MAP[c] ?? c).reverse().join('');
+      case 'reverse':         return [...text].reverse().join('');
+    }
+    return text;
+  }
+
+  function convert(text, style) {
+    if (style.special) return applySpecial(text, style.special);
+    return applyMap(text, style.m);
+  }
+
+  // ─────────────────────────────────────────────
+  // Rendering
+  // ─────────────────────────────────────────────
+  const GROUPS = ['Serif', 'Sans-Serif', 'Decorative', 'Code', 'Stylised', 'Effects'];
+
+  function update() {
+    const text = document.getElementById('font-input').value;
+    const wrap = document.getElementById('results-wrap');
+
+    if (!text) {
+      wrap.innerHTML = '<p class="placeholder-hint">Start typing above to see font styles.</p>';
+      return;
     }
 
-    function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
+    const byGroup = {};
+    for (const g of GROUPS) byGroup[g] = [];
+    for (const style of MAPS) {
+      const out = convert(text, style);
+      (byGroup[style.group] || (byGroup['Stylised'] = byGroup['Stylised'] || [])).push({ style, out });
     }
 
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
+    let html = '';
+    for (const g of GROUPS) {
+      if (!byGroup[g] || !byGroup[g].length) continue;
+      html += `<div class="font-section-label">${g}</div><div class="font-grid">`;
+      for (const { style, out } of byGroup[g]) {
+        const escaped = out.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        html += `
+          <div class="font-card" onclick="copyFont(this, '${escaped.replace(/'/g,'&#39;')}')">
+            <div class="font-card-meta">
+              <div class="font-card-label">${style.label}</div>
+              <div class="font-card-preview">${escaped}</div>
+            </div>
+            <button class="font-copy-btn" title="Copy">📋</button>
+          </div>`;
+      }
+      html += '</div>';
     }
+    wrap.innerHTML = html;
+  }
 
-    function showToast(msg, type = '') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
-    }
+  function copyFont(card, text) {
+    const decoded = text
+      .replace(/&amp;/g,'&')
+      .replace(/&lt;/g,'<')
+      .replace(/&gt;/g,'>')
+      .replace(/&quot;/g,'"')
+      .replace(/&#39;/g,"'");
+    navigator.clipboard.writeText(decoded).then(() => {
+      card.classList.add('flash');
+      const btn = card.querySelector('.font-copy-btn');
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        card.classList.remove('flash');
+        btn.textContent = '📋';
+        btn.classList.remove('copied');
+      }, 1200);
+      showToast('Copied!', 'success');
+    });
+  }
 
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
+  function clearAll() {
+    document.getElementById('font-input').value = '';
+    document.getElementById('results-wrap').innerHTML = '<p class="placeholder-hint">Start typing above to see font styles.</p>';
+  }
 
-    // init indent highlight
-    setIndent(2);
+  function loadSample() {
+    document.getElementById('font-input').value = 'Hello World';
+    update();
+  }
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast show ' + type;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = 'toast'; }, 2000);
+  }
   </script>
+  <script src="search.js"></script>
 </body>
 </html>

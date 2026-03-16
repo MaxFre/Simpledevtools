@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes online. Real-time hashing with one-click copy. Free, no data leaves your browser." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/hash-generator" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="Hash Generator (SHA-1, SHA-256, SHA-512) — SimpleDevTools" />
+  <meta property="og:description" content="Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes online. Real-time hashing with one-click copy. Free, no data leaves your browser." />
+  <meta property="og:url" content="https://simpledevtools.dev/hash-generator" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="Hash Generator (SHA-1, SHA-256, SHA-512) — SimpleDevTools" />
+  <meta name="twitter:description" content="Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes online. Real-time hashing with one-click copy. Free, no data leaves your browser." />
+  <title>Hash Generator (SHA-1, SHA-256, SHA-512) — SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,112 +28,100 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
+    #hash-input {
+      min-height: 160px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      resize: vertical;
+    }
+
+    .hash-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+
+    .hash-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
-    }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
-    }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
-      display: flex;
+      grid-template-columns: 90px 1fr auto;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      transition: border-color 0.2s;
     }
-    .panel-label {
-      font-size: 0.72rem;
+    .hash-row:hover { border-color: rgba(112,72,232,0.25); }
+
+    .hash-name {
+      font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--muted);
+      white-space: nowrap;
     }
-    .code-area {
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+
+    .hash-value {
       font-family: var(--mono);
-      font-size: 0.82rem;
-      padding: 0.85rem 1rem;
-      line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
-      background: var(--surface2);
-      cursor: default;
-    }
-    .error-banner {
-      display: none;
-      padding: 0.7rem 1rem;
-      background: rgba(245,100,122,0.08);
-      border: 1px solid var(--danger);
-      border-radius: 10px;
-      font-size: 0.83rem;
-      color: var(--danger);
-      font-family: var(--mono);
-    }
-    .error-banner.show { display: block; }
-    .dir-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
       font-size: 0.78rem;
-      font-weight: 700;
+      color: var(--text);
+      word-break: break-all;
+      min-height: 1.2em;
+    }
+
+    .hash-value.placeholder { color: var(--muted); font-style: italic; }
+
+    .hash-copy-btn {
+      background: none;
+      border: 1px solid transparent;
       cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface2);
       color: var(--muted);
-      transition: all 0.15s;
+      font-size: 0.88rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 7px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
     }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
+    .hash-copy-btn:hover {
+      color: #7048e8;
+      background: rgba(112,72,232,0.07);
+      border-color: rgba(112,72,232,0.2);
     }
-    .dir-arrow {
-      font-size: 1.1rem;
+    .hash-copy-btn.copied { color: var(--success); }
+
+    .input-meta {
+      font-size: 0.72rem;
       color: var(--muted);
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
+      text-align: right;
+      font-family: var(--mono);
+      margin-top: 0.4rem;
     }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
+
+    .spinner {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border: 2px solid rgba(112,72,232,0.2);
+      border-top-color: #7048e8;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
+    "name": "Hash Generator",
+    "url": "https://simpledevtools.dev/hash-generator",
+    "description": "Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes online in real-time.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <div class="noise"></div>
@@ -161,69 +150,59 @@
   </nav>
 
   <main class="fade-in">
+
     <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
+      <div class="badge" style="background:rgba(112,72,232,0.07);color:#6540c8;border-color:rgba(112,72,232,0.2);">⬡ Hashing</div>
+      <h1>Hash Generator</h1>
+      <p>Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes using the browser's WebCrypto API.</p>
     </div>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
-      </div>
-    </div>
-
-    <!-- Editors -->
+    <!-- Input -->
     <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
-        </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
-          </div>
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Input</span>
+        <div class="btn-group">
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="pasteInput()">⧉ Paste</button>
+          <button class="btn btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.72rem;" onclick="clearAll()">✕ Clear</button>
         </div>
       </div>
+      <textarea id="hash-input" spellcheck="false" placeholder="Type or paste text to hash…" oninput="onInput()"></textarea>
+      <div class="input-meta" id="input-meta">0 chars</div>
     </div>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
+    <!-- Hashes -->
+    <div class="card">
+      <div class="card-title">Hashes</div>
+      <div class="hash-list">
+        <div class="hash-row" id="row-sha1">
+          <span class="hash-name">SHA-1</span>
+          <span class="hash-value placeholder" id="val-sha1">—</span>
+          <button class="hash-copy-btn" id="btn-sha1" onclick="copyHash('sha1')" title="Copy">📋</button>
+        </div>
+        <div class="hash-row" id="row-sha256">
+          <span class="hash-name">SHA-256</span>
+          <span class="hash-value placeholder" id="val-sha256">—</span>
+          <button class="hash-copy-btn" id="btn-sha256" onclick="copyHash('sha256')" title="Copy">📋</button>
+        </div>
+        <div class="hash-row" id="row-sha384">
+          <span class="hash-name">SHA-384</span>
+          <span class="hash-value placeholder" id="val-sha384">—</span>
+          <button class="hash-copy-btn" id="btn-sha384" onclick="copyHash('sha384')" title="Copy">📋</button>
+        </div>
+        <div class="hash-row" id="row-sha512">
+          <span class="hash-name">SHA-512</span>
+          <span class="hash-value placeholder" id="val-sha512">—</span>
+          <button class="hash-copy-btn" id="btn-sha512" onclick="copyHash('sha512')" title="Copy">📋</button>
+        </div>
+      </div>
     </div>
 
   </main>
 
-  <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
-  </footer>
-
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
+    <div class="tool-rail-label">Tools</div>
     <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
     <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
     <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
@@ -242,131 +221,93 @@
     <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
     <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
-
   <div class="toast" id="toast"></div>
 
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script src="search.js"></script>
   <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
+    const ALGOS = [
+      { key: 'sha1',   name: 'SHA-1'   },
+      { key: 'sha256', name: 'SHA-256' },
+      { key: 'sha384', name: 'SHA-384' },
+      { key: 'sha512', name: 'SHA-512' },
+    ];
 
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
+    const cached = {};
+    let debounce;
 
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
-      ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
-    }, null, 2);
+    function onInput() {
+      const text = document.getElementById('hash-input').value;
+      document.getElementById('input-meta').textContent = text.length + ' chars · ' + (new TextEncoder().encode(text).length) + ' bytes';
 
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
+      clearTimeout(debounce);
+      if (!text) { clearHashes(); return; }
+      ALGOS.forEach(a => setVal(a.key, '<span class="spinner"></span>'));
+      debounce = setTimeout(() => hashAll(text), 180);
     }
 
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
-      }
-    }
-
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
-    }
-
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('error-banner');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
-
-    function clearError() {
-      document.getElementById('error-banner').classList.remove('show');
-    }
-
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
-      try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
+    async function hashAll(text) {
+      const enc = new TextEncoder().encode(text);
+      const algoMap = { sha1: 'SHA-1', sha256: 'SHA-256', sha384: 'SHA-384', sha512: 'SHA-512' };
+      for (const a of ALGOS) {
+        try {
+          const buf = await crypto.subtle.digest(algoMap[a.key], enc);
+          const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+          cached[a.key] = hex;
+          setVal(a.key, hex);
+        } catch(e) {
+          setVal(a.key, 'Error: ' + e.message);
         }
-        document.getElementById('output-area').value = result;
-      } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
       }
     }
 
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
+    function clearHashes() {
+      ALGOS.forEach(a => { cached[a.key] = null; setValPlaceholder(a.key); });
+      document.getElementById('input-meta').textContent = '0 chars';
+    }
+
+    function setVal(key, html) {
+      const el = document.getElementById('val-' + key);
+      el.innerHTML = html;
+      el.classList.remove('placeholder');
+    }
+
+    function setValPlaceholder(key) {
+      const el = document.getElementById('val-' + key);
+      el.textContent = '—';
+      el.classList.add('placeholder');
+    }
+
+    function copyHash(key) {
+      const val = cached[key];
+      if (!val) return showToast('Hash not yet computed');
+      const btn = document.getElementById('btn-' + key);
+      navigator.clipboard.writeText(val).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        showToast(key.toUpperCase() + ' copied!');
+        setTimeout(() => { btn.textContent = '📋'; btn.classList.remove('copied'); }, 1800);
+      });
+    }
+
+    async function pasteInput() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('hash-input').value = text;
+        onInput();
+      } catch(e) { showToast('Clipboard access denied'); }
     }
 
     function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
+      document.getElementById('hash-input').value = '';
+      clearHashes();
     }
 
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
-    }
-
-    function showToast(msg, type = '') {
+    function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
     }
-
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
-
-    // init indent highlight
-    setIndent(2);
   </script>
+  <script src="search.js"></script>
 </body>
 </html>

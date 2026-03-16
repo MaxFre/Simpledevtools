@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="JWT decode online — instantly decode and inspect JSON Web Tokens. View header, payload claims, expiration status, and all standard claims. 100% client-side, your token never leaves the browser." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/jwt-decoder" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="JWT Decoder — Decode JWT Tokens Online | SimpleDevTools" />
+  <meta property="og:description" content="JWT decode online — instantly decode and inspect JSON Web Tokens. View header, payload claims, expiration status, and all standard claims. 100% client-side, your token never leaves the browser." />
+  <meta property="og:url" content="https://simpledevtools.dev/jwt-decoder" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="JWT Decoder — Decode JWT Tokens Online | SimpleDevTools" />
+  <meta name="twitter:description" content="JWT decode online — instantly decode and inspect JSON Web Tokens. View header, payload claims, expiration status, and all standard claims. 100% client-side, your token never leaves the browser." />
+  <title>JWT Decoder — Decode JWT Tokens Online | SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,112 +28,176 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* ── Token textarea ── */
+    #jwt-input {
+      min-height: 110px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      resize: vertical;
+      line-height: 1.7;
+      word-break: break-all;
+    }
+
+    /* ── Colour-coded token visualization ── */
+    .token-visual {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      word-break: break-all;
+      line-height: 1.8;
+      padding: 0.75rem 0.5rem;
+    }
+    .jwt-part-header  { color: #7c6bff; font-weight: 600; }
+    .jwt-part-payload { color: #00b894; font-weight: 600; }
+    .jwt-part-sig     { color: var(--muted); }
+    .jwt-dot          { color: var(--text-secondary); opacity: 0.6; margin: 0 1px; }
+
+    .token-legend {
+      display: flex;
       gap: 1.25rem;
-      align-items: start;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      align-items: center;
+      flex-wrap: wrap;
     }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%;
     }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
+    .legend-dot.header  { background: #7c6bff; }
+    .legend-dot.payload { background: #00b894; }
+    .legend-dot.sig     { background: var(--muted); }
+
+    /* ── Expiry banner ── */
+    .expiry-banner {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
+      gap: 1rem;
+      padding: 0.9rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
     }
-    .panel-label {
-      font-size: 0.72rem;
+    .expiry-banner.valid   { border-color: var(--success); background: rgba(62,232,192,0.06); color: var(--success); }
+    .expiry-banner.expired { border-color: var(--danger);  background: rgba(245,100,122,0.06); color: var(--danger); }
+    .expiry-banner.noexp   { border-color: var(--border);  background: var(--surface2); color: var(--muted); }
+    .expiry-banner-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .expiry-banner-body strong { display: block; font-size: 0.92rem; margin-bottom: 0.15rem; }
+    .expiry-banner-body span   { font-size: 0.8rem; opacity: 0.85; }
+
+    /* ── Side-by-side panels ── */
+    .jwt-panels {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    @media (max-width: 720px) { .jwt-panels { grid-template-columns: 1fr; } }
+
+    .json-out {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--text);
+    }
+
+    /* JSON syntax colours */
+    .jk  { color: var(--accent); }       /* key */
+    .js  { color: var(--accent2); }      /* string value */
+    .jn  { color: #f39c12; }             /* number */
+    .jb  { color: #e17055; }             /* boolean */
+    .jnu { color: var(--muted); }        /* null */
+
+    /* ── Claims table ── */
+    .claims-section { margin-top: 1.25rem; }
+    .claims-title {
+      font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--muted);
+      margin-bottom: 0.6rem;
     }
-    .code-area {
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-family: var(--mono);
+    .claim-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.3rem 0.85rem;
+      align-items: start;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--border);
       font-size: 0.82rem;
+    }
+    .claim-row:last-child { border-bottom: none; }
+    .claim-key {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .claim-val {
+      font-family: var(--mono);
+      font-size: 0.79rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+    .claim-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      grid-column: 2 / -1;
+      margin-top: 0.1rem;
+    }
+
+    /* ── Notice ── */
+    .notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
       padding: 0.85rem 1rem;
-      line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
       background: var(--surface2);
-      cursor: default;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-top: 1rem;
     }
+    .notice-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+    /* ── Error banner ── */
     .error-banner {
       display: none;
-      padding: 0.7rem 1rem;
+      padding: 0.8rem 1rem;
       background: rgba(245,100,122,0.08);
       border: 1px solid var(--danger);
       border-radius: 10px;
-      font-size: 0.83rem;
+      font-size: 0.84rem;
       color: var(--danger);
-      font-family: var(--mono);
+      margin-bottom: 1rem;
     }
     .error-banner.show { display: block; }
-    .dir-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--muted);
-      transition: all 0.15s;
-    }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
-    }
-    .dir-arrow {
-      font-size: 1.1rem;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-    }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
+    "name": "JWT Decoder",
+    "url": "https://simpledevtools.dev/jwt-decoder",
+    "description": "Decode and inspect JWT tokens, view header, payload claims, and expiration status. 100% client-side.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <div class="noise"></div>
@@ -161,150 +226,254 @@
   </nav>
 
   <main class="fade-in">
+
     <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
+      <div class="badge" style="background:rgba(230,73,128,0.07);color:#e64980;border-color:rgba(230,73,128,0.22);">🔓 Decoder</div>
+      <h1>JWT Decoder</h1>
+      <p>Paste a JSON Web Token to decode and inspect its header, payload, and claims.</p>
     </div>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
-      </div>
-    </div>
-
-    <!-- Editors -->
     <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
-        </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
-          </div>
-        </div>
+      <div class="card-title">JWT Token</div>
+      <textarea id="jwt-input" spellcheck="false"
+        placeholder="Paste a JWT token here…&#10;e.g. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        oninput="autoDecodeOnPaste()"
+      ></textarea>
+      <div class="btn-group" style="margin-top:1rem;">
+        <button class="btn btn-primary" style="background:linear-gradient(135deg,#e64980,#f07eb5);border:none;color:#fff;box-shadow:0 2px 8px rgba(230,73,128,0.25);" onclick="decode()">🔓 Decode</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+        <button class="btn btn-secondary" onclick="loadSample()">Sample token</button>
       </div>
     </div>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
+    <div class="error-banner" id="error-banner"></div>
+
+    <!-- Token visualisation -->
+    <div class="card" id="visual-card" style="display:none;">
+      <div class="card-title">Token Structure</div>
+      <div class="token-visual" id="token-visual"></div>
+      <div class="token-legend">
+        <div class="legend-item"><span class="legend-dot header"></span> Header</div>
+        <div class="legend-item"><span class="legend-dot payload"></span> Payload</div>
+        <div class="legend-item"><span class="legend-dot sig"></span> Signature (not decoded)</div>
+      </div>
+    </div>
+
+    <!-- Expiry banner -->
+    <div id="expiry-wrap"></div>
+
+    <!-- Header + Payload panels -->
+    <div class="jwt-panels" id="jwt-panels" style="display:none;">
+
+      <div class="card" id="header-card">
+        <div class="card-title">Header</div>
+        <pre class="json-out" id="header-out"></pre>
+      </div>
+
+      <div class="card" id="payload-card">
+        <div class="card-title">Payload</div>
+        <pre class="json-out" id="payload-out"></pre>
+        <div id="claims-section"></div>
+        <div class="notice">
+          <span class="notice-icon">🔒</span>
+          Signature is not verified. This tool only decodes — it cannot confirm authenticity without the secret key or public key.
+        </div>
+      </div>
+
     </div>
 
   </main>
 
-  <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
-  </footer>
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
 
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
-    <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
-    <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
-    <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
-    <a href="base64-encoder.html" class="tool-rail-btn">⇄ Base64</a>
-    <a href="url-encoder.html" class="tool-rail-btn">🔗 URL</a>
-    <a href="hash-generator.html" class="tool-rail-btn">⬡ Hash</a>
-    <a href="regex-tester.html" class="tool-rail-btn">.* Regex</a>
-    <a href="timestamp-converter.html" class="tool-rail-btn">⌚ Timestamp</a>
-    <a href="case-converter.html" class="tool-rail-btn">Aa Case</a>
-    <a href="lorem-ipsum-generator.html" class="tool-rail-btn">📝 Lorem</a>
-    <a href="random-string-generator.html" class="tool-rail-btn">🎲 Random</a>
-    <a href="password-generator.html" class="tool-rail-btn">🔐 Password</a>
-    <a href="uuid-validator.html" class="tool-rail-btn">✓ UUID Val</a>
-    <a href="jwt-decoder.html" class="tool-rail-btn active">🔓 JWT</a>
-    <a href="yaml-to-json.html" class="tool-rail-btn">⇅ YAML</a>
-    <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
+    <div class="tool-rail-label">Tools</div>
+    <a href="uuid-generator.html"           class="tool-rail-btn" title="GUID Generator">🔑 UUID</a>
+    <a href="json-formatter.html"           class="tool-rail-btn" title="JSON Formatter">{ } JSON</a>
+    <a href="json-validator.html"           class="tool-rail-btn" title="JSON Validator">✓ JSON Lint</a>
+    <a href="base64-encoder.html"           class="tool-rail-btn" title="Base64 Encoder">⇄ Base64</a>
+    <a href="url-encoder.html"              class="tool-rail-btn" title="URL Encoder">🔗 URL</a>
+    <a href="hash-generator.html"           class="tool-rail-btn" title="Hash Generator">⬡ Hash</a>
+    <a href="regex-tester.html"             class="tool-rail-btn" title="Regex Tester">.* Regex</a>
+    <a href="timestamp-converter.html"      class="tool-rail-btn" title="Timestamp">⌚ Timestamp</a>
+    <a href="case-converter.html"           class="tool-rail-btn" title="Case Converter">Aa Case</a>
+    <a href="lorem-ipsum-generator.html"    class="tool-rail-btn" title="Lorem Ipsum">📝 Lorem</a>
+    <a href="random-string-generator.html"  class="tool-rail-btn" title="Random String">🎲 Random</a>
+    <a href="password-generator.html"       class="tool-rail-btn" title="Password">🔐 Password</a>
+    <a href="uuid-validator.html"           class="tool-rail-btn" title="UUID Validator">✓ UUID Val</a>
+    <a href="jwt-decoder.html"              class="tool-rail-btn active" title="JWT Decoder">🔓 JWT</a>
+    <a href="yaml-to-json.html"             class="tool-rail-btn" title="YAML ↔ JSON">⇅ YAML</a>
+    <a href="font-generator.html"           class="tool-rail-btn" title="Font Generator">𝓐 Fonts</a>
     <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
 
   <div class="toast" id="toast"></div>
 
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script src="search.js"></script>
   <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
+    const SAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.Lf6NeqJMKMzVCkLBq1QTyzpTX5i4W1K0E7HkqQJvBmA';
 
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
+    const CLAIM_HINTS = {
+      iss: 'Issuer — entity that issued the token',
+      sub: 'Subject — entity the token is about',
+      aud: 'Audience — recipient(s) this token is intended for',
+      exp: 'Expiration Time — token must not be accepted after this time',
+      nbf: 'Not Before — token must not be accepted before this time',
+      iat: 'Issued At — time the token was issued',
+      jti: 'JWT ID — unique identifier for this token',
+    };
 
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
-      ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
-    }, null, 2);
-
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
+    function b64urlDecode(str) {
+      try {
+        str = str.replace(/-/g, '+').replace(/_/g, '/');
+        while (str.length % 4) str += '=';
+        return JSON.parse(decodeURIComponent(
+          atob(str).split('').map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('')
+        ));
+      } catch { return null; }
     }
 
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function jsonHighlight(obj) {
+      const raw = JSON.stringify(obj, null, 2);
+      return raw.replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(?:\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        match => {
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) return '<span class="jk">' + esc(match) + '</span>';
+            return '<span class="js">' + esc(match) + '</span>';
+          }
+          if (/true|false/.test(match)) return '<span class="jb">' + match + '</span>';
+          if (/null/.test(match))        return '<span class="jnu">' + match + '</span>';
+          return '<span class="jn">' + match + '</span>';
+        }
+      );
+    }
+
+    function formatTs(unix) {
+      try { return new Date(unix * 1000).toUTCString(); } catch { return String(unix); }
+    }
+
+    function decode() {
+      const raw = document.getElementById('jwt-input').value.trim();
+      clearError();
+
+      if (!raw) { showError('Paste a JWT token first.'); return; }
+
+      const parts = raw.split('.');
+      if (parts.length !== 3) {
+        showError('Invalid JWT: expected exactly 3 parts separated by dots (header.payload.signature).');
+        hideResults();
+        return;
       }
+
+      const header  = b64urlDecode(parts[0]);
+      const payload = b64urlDecode(parts[1]);
+
+      if (!header)  { showError('Could not decode header — make sure the token is a valid JWT.'); hideResults(); return; }
+      if (!payload) { showError('Could not decode payload — the token may be malformed.'); hideResults(); return; }
+
+      // Token visualisation
+      const vis = document.getElementById('token-visual');
+      vis.innerHTML =
+        `<span class="jwt-part-header">${esc(parts[0])}</span>` +
+        `<span class="jwt-dot">.</span>` +
+        `<span class="jwt-part-payload">${esc(parts[1])}</span>` +
+        `<span class="jwt-dot">.</span>` +
+        `<span class="jwt-part-sig">${esc(parts[2])}</span>`;
+      document.getElementById('visual-card').style.display = '';
+
+      // Expiry
+      const now = Math.floor(Date.now() / 1000);
+      const expWrap = document.getElementById('expiry-wrap');
+      if (payload.exp != null) {
+        const expired  = now > payload.exp;
+        const expDate  = formatTs(payload.exp);
+        const diffSecs = Math.abs(payload.exp - now);
+        const diffStr  = diffSecs < 60
+          ? diffSecs + 's'
+          : diffSecs < 3600
+          ? Math.floor(diffSecs / 60) + 'm'
+          : diffSecs < 86400
+          ? Math.floor(diffSecs / 3600) + 'h'
+          : Math.floor(diffSecs / 86400) + 'd';
+
+        expWrap.innerHTML = `
+          <div class="expiry-banner ${expired ? 'expired' : 'valid'}">
+            <span class="expiry-banner-icon">${expired ? '⛔' : '✅'}</span>
+            <div class="expiry-banner-body">
+              <strong>${expired ? 'Token expired ' + diffStr + ' ago' : 'Token valid — expires in ' + diffStr}</strong>
+              <span>${expDate}</span>
+            </div>
+          </div>`;
+      } else {
+        expWrap.innerHTML = `
+          <div class="expiry-banner noexp">
+            <span class="expiry-banner-icon">ℹ️</span>
+            <div class="expiry-banner-body">
+              <strong>No expiration claim</strong>
+              <span>This token does not contain an <code>exp</code> field.</span>
+            </div>
+          </div>`;
+      }
+
+      // Header
+      document.getElementById('header-out').innerHTML = jsonHighlight(header);
+
+      // Payload
+      document.getElementById('payload-out').innerHTML = jsonHighlight(payload);
+
+      // Claims table
+      const knownKeys = Object.keys(payload).filter(k => CLAIM_HINTS[k]);
+      const claimsHtml = knownKeys.length === 0 ? '' : `
+        <div class="claims-section">
+          <div class="claims-title">Standard Claims</div>
+          ${knownKeys.map(k => {
+            let val = payload[k];
+            let displayVal = typeof val === 'object' ? JSON.stringify(val) : String(val);
+            if ((k === 'exp' || k === 'nbf' || k === 'iat') && typeof val === 'number') {
+              displayVal += ' (' + formatTs(val) + ')';
+            }
+            return `<div class="claim-row">
+              <span class="claim-key">${esc(k)}</span>
+              <span class="claim-val">${esc(displayVal)}</span>
+              <span class="claim-desc">${esc(CLAIM_HINTS[k])}</span>
+            </div>`;
+          }).join('')}
+        </div>`;
+      document.getElementById('claims-section').innerHTML = claimsHtml;
+
+      document.getElementById('jwt-panels').style.display = '';
+      document.getElementById('jwt-panels').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
+    function autoDecodeOnPaste() {
+      const val = document.getElementById('jwt-input').value.trim();
+      if (val.split('.').length === 3 && val.length > 20) decode();
     }
 
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
+    function hideResults() {
+      document.getElementById('visual-card').style.display = 'none';
+      document.getElementById('expiry-wrap').innerHTML = '';
+      document.getElementById('jwt-panels').style.display = 'none';
+    }
+
+    function clearAll() {
+      document.getElementById('jwt-input').value = '';
+      clearError();
+      hideResults();
+    }
+
+    function loadSample() {
+      document.getElementById('jwt-input').value = SAMPLE_JWT;
+      decode();
     }
 
     function showError(msg) {
@@ -317,56 +486,13 @@ settings:
       document.getElementById('error-banner').classList.remove('show');
     }
 
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
-      try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
-        }
-        document.getElementById('output-area').value = result;
-      } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
-      }
-    }
-
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
-    }
-
-    function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
-    }
-
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
-    }
-
     function showToast(msg, type = '') {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
+      t.textContent = msg; t.className = 'toast show ' + type;
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.className = 'toast'; }, 2500);
     }
-
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
-
-    // init indent highlight
-    setIndent(2);
   </script>
+  <script src="search.js"></script>
 </body>
 </html>

@@ -1,25 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-
+    <!-- AdSense disabled
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a clean, formatted result immediately." />
+  <meta name="description" content="Validate UUID/GUID format online. Detects version (1-5), checks RFC 4122 compliance, and identifies variant. Free instant validation tool." />
   <meta name="theme-color" content="#1a1a2e" />
-  <link rel="canonical" href="https://simpledevtools.dev/yaml-to-json" />
+  <link rel="canonical" href="https://simpledevtools.dev/uuid-validator" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta property="og:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side. Paste YAML or JSON and get a formatted result immediately." />
-  <meta property="og:url" content="https://simpledevtools.dev/yaml-to-json" />
+  <meta property="og:title" content="UUID Validator — SimpleDevTools" />
+  <meta property="og:description" content="Validate UUID/GUID format online. Detects version (1-5), checks RFC 4122 compliance, and identifies variant. Free instant validation tool." />
+  <meta property="og:url" content="https://simpledevtools.dev/uuid-validator" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools" />
-  <meta name="twitter:description" content="Convert YAML to JSON and JSON to YAML online — free, instant, and client-side." />
-  <title>YAML to JSON Converter Online — Also JSON to YAML | SimpleDevTools</title>
+  <meta name="twitter:title" content="UUID Validator — SimpleDevTools" />
+  <meta name="twitter:description" content="Validate UUID/GUID format online. Detects version (1-5), checks RFC 4122 compliance, and identifies variant. Free instant validation tool." />
+  <title>UUID Validator — SimpleDevTools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
@@ -27,116 +28,51 @@
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
-    .editor-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
-    }
-    @media (max-width: 680px) {
-      .editor-wrap { grid-template-columns: 1fr; }
-    }
-    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-    .panel-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-    .code-area {
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      padding: 0.85rem 1rem;
-      line-height: 1.7;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .code-area:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .code-area[readonly] {
-      background: var(--surface2);
-      cursor: default;
-    }
-    .error-banner {
+    .result-box {
+      border-radius: 12px; padding: 1.25rem 1.5rem;
+      border: 1px solid var(--border); margin-bottom: 1rem;
       display: none;
-      padding: 0.7rem 1rem;
-      background: rgba(245,100,122,0.08);
-      border: 1px solid var(--danger);
-      border-radius: 10px;
+    }
+    .result-box.valid   { border-color: var(--success); background: rgba(62,232,192,0.06); }
+    .result-box.invalid { border-color: var(--danger);  background: rgba(245,100,122,0.06); }
+    .result-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .result-status { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .result-status.valid   { color: var(--success); }
+    .result-status.invalid { color: var(--danger); }
+    .detail-grid {
+      display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 1rem;
       font-size: 0.83rem;
-      color: var(--danger);
-      font-family: var(--mono);
     }
-    .error-banner.show { display: block; }
-    .dir-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
+    .detail-key { color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.72rem; }
+    .detail-val { font-family: var(--mono); color: var(--text); }
+    .bulk-result {
+      font-family: var(--mono); font-size: 0.82rem; line-height: 1.9;
     }
-    .dir-btn {
-      padding: 0.42rem 1rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--muted);
-      transition: all 0.15s;
-    }
-    .dir-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(124,106,255,0.35);
-    }
-    .dir-arrow {
-      font-size: 1.1rem;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-    }
-    .dir-arrow:hover { background: var(--accent-soft); color: var(--accent); }
+    .bulk-line { display:flex; gap: 0.75rem; padding: 0.2rem 0; }
+    .bulk-line .valid-tag   { color: var(--success); font-weight:600; min-width:3rem; }
+    .bulk-line .invalid-tag { color: var(--danger);  font-weight:600; min-width:3rem; }
+    .bulk-line .uuid-text   { color: var(--text); word-break:break-all; }
+    .bulk-line .reason-tag  { color: var(--muted); font-size:0.78rem; font-style:italic; }
+    .invalid-reason { margin-top:0.6rem; font-size:0.83rem; color:var(--muted); }
+    .invalid-reason strong { color:var(--danger); font-style:normal; }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "YAML to JSON Converter",
-    "url": "https://simpledevtools.dev/yaml-to-json",
-    "description": "Convert YAML to JSON and JSON to YAML online. Free, instant, and client-side.",
+    "name": "UUID Validator",
+    "url": "https://simpledevtools.dev/uuid-validator",
+    "description": "Validate UUID/GUID format, detect version, and check RFC 4122 compliance.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
   }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <div class="noise"></div>
-
   <nav>
     <div class="nav-left">
       <a href="index.html" class="nav-brand">
@@ -162,68 +98,38 @@
 
   <main class="fade-in">
     <div class="page-header">
-      <div class="badge" style="background:rgba(253,203,110,0.1);color:#e6a817;border-color:rgba(253,203,110,0.3);">⇅ Converter</div>
-      <h1>YAML ↔ JSON Converter</h1>
-      <p>Convert YAML to JSON or JSON to YAML — instantly in your browser, nothing sent to a server.</p>
+      <div class="badge">✓ Validator</div>
+      <h1>UUID Validator</h1>
+      <p>Validate one or multiple UUIDs. Detects version (v1–v5), variant, and formatting issues.</p>
     </div>
 
-    <!-- Direction selector -->
-    <div class="card" style="padding:1rem 1.75rem;">
-      <div class="dir-toggle">
-        <button class="dir-btn active" id="btn-y2j" onclick="setMode('yaml2json')">YAML → JSON</button>
-        <button class="dir-arrow" onclick="swapMode()" title="Swap direction">⇄</button>
-        <button class="dir-btn" id="btn-j2y" onclick="setMode('json2yaml')">JSON → YAML</button>
-      </div>
-    </div>
-
-    <!-- Editors -->
     <div class="card">
-      <div class="error-banner" id="error-banner"></div>
-      <div class="editor-wrap">
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="input-label">YAML Input</span>
-            <div class="btn-group">
-              <button class="btn btn-ghost" onclick="loadSample()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Sample</button>
-              <button class="btn btn-ghost" onclick="clearAll()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Clear</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="input-area" placeholder="Paste YAML here…" spellcheck="false" autocomplete="off"></textarea>
-        </div>
-        <div class="editor-panel">
-          <div class="panel-header">
-            <span class="panel-label" id="output-label">JSON Output</span>
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="copyOutput()" style="font-size:0.75rem;padding:0.3rem 0.7rem;">Copy</button>
-            </div>
-          </div>
-          <textarea class="code-area" id="output-area" readonly placeholder="Result appears here…" spellcheck="false"></textarea>
-          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-            <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Indent</span>
-            <button class="btn btn-ghost" id="ind-2" onclick="setIndent(2)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">2</button>
-            <button class="btn btn-ghost" id="ind-4" onclick="setIndent(4)" style="font-size:0.73rem;padding:0.25rem 0.6rem;">4</button>
-            <button class="btn btn-ghost" id="ind-t" onclick="setIndent('tab')" style="font-size:0.73rem;padding:0.25rem 0.6rem;">Tab</button>
-          </div>
-        </div>
+      <div class="card-title">Input</div>
+      <textarea id="uuid-input" class="output-area" rows="5"
+        placeholder="Paste one UUID per line…
+&#10;e.g. 550e8400-e29b-41d4-a716-446655440000"></textarea>
+      <div class="btn-group" style="margin-top:1rem;">
+        <button class="btn btn-primary" onclick="validateAll()">✓ Validate</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
       </div>
     </div>
 
-    <!-- Convert button (mobile friendly) -->
-    <div style="display:flex;justify-content:center;margin-top:-0.25rem;">
-      <button class="btn btn-primary" onclick="convert()" style="min-width:160px;">Convert</button>
+    <div id="single-result" class="result-box">
+      <div class="result-icon" id="res-icon"></div>
+      <div class="result-status" id="res-status"></div>
+      <div class="detail-grid" id="res-details"></div>
     </div>
 
+    <div class="card" id="bulk-card" style="display:none;">
+      <div class="card-title" id="bulk-title">Results</div>
+      <div class="bulk-result" id="bulk-results"></div>
+    </div>
   </main>
 
-  <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
-  </footer>
-
+  <footer>Built with precision — <a href="index.html">DevTools</a></footer>
   <!-- Scrollable tool rail -->
   <aside class="tool-rail">
-    <div class="tool-rail-label">TOOLS</div>
+    <div class="tool-rail-label">Tools</div>
     <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
     <a href="json-formatter.html" class="tool-rail-btn">{ } JSON</a>
     <a href="json-validator.html" class="tool-rail-btn">✓ JSON Lint</a>
@@ -242,131 +148,96 @@
     <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
     <a href="bg-changer.html" class="tool-rail-btn">🖼 BG</a>
   </aside>
-
   <div class="toast" id="toast"></div>
 
-  <!-- js-yaml via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script src="search.js"></script>
   <script>
-    let mode   = 'yaml2json'; // 'yaml2json' | 'json2yaml'
-    let indent = 2;
+    // UUID v1-v5 regex
+    const RE = /^[0-9a-f]{8}-[0-9a-f]{4}-([1-5])[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const RE_NIL = /^0{8}-0{4}-0{4}-0{4}-0{12}$/;
+    const HEX = /^[0-9a-f]+$/i;
 
-    const SAMPLE_YAML = `name: SimpleDevTools
-version: 1.0.0
-tools:
-  - name: JSON Formatter
-    url: /json-formatter
-    free: true
-  - name: YAML to JSON
-    url: /yaml-to-json
-    free: true
-settings:
-  theme: dark
-  language: en
-  analytics: false`;
-
-    const SAMPLE_JSON = JSON.stringify({
-      name: 'SimpleDevTools',
-      version: '1.0.0',
-      tools: [
-        { name: 'JSON Formatter', url: '/json-formatter', free: true },
-        { name: 'YAML to JSON',   url: '/yaml-to-json',   free: true }
-      ],
-      settings: { theme: 'dark', language: 'en', analytics: false }
-    }, null, 2);
-
-    function setMode(m) {
-      mode = m;
-      document.getElementById('btn-y2j').classList.toggle('active', m === 'yaml2json');
-      document.getElementById('btn-j2y').classList.toggle('active', m === 'json2yaml');
-      document.getElementById('input-label').textContent  = m === 'yaml2json' ? 'YAML Input'  : 'JSON Input';
-      document.getElementById('output-label').textContent = m === 'yaml2json' ? 'JSON Output' : 'YAML Output';
-      document.getElementById('input-area').placeholder   = m === 'yaml2json' ? 'Paste YAML here…' : 'Paste JSON here…';
-      document.getElementById('output-area').placeholder  = m === 'yaml2json' ? 'JSON result…'     : 'YAML result…';
-      clearAll();
+    function getInvalidReason(s) {
+      const trimmed = s.trim();
+      if (/^urn:uuid:/i.test(trimmed)) return 'URN format not supported';
+      const clean = trimmed.replace(/^\{|\}$/g, '');
+      if (RE_NIL.test(clean)) return null;
+      const parts = clean.split('-');
+      if (parts.length !== 5) return 'Wrong structure — expected 8-4-4-4-12 groups';
+      const [p1, p2, p3, p4, p5] = parts;
+      if (p1.length !== 8 || p2.length !== 4 || p3.length !== 4 || p4.length !== 4 || p5.length !== 12)
+        return 'Wrong group lengths — expected 8-4-4-4-12';
+      if (![p1,p2,p3,p4,p5].every(p => HEX.test(p)))
+        return 'Contains non-hexadecimal characters';
+      const ver = parseInt(p3[0], 16);
+      if (ver < 1 || ver > 5) return `Invalid version (${p3[0].toUpperCase()}) — expected 1–5`;
+      const varNib = parseInt(p4[0], 16);
+      if (varNib < 8 || varNib > 11) return `Invalid variant bits (got ${p4[0].toLowerCase()}, expected 8–b)`;
+      return null;
     }
 
-    function swapMode() {
-      const out = document.getElementById('output-area').value;
-      setMode(mode === 'yaml2json' ? 'json2yaml' : 'yaml2json');
-      if (out) {
-        document.getElementById('input-area').value = out;
-        convert();
+    function parseUUID(s) {
+      const clean = s.trim().replace(/^\{|\}$/g,'');
+      if (RE_NIL.test(clean)) return { valid:true, version:'Nil (all zeros)', variant:'N/A', canonical:clean };
+      const m = RE.exec(clean);
+      if (!m) return { valid:false, reason: getInvalidReason(s) || 'Does not match UUID format' };
+      const version = 'v' + m[1];
+      const variantHex = parseInt(clean[19],16);
+      const variant = variantHex >= 8 && variantHex <= 11 ? 'RFC 4122' : 'Other';
+      return { valid:true, version, variant, canonical:clean.toLowerCase() };
+    }
+
+    function validateAll() {
+      const raw = document.getElementById('uuid-input').value.trim();
+      if (!raw) { showToast('Paste at least one UUID','error'); return; }
+      const lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+
+      if (lines.length === 1) {
+        // Single — show detailed result
+        const r = parseUUID(lines[0]);
+        const box = document.getElementById('single-result');
+        document.getElementById('bulk-card').style.display = 'none';
+        box.className = 'result-box ' + (r.valid ? 'valid' : 'invalid');
+        box.style.display = '';
+        document.getElementById('res-icon').textContent = r.valid ? '✅' : '❌';
+        const st = document.getElementById('res-status');
+        st.textContent = r.valid ? 'Valid UUID' : 'Invalid UUID';
+        st.className = 'result-status ' + (r.valid ? 'valid' : 'invalid');
+        document.getElementById('res-details').innerHTML = r.valid
+          ? `<span class="detail-key">Version</span><span class="detail-val">${r.version}</span>
+             <span class="detail-key">Variant</span><span class="detail-val">${r.variant}</span>
+             <span class="detail-key">Canonical</span><span class="detail-val">${r.canonical}</span>`
+          : `<span class="detail-key">Input</span><span class="detail-val" style="color:var(--danger)">${esc(lines[0])}</span>
+             <span class="detail-key">Reason</span><span class="detail-val" style="color:var(--danger)">${esc(r.reason || 'Does not match UUID format')}</span>`;
+      } else {
+        // Bulk
+        document.getElementById('single-result').style.display = 'none';
+        const validCount   = lines.filter(l=>parseUUID(l).valid).length;
+        const invalidCount = lines.length - validCount;
+        document.getElementById('bulk-title').textContent = `Results — ${validCount} valid, ${invalidCount} invalid`;
+        document.getElementById('bulk-results').innerHTML = lines.map(l => {
+          const r = parseUUID(l);
+          return `<div class="bulk-line">
+            <span class="${r.valid?'valid-tag':'invalid-tag'}">${r.valid?'✓ OK':'✕ BAD'}</span>
+            <span class="uuid-text">${esc(l.trim())}</span>
+            ${!r.valid && r.reason ? `<span class="reason-tag">— ${esc(r.reason)}</span>` : ''}
+          </div>`;
+        }).join('');
+        document.getElementById('bulk-card').style.display = '';
+        showToast(`${validCount} valid, ${invalidCount} invalid`, validCount===lines.length?'success':'error');
       }
     }
 
-    function setIndent(n) {
-      indent = n;
-      ['ind-2','ind-4','ind-t'].forEach(id => document.getElementById(id).classList.remove('btn-primary'));
-      document.getElementById(n === 2 ? 'ind-2' : n === 4 ? 'ind-4' : 'ind-t').classList.add('btn-primary');
-      if (document.getElementById('output-area').value) convert();
-    }
-
-    function getIndentValue() {
-      return indent === 'tab' ? '\t' : indent;
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('error-banner');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
-
-    function clearError() {
-      document.getElementById('error-banner').classList.remove('show');
-    }
-
-    function convert() {
-      clearError();
-      const input = document.getElementById('input-area').value.trim();
-      if (!input) { document.getElementById('output-area').value = ''; return; }
-
-      try {
-        let result;
-        if (mode === 'yaml2json') {
-          const parsed = jsyaml.load(input);
-          result = JSON.stringify(parsed, null, getIndentValue());
-        } else {
-          const parsed = JSON.parse(input);
-          result = jsyaml.dump(parsed, { indent: indent === 'tab' ? 4 : indent, lineWidth: -1 });
-        }
-        document.getElementById('output-area').value = result;
-      } catch (e) {
-        showError('⚠ ' + e.message);
-        document.getElementById('output-area').value = '';
-      }
-    }
-
-    function loadSample() {
-      document.getElementById('input-area').value = mode === 'yaml2json' ? SAMPLE_YAML : SAMPLE_JSON;
-      convert();
-    }
-
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function clearAll() {
-      document.getElementById('input-area').value = '';
-      document.getElementById('output-area').value = '';
-      clearError();
+      document.getElementById('uuid-input').value='';
+      document.getElementById('single-result').style.display='none';
+      document.getElementById('bulk-card').style.display='none';
     }
-
-    function copyOutput() {
-      const val = document.getElementById('output-area').value;
-      if (!val) return;
-      navigator.clipboard.writeText(val).then(() => showToast('Copied!', 'success'));
+    function showToast(msg,type='') {
+      const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type;
+      clearTimeout(t._timer); t._timer=setTimeout(()=>{ t.className='toast'; },2500);
     }
-
-    function showToast(msg, type = '') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show' + (type ? ' ' + type : '');
-      setTimeout(() => t.className = 'toast', 2200);
-    }
-
-    // auto-convert on input
-    document.getElementById('input-area').addEventListener('input', convert);
-
-    // init indent highlight
-    setIndent(2);
   </script>
+  <script src="search.js"></script>
 </body>
 </html>
