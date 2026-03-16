@@ -254,11 +254,19 @@
                 <label class="replace-opt"><input type="radio" name="replace" value="white" /> White</label>
                 <label class="replace-opt"><input type="radio" name="replace" value="black" /> Black</label>
                 <label class="replace-opt"><input type="radio" name="replace" value="custom" /> Custom</label>
+                <label class="replace-opt"><input type="radio" name="replace" value="image" /> Image</label>
               </div>
               <div class="replace-color-wrap" id="custom-color-wrap" style="display:none;margin-top:0.3rem;">
                 <div class="replace-swatch" id="replace-swatch" style="background:#ffffff;" onclick="document.getElementById('replace-color-input').click()"></div>
                 <input type="color" id="replace-color-input" value="#ffffff" style="width:0;height:0;opacity:0;position:absolute;" />
                 <span style="font-family:var(--mono);font-size:0.82rem;color:var(--text);" id="replace-hex">#ffffff</span>
+              </div>
+              <div id="bg-image-wrap" style="display:none;margin-top:0.5rem;align-items:center;gap:0.6rem;">
+                <label class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.75rem;cursor:pointer;">
+                  📁 Choose image
+                  <input type="file" id="bg-image-input" accept="image/*" style="display:none;" />
+                </label>
+                <span id="bg-image-name" style="font-size:0.75rem;color:var(--muted);"></span>
               </div>
             </div>
           </div>
@@ -310,6 +318,7 @@
     let mode       = 'flood'; // 'flood' | 'global'
     let pickedColors = [];    // [{r,g,b,hex}]
     let undoStack    = [];    // previous maskData snapshots
+    let bgImageData  = null;  // ImageData for background image replacement
 
     const srcCanvas = document.getElementById('src-canvas');
     const outCanvas = document.getElementById('out-canvas');
@@ -533,7 +542,9 @@
     // ── Render output from mask ────────────────────────
     function renderOutput() {
       if (!origData) return;
-      const rep = getReplacement();
+      const repVal = document.querySelector('input[name="replace"]:checked').value;
+      const rep = (repVal !== 'image') ? getReplacement() : null;
+      const bgd = (repVal === 'image' && bgImageData) ? bgImageData.data : null;
       const src = origData.data;
       const out = new ImageData(imgW, imgH);
       const d = out.data;
@@ -549,26 +560,33 @@
           d[si+1] = src[si+1];
           d[si+2] = src[si+2];
           d[si+3] = src[si+3];
-        } else if (m >= 1) {
-          // Fully replaced
-          d[si]   = rep.r;
-          d[si+1] = rep.g;
-          d[si+2] = rep.b;
-          d[si+3] = rep.a;
         } else {
-          // Blend (feathered edge)
-          const keep = 1 - m;
-          if (rep.a === 0) {
-            // transparent replacement: just reduce alpha
-            d[si]   = src[si];
-            d[si+1] = src[si+1];
-            d[si+2] = src[si+2];
-            d[si+3] = Math.round(src[si+3] * keep);
+          const rR = bgd ? bgd[si]   : rep.r;
+          const rG = bgd ? bgd[si+1] : rep.g;
+          const rB = bgd ? bgd[si+2] : rep.b;
+          const rA = bgd ? bgd[si+3] : rep.a;
+
+          if (m >= 1) {
+            // Fully replaced
+            d[si]   = rR;
+            d[si+1] = rG;
+            d[si+2] = rB;
+            d[si+3] = rA;
           } else {
-            d[si]   = Math.round(src[si]   * keep + rep.r * m);
-            d[si+1] = Math.round(src[si+1] * keep + rep.g * m);
-            d[si+2] = Math.round(src[si+2] * keep + rep.b * m);
-            d[si+3] = Math.round(src[si+3] * keep + rep.a * m);
+            // Blend (feathered edge)
+            const keep = 1 - m;
+            if (rA === 0) {
+              // transparent replacement: just reduce alpha
+              d[si]   = src[si];
+              d[si+1] = src[si+1];
+              d[si+2] = src[si+2];
+              d[si+3] = Math.round(src[si+3] * keep);
+            } else {
+              d[si]   = Math.round(src[si]   * keep + rR * m);
+              d[si+1] = Math.round(src[si+1] * keep + rG * m);
+              d[si+2] = Math.round(src[si+2] * keep + rB * m);
+              d[si+3] = Math.round(src[si+3] * keep + rA * m);
+            }
           }
         }
       }
@@ -632,8 +650,25 @@
     document.querySelectorAll('input[name="replace"]').forEach(el => {
       el.addEventListener('change', function() {
         document.getElementById('custom-color-wrap').style.display = this.value === 'custom' ? 'flex' : 'none';
+        document.getElementById('bg-image-wrap').style.display    = this.value === 'image'  ? 'flex' : 'none';
         renderOutput();
       });
+    });
+    document.getElementById('bg-image-input').addEventListener('change', function() {
+      if (!this.files[0] || !origData) return;
+      const url = URL.createObjectURL(this.files[0]);
+      const img = new Image();
+      img.onload = () => {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = imgW; offCanvas.height = imgH;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.drawImage(img, 0, 0, imgW, imgH);
+        bgImageData = offCtx.getImageData(0, 0, imgW, imgH);
+        document.getElementById('bg-image-name').textContent = this.files[0].name;
+        URL.revokeObjectURL(url);
+        renderOutput();
+      };
+      img.src = url;
     });
     document.getElementById('replace-color-input').addEventListener('input', function() {
       document.getElementById('replace-swatch').style.background = this.value;
@@ -684,8 +719,12 @@
 
     // ── Download ───────────────────────────────────────
     window.downloadResult = function() {
+      const now = new Date();
+      const dd   = String(now.getDate()).padStart(2, '0');
+      const mm   = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
       const link = document.createElement('a');
-      link.download = 'bg-removed.png';
+      link.download = 'SimpleDevTools Image ' + dd + '-' + mm + '-' + yyyy + '.png';
       link.href = outCanvas.toDataURL('image/png');
       link.click();
     };
