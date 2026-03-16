@@ -9,12 +9,12 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Remove or replace image backgrounds by color online — free, instant, client-side. Pick colors to remove, set tolerance, add a custom background, and download as PNG." />
+  <meta name="description" content="Remove or replace image backgrounds by color online — free, instant, client-side. Magic wand flood-fill, CIE76 color matching, edge feathering, download as PNG." />
   <meta name="theme-color" content="#1a1a2e" />
   <link rel="canonical" href="https://simpledevtools.dev/bg-changer" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Background Changer — Remove & Replace Image Background | SimpleDevTools" />
-  <meta property="og:description" content="Remove or replace image backgrounds by color. Pick colors to remove, set tolerance, add a custom background, and download as PNG." />
+  <meta property="og:description" content="Remove or replace image backgrounds by color. Magic wand or global mode, tolerance control, edge feathering, download PNG." />
   <meta property="og:url" content="https://simpledevtools.dev/bg-changer" />
   <meta property="og:site_name" content="SimpleDevTools" />
   <meta name="twitter:card" content="summary" />
@@ -29,65 +29,50 @@
   <script src="theme.js"></script>
   <style>
     .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-lg);
-      padding: 3rem 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      background: var(--bg);
-      position: relative;
+      border: 2px dashed var(--border); border-radius: var(--radius-lg);
+      padding: 3rem 2rem; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s; background: var(--bg); position: relative;
     }
-    .drop-zone:hover, .drop-zone.drag-over {
-      border-color: var(--accent);
-      background: var(--accent-soft);
-    }
-    .drop-zone input[type="file"] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-soft); }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
     .drop-zone-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
     .drop-zone-text { font-size: 0.95rem; color: var(--text-secondary); }
     .drop-zone-sub  { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
 
-    .canvas-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
-    }
+    .canvas-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
     @media (max-width: 720px) { .canvas-wrap { grid-template-columns: 1fr; } }
-
     .preview-panel { display: flex; flex-direction: column; gap: 0.6rem; }
-    .preview-label {
-      font-size: 0.72rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
-    }
+    .preview-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
     .preview-canvas-wrap {
-      border-radius: 10px; overflow: hidden;
+      border-radius: 10px; overflow: hidden; position: relative;
       background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 0 0 / 16px 16px;
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      min-height: 200px;
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; min-height: 200px;
     }
     [data-theme="dark"] .preview-canvas-wrap {
       background: repeating-conic-gradient(#2a2a3a 0% 25%, #1a1a2a 0% 50%) 0 0 / 16px 16px;
     }
     canvas { max-width: 100%; display: block; }
 
-    .color-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    /* Hover color preview */
+    .hover-preview {
+      position: absolute; top: 8px; right: 8px; display: none; align-items: center; gap: 6px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 4px 10px; font-family: var(--mono); font-size: 0.75rem; color: var(--text);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12); pointer-events: none; z-index: 5;
+    }
+    .hover-swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--border); }
+
+    .color-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
     .color-entry {
-      display: flex; align-items: center; gap: 0.6rem;
+      display: flex; align-items: center; gap: 0.5rem;
       background: var(--bg); border: 1px solid var(--border);
-      border-radius: 10px; padding: 0.55rem 0.8rem;
+      border-radius: 10px; padding: 0.45rem 0.7rem;
     }
-    .color-swatch {
-      width: 28px; height: 28px; border-radius: 6px;
-      border: 1px solid var(--border); flex-shrink: 0; cursor: pointer;
-    }
-    .color-hex { font-family: var(--mono); font-size: 0.82rem; color: var(--text); flex: 1; }
+    .color-swatch { width: 24px; height: 24px; border-radius: 5px; border: 1px solid var(--border); flex-shrink: 0; }
+    .color-hex { font-family: var(--mono); font-size: 0.78rem; color: var(--text); }
     .color-remove-btn {
       background: none; border: none; cursor: pointer; color: var(--muted);
-      font-size: 1rem; padding: 0.2rem 0.35rem; border-radius: 6px;
+      font-size: 0.9rem; padding: 0.15rem 0.3rem; border-radius: 5px;
       transition: color 0.15s, background 0.15s; line-height: 1;
     }
     .color-remove-btn:hover { color: var(--danger); background: rgba(229,91,111,0.08); }
@@ -101,13 +86,29 @@
     .replace-opt { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary); }
     .replace-opt input[type="radio"] { accent-color: var(--accent); cursor: pointer; }
     .replace-color-wrap { display: flex; align-items: center; gap: 0.5rem; }
-    .replace-swatch { width: 32px; height: 32px; border-radius: 7px; border: 1px solid var(--border); cursor: pointer; flex-shrink: 0; }
+    .replace-swatch { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border); cursor: pointer; flex-shrink: 0; }
 
     #src-canvas { cursor: crosshair; }
-    .info-chip {
-      font-size: 0.72rem; color: var(--muted); background: var(--surface2);
-      border: 1px solid var(--border); border-radius: 20px; padding: 0.2rem 0.65rem; display: inline-block;
+    .info-chip { font-size: 0.72rem; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.2rem 0.65rem; display: inline-block; }
+
+    /* Mode toggle */
+    .mode-toggle { display: flex; gap: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .mode-btn {
+      padding: 0.4rem 0.9rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none;
+      background: var(--surface2); color: var(--muted); transition: all 0.15s;
     }
+    .mode-btn.active { background: var(--accent-soft); color: var(--accent); }
+    .mode-btn:hover:not(.active) { background: var(--bg); }
+
+    /* Settings grid */
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    @media (max-width: 720px) { .settings-grid { grid-template-columns: 1fr; } }
+    .setting-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .setting-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+    .setting-hint { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+
+    .action-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .pixel-count { font-size: 0.78rem; color: var(--muted); font-family: var(--mono); margin-left: auto; }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
   <script type="application/ld+json">
@@ -126,16 +127,10 @@
 </head>
 <body>
   <div class="noise"></div>
-
   <nav>
     <div class="nav-left">
-      <a href="index.html" class="nav-brand">
-        <img src="images/icon.png" alt="" class="logo-icon" />
-        DevTools
-      </a>
-      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
-        <span class="theme-icon">☾</span>
-      </button>
+      <a href="index.html" class="nav-brand"><img src="images/icon.png" alt="" class="logo-icon" />DevTools</a>
+      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme"><span class="theme-icon">☾</span></button>
     </div>
     <div class="nav-search-wrap">
       <div class="nav-search-row">
@@ -145,16 +140,14 @@
       </div>
       <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
     </div>
-    <ul class="nav-links">
-      <li><a href="index.html">← All Tools</a></li>
-    </ul>
+    <ul class="nav-links"><li><a href="index.html">← All Tools</a></li></ul>
   </nav>
 
   <main class="fade-in">
     <div class="page-header">
       <div class="badge" style="background:rgba(0,184,148,0.08);color:#00b894;border-color:rgba(0,184,148,0.25);">🖼 Image</div>
       <h1>Background Changer</h1>
-      <p>Upload an image, click to pick colors to remove, adjust tolerance, choose a replacement, and download as PNG — all in your browser.</p>
+      <p>Click on the background to select its color, tweak tolerance, and remove it — entirely in your browser.</p>
     </div>
 
     <!-- Upload -->
@@ -167,7 +160,7 @@
       </div>
     </div>
 
-    <!-- Editor (hidden until image loaded) -->
+    <!-- Editor -->
     <div id="editor-section" style="display:none;">
 
       <!-- Canvases -->
@@ -175,11 +168,15 @@
         <div class="canvas-wrap">
           <div class="preview-panel">
             <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="preview-label">Original — click to pick color</span>
+              <span class="preview-label">Original — click to pick a background color</span>
               <span class="info-chip" id="img-info"></span>
             </div>
-            <div class="preview-canvas-wrap">
+            <div class="preview-canvas-wrap" id="src-wrap">
               <canvas id="src-canvas"></canvas>
+              <div class="hover-preview" id="hover-preview">
+                <div class="hover-swatch" id="hover-swatch"></div>
+                <span id="hover-hex">#000000</span>
+              </div>
             </div>
           </div>
           <div class="preview-panel">
@@ -187,9 +184,7 @@
               <span class="preview-label">Result</span>
               <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.75rem;" onclick="downloadResult()">⬇ Download PNG</button>
             </div>
-            <div class="preview-canvas-wrap">
-              <canvas id="out-canvas"></canvas>
-            </div>
+            <div class="preview-canvas-wrap"><canvas id="out-canvas"></canvas></div>
           </div>
         </div>
       </div>
@@ -197,72 +192,90 @@
       <!-- Controls -->
       <div class="card">
         <div class="card-title">Settings</div>
+        <div class="settings-grid">
 
-        <!-- Tolerance -->
-        <div style="margin-bottom:1.25rem;">
-          <div style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.5rem;">Color Tolerance</div>
-          <div class="slider-wrap">
-            <label>Low</label>
-            <input type="range" id="tolerance" min="0" max="150" value="30" oninput="onToleranceChange()" />
-            <label>High</label>
-            <span class="slider-val" id="tol-val">30</span>
-          </div>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:0.3rem;">Higher tolerance removes more shades of the picked color. Click the original image to add a target color.</div>
-        </div>
+          <!-- Left column -->
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
 
-        <!-- Target colors -->
-        <div style="margin-bottom:1.25rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
-            <span style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);">Colors to Remove</span>
-            <button class="btn btn-ghost" style="font-size:0.73rem;padding:0.25rem 0.65rem;" onclick="clearColors()">Clear all</button>
-          </div>
-          <div class="color-list" id="color-list">
-            <div style="font-size:0.82rem;color:var(--muted);font-style:italic;">Click on the original image to pick colors to remove.</div>
-          </div>
-        </div>
+            <!-- Mode -->
+            <div class="setting-group">
+              <span class="setting-label">Removal Mode</span>
+              <div class="mode-toggle">
+                <button class="mode-btn active" id="mode-flood" onclick="setMode('flood')">🪄 Magic Wand</button>
+                <button class="mode-btn" id="mode-global" onclick="setMode('global')">🌐 Global</button>
+              </div>
+              <div class="setting-hint" id="mode-hint">Removes connected region from where you clicked (flood fill).</div>
+            </div>
 
-        <!-- Replace with -->
-        <div style="margin-bottom:1rem;">
-          <div style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.6rem;">Replace Removed Area With</div>
-          <div class="replace-row">
-            <label class="replace-opt">
-              <input type="radio" name="replace" value="transparent" checked onchange="onReplaceChange()" /> Transparent
-            </label>
-            <label class="replace-opt">
-              <input type="radio" name="replace" value="white" onchange="onReplaceChange()" /> White
-            </label>
-            <label class="replace-opt">
-              <input type="radio" name="replace" value="black" onchange="onReplaceChange()" /> Black
-            </label>
-            <label class="replace-opt">
-              <input type="radio" name="replace" value="custom" onchange="onReplaceChange()" /> Custom color
-            </label>
-            <div class="replace-color-wrap" id="custom-color-wrap" style="display:none;">
-              <div class="replace-swatch" id="replace-swatch" style="background:#ffffff;" onclick="document.getElementById('replace-color-input').click()"></div>
-              <input type="color" id="replace-color-input" value="#ffffff" style="width:0;height:0;opacity:0;position:absolute;" oninput="onReplaceColorChange()" />
-              <span style="font-family:var(--mono);font-size:0.82rem;color:var(--text);" id="replace-hex">#ffffff</span>
+            <!-- Tolerance -->
+            <div class="setting-group">
+              <span class="setting-label">Tolerance</span>
+              <div class="slider-wrap">
+                <label>0</label>
+                <input type="range" id="tolerance" min="0" max="100" value="25" />
+                <label>100</label>
+                <span class="slider-val" id="tol-val">25</span>
+              </div>
+              <div class="setting-hint">How different a color can be and still get removed. Uses perceptual (CIE76) distance.</div>
+            </div>
+
+            <!-- Feather -->
+            <div class="setting-group">
+              <span class="setting-label">Edge Softness</span>
+              <div class="slider-wrap">
+                <label>0</label>
+                <input type="range" id="feather" min="0" max="5" value="1" />
+                <label>5</label>
+                <span class="slider-val" id="feather-val">1</span>
+              </div>
+              <div class="setting-hint">Feathers edges for smoother blending. 0 = hard edges.</div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+            <!-- Colors to remove -->
+            <div class="setting-group">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span class="setting-label">Colors to Remove</span>
+                <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.2rem 0.6rem;" onclick="clearMask()">Clear all</button>
+              </div>
+              <div class="color-list" id="color-list">
+                <div class="setting-hint" style="font-style:italic;">Click the original image to pick colors.</div>
+              </div>
+            </div>
+
+            <!-- Replace with -->
+            <div class="setting-group">
+              <span class="setting-label">Replace With</span>
+              <div class="replace-row">
+                <label class="replace-opt"><input type="radio" name="replace" value="transparent" checked /> Transparent</label>
+                <label class="replace-opt"><input type="radio" name="replace" value="white" /> White</label>
+                <label class="replace-opt"><input type="radio" name="replace" value="black" /> Black</label>
+                <label class="replace-opt"><input type="radio" name="replace" value="custom" /> Custom</label>
+              </div>
+              <div class="replace-color-wrap" id="custom-color-wrap" style="display:none;margin-top:0.3rem;">
+                <div class="replace-swatch" id="replace-swatch" style="background:#ffffff;" onclick="document.getElementById('replace-color-input').click()"></div>
+                <input type="color" id="replace-color-input" value="#ffffff" style="width:0;height:0;opacity:0;position:absolute;" />
+                <span style="font-family:var(--mono);font-size:0.82rem;color:var(--text);" id="replace-hex">#ffffff</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Apply/Reset row -->
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.5rem;">
-          <button class="btn btn-primary" onclick="applyRemoval()">Apply</button>
-          <button class="btn btn-ghost" onclick="resetImage()">Reset Image</button>
-          <button class="btn btn-ghost" onclick="loadNewImage()">Load New Image</button>
+        <div class="action-bar">
+          <button class="btn btn-ghost" onclick="undoLast()">↩ Undo Last</button>
+          <button class="btn btn-ghost" onclick="resetImage()">Reset All</button>
+          <button class="btn btn-ghost" onclick="loadNewImage()">New Image</button>
+          <span class="pixel-count" id="pixel-count"></span>
         </div>
       </div>
-
     </div>
   </main>
 
-  <footer>
-    Built with precision — <a href="index.html">DevTools</a> ·
-    <a href="privacy-policy.html">Privacy Policy</a> ·
-    <a href="about.html">About</a>
-  </footer>
+  <footer>Built with precision — <a href="index.html">DevTools</a> · <a href="privacy-policy.html">Privacy Policy</a> · <a href="about.html">About</a></footer>
 
-  <!-- Scrollable tool rail -->
   <aside class="tool-rail">
     <div class="tool-rail-label">TOOLS</div>
     <a href="uuid-generator.html" class="tool-rail-btn">🔑 UUID</a>
@@ -283,157 +296,288 @@
     <a href="font-generator.html" class="tool-rail-btn">𝓐 Fonts</a>
     <a href="bg-changer.html" class="tool-rail-btn active">🖼 BG</a>
   </aside>
-
   <div class="toast" id="toast"></div>
 
   <script src="search.js"></script>
   <script>
-    let originalImageData = null;
-    let targetColors      = [];
-    let tolerance         = 30;
+  (function() {
+    'use strict';
+
+    // ── State ───────────────────────────────────────────
+    let origData   = null;   // ImageData of loaded image
+    let maskData   = null;   // Uint8Array alpha mask (0 = keep, 255 = remove)
+    let imgW = 0, imgH = 0;
+    let mode       = 'flood'; // 'flood' | 'global'
+    let pickedColors = [];    // [{r,g,b,hex}]
+    let undoStack    = [];    // previous maskData snapshots
 
     const srcCanvas = document.getElementById('src-canvas');
     const outCanvas = document.getElementById('out-canvas');
     const srcCtx    = srcCanvas.getContext('2d', { willReadFrequently: true });
     const outCtx    = outCanvas.getContext('2d');
 
-    // ── File loading ──────────────────────────────────
+    // ── CIE76 Lab distance (perceptually uniform) ──────
+    function srgbToLinear(c) {
+      c /= 255;
+      return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    function rgbToLab(r, g, b) {
+      // sRGB -> XYZ (D65)
+      let lr = srgbToLinear(r), lg = srgbToLinear(g), lb = srgbToLinear(b);
+      let x = (0.4124564 * lr + 0.3575761 * lg + 0.1804375 * lb) / 0.95047;
+      let y = (0.2126729 * lr + 0.7151522 * lg + 0.0721750 * lb) / 1.00000;
+      let z = (0.0193339 * lr + 0.1191920 * lg + 0.9503041 * lb) / 1.08883;
+      const f = t => t > 0.008856 ? Math.cbrt(t) : (7.787 * t + 16 / 116);
+      x = f(x); y = f(y); z = f(z);
+      return [ 116 * y - 16, 500 * (x - y), 200 * (y - z) ];
+    }
+
+    // Precompute Lab for original image pixels (Float32 for speed)
+    let labCache = null; // Float32Array, 3 values per pixel
+
+    function buildLabCache() {
+      const d = origData.data;
+      const n = imgW * imgH;
+      labCache = new Float32Array(n * 3);
+      for (let i = 0; i < n; i++) {
+        const off = i * 4;
+        const lab = rgbToLab(d[off], d[off+1], d[off+2]);
+        labCache[i*3]   = lab[0];
+        labCache[i*3+1] = lab[1];
+        labCache[i*3+2] = lab[2];
+      }
+    }
+
+    function labDist(L1, a1, b1, L2, a2, b2) {
+      return Math.sqrt((L1-L2)**2 + (a1-a2)**2 + (b1-b2)**2);
+    }
+
+    // ── File loading ───────────────────────────────────
     const dropZone  = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
 
     dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
     dropZone.addEventListener('drop', e => {
-      e.preventDefault();
-      dropZone.classList.remove('drag-over');
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) loadFile(file);
+      e.preventDefault(); dropZone.classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
     });
-    fileInput.addEventListener('change', () => {
-      if (fileInput.files[0]) loadFile(fileInput.files[0]);
-    });
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
 
     function loadFile(file) {
+      if (!file.type.startsWith('image/')) return;
       const url = URL.createObjectURL(file);
       const img = new Image();
       img.onload = () => {
         let w = img.naturalWidth, h = img.naturalHeight;
-        const MAX = 2400;
-        if (w > MAX || h > MAX) {
-          const r = Math.min(MAX / w, MAX / h);
-          w = Math.round(w * r); h = Math.round(h * r);
-        }
-        srcCanvas.width  = outCanvas.width  = w;
+        const MAX = 2000;
+        if (w > MAX || h > MAX) { const r = Math.min(MAX/w, MAX/h); w = Math.round(w*r); h = Math.round(h*r); }
+        imgW = w; imgH = h;
+        srcCanvas.width = outCanvas.width = w;
         srcCanvas.height = outCanvas.height = h;
         srcCtx.drawImage(img, 0, 0, w, h);
-        originalImageData = srcCtx.getImageData(0, 0, w, h);
-        outCtx.putImageData(originalImageData, 0, 0);
+        origData = srcCtx.getImageData(0, 0, w, h);
+        maskData = new Uint8Array(w * h); // all 0 = keep
+        undoStack = [];
+        pickedColors = [];
+        renderColorList();
+        renderOutput();
+        buildLabCache();
         URL.revokeObjectURL(url);
-        document.getElementById('img-info').textContent = w + ' x ' + h;
+        document.getElementById('img-info').textContent = w + ' \u00d7 ' + h;
         document.getElementById('editor-section').style.display = '';
         document.getElementById('upload-card').style.display = 'none';
-        targetColors = [];
-        renderColorList();
+        document.getElementById('pixel-count').textContent = '';
       };
       img.src = url;
     }
 
-    function loadNewImage() {
-      document.getElementById('upload-card').style.display = '';
-      document.getElementById('editor-section').style.display = 'none';
-      fileInput.value = '';
-    }
+    // ── Hover preview ──────────────────────────────────
+    const hoverPreview = document.getElementById('hover-preview');
+    const hoverSwatch  = document.getElementById('hover-swatch');
+    const hoverHex     = document.getElementById('hover-hex');
 
-    // ── Click-to-pick color ───────────────────────────
+    srcCanvas.addEventListener('mousemove', e => {
+      if (!origData) return;
+      const rect = srcCanvas.getBoundingClientRect();
+      const x = Math.floor((e.clientX - rect.left) * imgW / rect.width);
+      const y = Math.floor((e.clientY - rect.top)  * imgH / rect.height);
+      if (x < 0 || x >= imgW || y < 0 || y >= imgH) { hoverPreview.style.display = 'none'; return; }
+      const off = (y * imgW + x) * 4;
+      const r = origData.data[off], g = origData.data[off+1], b = origData.data[off+2];
+      const hex = '#' + ((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+      hoverSwatch.style.background = hex;
+      hoverHex.textContent = hex.toUpperCase();
+      hoverPreview.style.display = 'flex';
+    });
+    srcCanvas.addEventListener('mouseleave', () => { hoverPreview.style.display = 'none'; });
+
+    // ── Click to remove ────────────────────────────────
     srcCanvas.addEventListener('click', e => {
-      const rect  = srcCanvas.getBoundingClientRect();
-      const scaleX = srcCanvas.width  / rect.width;
-      const scaleY = srcCanvas.height / rect.height;
-      const x = Math.floor((e.clientX - rect.left) * scaleX);
-      const y = Math.floor((e.clientY - rect.top)  * scaleY);
-      const px = srcCtx.getImageData(x, y, 1, 1).data;
-      const r  = px[0], g = px[1], b = px[2];
-      const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
-      for (const c of targetColors) {
-        if (colorDist(c.r, c.g, c.b, r, g, b) < 10) return;
+      if (!origData || !labCache) return;
+      const rect = srcCanvas.getBoundingClientRect();
+      const x = Math.floor((e.clientX - rect.left) * imgW / rect.width);
+      const y = Math.floor((e.clientY - rect.top)  * imgH / rect.height);
+      if (x < 0 || x >= imgW || y < 0 || y >= imgH) return;
+
+      const off = (y * imgW + x) * 4;
+      const r = origData.data[off], g = origData.data[off+1], b = origData.data[off+2];
+      const hex = '#' + ((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+
+      // Add to picked colors (avoid near-dupes)
+      const pLab = rgbToLab(r, g, b);
+      let isDupe = false;
+      for (const c of pickedColors) {
+        const cLab = rgbToLab(c.r, c.g, c.b);
+        if (labDist(pLab[0],pLab[1],pLab[2], cLab[0],cLab[1],cLab[2]) < 5) { isDupe = true; break; }
       }
-      targetColors.push({ r, g, b, hex });
-      renderColorList();
-      applyRemoval();
+      if (!isDupe) { pickedColors.push({ r, g, b, hex }); renderColorList(); }
+
+      // Save undo
+      undoStack.push(new Uint8Array(maskData));
+      if (undoStack.length > 20) undoStack.shift();
+
+      const tol = getTolerance();
+      const targetL = pLab[0], targetA = pLab[1], targetB = pLab[2];
+
+      if (mode === 'flood') {
+        floodFill(x, y, targetL, targetA, targetB, tol);
+      } else {
+        globalRemove(targetL, targetA, targetB, tol);
+      }
+
+      const featherR = getFeather();
+      if (featherR > 0) featherMask(featherR);
+
+      renderOutput();
+      updatePixelCount();
     });
 
-    // ── Color list UI ─────────────────────────────────
-    function renderColorList() {
-      const list = document.getElementById('color-list');
-      if (targetColors.length === 0) {
-        list.innerHTML = '<div style="font-size:0.82rem;color:var(--muted);font-style:italic;">Click on the original image to pick colors to remove.</div>';
-        return;
+    // ── Flood fill (BFS, contiguous only) ──────────────
+    function floodFill(sx, sy, tL, tA, tB, tol) {
+      const visited = new Uint8Array(imgW * imgH);
+      const queue = [sx + sy * imgW];
+      visited[sx + sy * imgW] = 1;
+
+      while (queue.length > 0) {
+        const idx = queue.pop();
+        const px = idx % imgW;
+        const py = (idx - px) / imgW;
+
+        const li = idx * 3;
+        const dist = labDist(labCache[li], labCache[li+1], labCache[li+2], tL, tA, tB);
+        if (dist > tol) continue;
+
+        maskData[idx] = 255;
+
+        // 4-connected neighbors
+        if (px > 0       && !visited[idx-1])    { visited[idx-1] = 1;    queue.push(idx-1); }
+        if (px < imgW-1  && !visited[idx+1])    { visited[idx+1] = 1;    queue.push(idx+1); }
+        if (py > 0       && !visited[idx-imgW]) { visited[idx-imgW] = 1; queue.push(idx-imgW); }
+        if (py < imgH-1  && !visited[idx+imgW]) { visited[idx+imgW] = 1; queue.push(idx+imgW); }
       }
-      list.innerHTML = targetColors.map((c, i) => `
-        <div class="color-entry">
-          <div class="color-swatch" style="background:${c.hex};" onclick="triggerColorPick(${i})" title="Click to change"></div>
-          <input type="color" id="cp-${i}" value="${c.hex}" style="width:0;height:0;opacity:0;position:absolute;pointer-events:none;" oninput="onSwatchChange(${i}, this.value)" />
-          <span class="color-hex">${c.hex.toUpperCase()}</span>
-          <button class="color-remove-btn" onclick="removeColor(${i})" title="Remove">✕</button>
-        </div>
-      `).join('');
     }
 
-    function triggerColorPick(i) {
-      const inp = document.getElementById('cp-' + i);
-      inp.style.pointerEvents = 'auto';
-      inp.click();
-      setTimeout(() => { inp.style.pointerEvents = 'none'; }, 100);
+    // ── Global removal (all matching pixels) ───────────
+    function globalRemove(tL, tA, tB, tol) {
+      const n = imgW * imgH;
+      for (let i = 0; i < n; i++) {
+        const li = i * 3;
+        if (labDist(labCache[li], labCache[li+1], labCache[li+2], tL, tA, tB) <= tol) {
+          maskData[i] = 255;
+        }
+      }
     }
 
-    function onSwatchChange(i, hex) {
-      targetColors[i] = {
-        r: parseInt(hex.slice(1,3),16),
-        g: parseInt(hex.slice(3,5),16),
-        b: parseInt(hex.slice(5,7),16),
-        hex
-      };
-      renderColorList();
-      applyRemoval();
+    // ── Feather mask edges (box blur on binary mask) ───
+    function featherMask(radius) {
+      // Build distance-from-edge for boundary pixels, then soften
+      const n = imgW * imgH;
+      const temp = new Uint8Array(n);
+      // Simple approach: blur the mask
+      const src = new Float32Array(n);
+      for (let i = 0; i < n; i++) src[i] = maskData[i] / 255;
+
+      const dst = new Float32Array(n);
+      const r = radius;
+
+      // Horizontal pass
+      for (let y = 0; y < imgH; y++) {
+        let sum = 0, count = 0;
+        for (let x = 0; x < Math.min(r, imgW); x++) { sum += src[y*imgW+x]; count++; }
+        for (let x = 0; x < imgW; x++) {
+          if (x + r < imgW) { sum += src[y*imgW+x+r]; count++; }
+          if (x - r - 1 >= 0) { sum -= src[y*imgW+x-r-1]; count--; }
+          dst[y*imgW+x] = sum / count;
+        }
+      }
+      // Vertical pass
+      const dst2 = new Float32Array(n);
+      for (let x = 0; x < imgW; x++) {
+        let sum = 0, count = 0;
+        for (let y = 0; y < Math.min(r, imgH); y++) { sum += dst[y*imgW+x]; count++; }
+        for (let y = 0; y < imgH; y++) {
+          if (y + r < imgH) { sum += dst[(y+r)*imgW+x]; count++; }
+          if (y - r - 1 >= 0) { sum -= dst[(y-r-1)*imgW+x]; count--; }
+          dst2[y*imgW+x] = sum / count;
+        }
+      }
+
+      // Apply: only modify pixels near edges (keep fully-removed interior)
+      for (let i = 0; i < n; i++) {
+        maskData[i] = Math.round(dst2[i] * 255);
+      }
     }
 
-    function removeColor(i) {
-      targetColors.splice(i, 1);
-      renderColorList();
-      applyRemoval();
+    // ── Render output from mask ────────────────────────
+    function renderOutput() {
+      if (!origData) return;
+      const rep = getReplacement();
+      const src = origData.data;
+      const out = new ImageData(imgW, imgH);
+      const d = out.data;
+      const n = imgW * imgH;
+
+      for (let i = 0; i < n; i++) {
+        const si = i * 4;
+        const m = maskData[i] / 255; // 0..1 removal amount
+
+        if (m === 0) {
+          // Fully keep
+          d[si]   = src[si];
+          d[si+1] = src[si+1];
+          d[si+2] = src[si+2];
+          d[si+3] = src[si+3];
+        } else if (m >= 1) {
+          // Fully replaced
+          d[si]   = rep.r;
+          d[si+1] = rep.g;
+          d[si+2] = rep.b;
+          d[si+3] = rep.a;
+        } else {
+          // Blend (feathered edge)
+          const keep = 1 - m;
+          if (rep.a === 0) {
+            // transparent replacement: just reduce alpha
+            d[si]   = src[si];
+            d[si+1] = src[si+1];
+            d[si+2] = src[si+2];
+            d[si+3] = Math.round(src[si+3] * keep);
+          } else {
+            d[si]   = Math.round(src[si]   * keep + rep.r * m);
+            d[si+1] = Math.round(src[si+1] * keep + rep.g * m);
+            d[si+2] = Math.round(src[si+2] * keep + rep.b * m);
+            d[si+3] = Math.round(src[si+3] * keep + rep.a * m);
+          }
+        }
+      }
+      outCtx.putImageData(out, 0, 0);
     }
 
-    function clearColors() {
-      targetColors = [];
-      renderColorList();
-      if (originalImageData) outCtx.putImageData(originalImageData, 0, 0);
-    }
-
-    // ── Tolerance ─────────────────────────────────────
-    function onToleranceChange() {
-      tolerance = parseInt(document.getElementById('tolerance').value);
-      document.getElementById('tol-val').textContent = tolerance;
-      if (targetColors.length > 0) applyRemoval();
-    }
-
-    // ── Replace options ───────────────────────────────
-    function onReplaceChange() {
-      const val = document.querySelector('input[name="replace"]:checked').value;
-      document.getElementById('custom-color-wrap').style.display = val === 'custom' ? 'flex' : 'none';
-      if (targetColors.length > 0) applyRemoval();
-    }
-
-    function onReplaceColorChange() {
-      const hex = document.getElementById('replace-color-input').value;
-      document.getElementById('replace-swatch').style.background = hex;
-      document.getElementById('replace-hex').textContent = hex;
-      if (targetColors.length > 0) applyRemoval();
-    }
-
-    // ── Core removal ──────────────────────────────────
-    function colorDist(r1, g1, b1, r2, g2, b2) {
-      return Math.sqrt((r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2);
-    }
+    // ── UI Helpers ─────────────────────────────────────
+    function getTolerance() { return parseInt(document.getElementById('tolerance').value); }
+    function getFeather()   { return parseInt(document.getElementById('feather').value); }
 
     function getReplacement() {
       const val = document.querySelector('input[name="replace"]:checked').value;
@@ -441,59 +585,119 @@
       if (val === 'white')       return { r:255, g:255, b:255, a:255 };
       if (val === 'black')       return { r:0, g:0, b:0, a:255 };
       const hex = document.getElementById('replace-color-input').value;
-      return {
-        r: parseInt(hex.slice(1,3),16),
-        g: parseInt(hex.slice(3,5),16),
-        b: parseInt(hex.slice(5,7),16),
-        a: 255
-      };
+      return { r: parseInt(hex.slice(1,3),16), g: parseInt(hex.slice(3,5),16), b: parseInt(hex.slice(5,7),16), a: 255 };
     }
 
-    function applyRemoval() {
-      if (!originalImageData) return;
-      if (targetColors.length === 0) { outCtx.putImageData(originalImageData, 0, 0); return; }
-      const src  = originalImageData.data;
-      const copy = new ImageData(new Uint8ClampedArray(src), originalImageData.width, originalImageData.height);
-      const d    = copy.data;
-      const rep  = getReplacement();
-      const tol  = tolerance;
-      for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i+1], b = d[i+2];
-        for (const c of targetColors) {
-          if (colorDist(r, g, b, c.r, c.g, c.b) <= tol) {
-            d[i] = rep.r; d[i+1] = rep.g; d[i+2] = rep.b; d[i+3] = rep.a;
-            break;
-          }
-        }
+    function renderColorList() {
+      const list = document.getElementById('color-list');
+      if (pickedColors.length === 0) {
+        list.innerHTML = '<div class="setting-hint" style="font-style:italic;">Click the original image to pick colors.</div>';
+        return;
       }
-      outCtx.putImageData(copy, 0, 0);
+      list.innerHTML = pickedColors.map((c, i) =>
+        '<div class="color-entry">' +
+          '<div class="color-swatch" style="background:' + c.hex + ';"></div>' +
+          '<span class="color-hex">' + c.hex.toUpperCase() + '</span>' +
+          '<button class="color-remove-btn" onclick="window._removeColor(' + i + ')" title="Remove">\u2715</button>' +
+        '</div>'
+      ).join('');
     }
 
-    // ── Reset ─────────────────────────────────────────
-    function resetImage() {
-      targetColors = [];
+    function updatePixelCount() {
+      let removed = 0;
+      for (let i = 0; i < maskData.length; i++) { if (maskData[i] > 127) removed++; }
+      const pct = (removed / maskData.length * 100).toFixed(1);
+      document.getElementById('pixel-count').textContent = removed.toLocaleString() + ' px removed (' + pct + '%)';
+    }
+
+    // ── Mode toggle ────────────────────────────────────
+    window.setMode = function(m) {
+      mode = m;
+      document.getElementById('mode-flood').classList.toggle('active', m === 'flood');
+      document.getElementById('mode-global').classList.toggle('active', m === 'global');
+      document.getElementById('mode-hint').textContent = m === 'flood'
+        ? 'Removes connected region from where you clicked (flood fill).'
+        : 'Removes ALL matching pixels across the entire image.';
+    };
+
+    // ── Slider live display ────────────────────────────
+    document.getElementById('tolerance').addEventListener('input', function() {
+      document.getElementById('tol-val').textContent = this.value;
+    });
+    document.getElementById('feather').addEventListener('input', function() {
+      document.getElementById('feather-val').textContent = this.value;
+    });
+
+    // ── Replace options ────────────────────────────────
+    document.querySelectorAll('input[name="replace"]').forEach(el => {
+      el.addEventListener('change', function() {
+        document.getElementById('custom-color-wrap').style.display = this.value === 'custom' ? 'flex' : 'none';
+        renderOutput();
+      });
+    });
+    document.getElementById('replace-color-input').addEventListener('input', function() {
+      document.getElementById('replace-swatch').style.background = this.value;
+      document.getElementById('replace-hex').textContent = this.value;
+      renderOutput();
+    });
+
+    // ── Remove color chip ──────────────────────────────
+    window._removeColor = function(i) {
+      pickedColors.splice(i, 1);
       renderColorList();
-      if (originalImageData) outCtx.putImageData(originalImageData, 0, 0);
-      document.getElementById('tolerance').value = 30;
-      document.getElementById('tol-val').textContent = '30';
-      tolerance = 30;
-    }
+    };
 
-    // ── Download ──────────────────────────────────────
-    function downloadResult() {
+    // ── Undo / Reset ───────────────────────────────────
+    window.undoLast = function() {
+      if (undoStack.length === 0) { showToast('Nothing to undo'); return; }
+      maskData = undoStack.pop();
+      renderOutput();
+      updatePixelCount();
+    };
+
+    window.resetImage = function() {
+      if (!origData) return;
+      maskData = new Uint8Array(imgW * imgH);
+      undoStack = [];
+      pickedColors = [];
+      renderColorList();
+      renderOutput();
+      document.getElementById('pixel-count').textContent = '';
+    };
+
+    window.loadNewImage = function() {
+      document.getElementById('upload-card').style.display = '';
+      document.getElementById('editor-section').style.display = 'none';
+      fileInput.value = '';
+      origData = null; labCache = null; maskData = null;
+    };
+
+    window.clearMask = function() {
+      if (!origData) return;
+      undoStack.push(new Uint8Array(maskData));
+      maskData = new Uint8Array(imgW * imgH);
+      pickedColors = [];
+      renderColorList();
+      renderOutput();
+      document.getElementById('pixel-count').textContent = '';
+    };
+
+    // ── Download ───────────────────────────────────────
+    window.downloadResult = function() {
       const link = document.createElement('a');
       link.download = 'bg-removed.png';
       link.href = outCanvas.toDataURL('image/png');
       link.click();
-    }
+    };
 
-    // ── Toast ─────────────────────────────────────────
+    // ── Toast ──────────────────────────────────────────
     function showToast(msg) {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
+      t.textContent = msg; t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2000);
     }
+
+  })();
   </script>
 </body>
 </html>
