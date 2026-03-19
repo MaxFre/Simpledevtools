@@ -167,14 +167,43 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Regex Tester & Debugger",
-    "url": "https://simpledevtools.dev/regex-tester",
-    "description": "Test regular expressions with real-time match highlighting and capture groups.",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "All",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Regex Tester & Debugger",
+        "url": "https://simpledevtools.dev/regex-tester",
+        "description": "Test regular expressions with real-time match highlighting and capture groups.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a regex tester?",
+            "acceptedAnswer": { "@type": "Answer", "text": "A regex tester lets you write a regular expression pattern and immediately see which parts of a text string it matches, without running any code locally." }
+          },
+          {
+            "@type": "Question",
+            "name": "What regex flags does this tool support?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The tool supports the five standard JavaScript flags: g (global), i (case-insensitive), m (multiline), s (dot-all), and u (unicode)." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I match a specific word in a string?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Use a word boundary pattern such as \\bword\\b with the g flag to find all occurrences of an exact word without matching partial words." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use capture groups?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Wrap any part of your pattern in parentheses to create a capture group. The tool shows each group's matched value alongside the full match." }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -251,6 +280,41 @@
     </div>
 
   </main>
+
+  <section style="max-width:760px;margin:2.5rem auto 0;padding:0 1rem;">
+    <h2 style="font-size:1.05rem;margin-bottom:1rem;">How to use the Regex Tester</h2>
+    <p style="font-size:0.88rem;line-height:1.75;color:var(--text-secondary);margin-bottom:0.75rem;">Enter a regular expression pattern in the <strong>Pattern</strong> field and paste or type your text in the <strong>Test String</strong> area. Matches are highlighted in real time. Toggle flags below the pattern to change matching behaviour — enable <code>g</code> to find all occurrences, <code>i</code> for case-insensitive matching, or <code>m</code> to treat each line as a separate string.</p>
+    <p style="font-size:0.88rem;line-height:1.75;color:var(--text-secondary);margin-bottom:1.5rem;">Capture groups (parentheses) are shown in the match list alongside their index and character position. If your pattern contains a syntax error, the error is displayed beneath the pattern field.</p>
+
+    <h2 style="font-size:1.05rem;margin-bottom:1rem;">Common regex patterns</h2>
+    <div style="display:grid;gap:0.6rem;margin-bottom:1.75rem;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;font-size:0.83rem;"><code style="font-family:var(--mono);color:var(--accent);">[\w.+-]+@[\w-]+\.[a-z]{2,}</code> — email address</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;font-size:0.83rem;"><code style="font-family:var(--mono);color:var(--accent);">https?:\/\/[^\s]+</code> — URL</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;font-size:0.83rem;"><code style="font-family:var(--mono);color:var(--accent);">^\d{4}-\d{2}-\d{2}$</code> — ISO date (YYYY-MM-DD)</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;font-size:0.83rem;"><code style="font-family:var(--mono);color:var(--accent);">\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b</code> — IPv4 address</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;font-size:0.83rem;"><code style="font-family:var(--mono);color:var(--accent);">[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}</code> — UUID v4</div>
+    </div>
+
+    <h2 style="font-size:1.05rem;margin-bottom:0.9rem;">Frequently asked questions</h2>
+    <div class="faq-list" style="margin-bottom:2rem;">
+      <article class="faq-item">
+        <h3>What is a regex tester?</h3>
+        <p>A regex tester lets you write a regular expression and immediately see which parts of a string it matches — without writing or running code locally.</p>
+      </article>
+      <article class="faq-item">
+        <h3>What flags does this tool support?</h3>
+        <p>Five standard JavaScript flags: <strong>g</strong> (global — find all matches), <strong>i</strong> (case-insensitive), <strong>m</strong> (multiline), <strong>s</strong> (dot-all — <code>.</code> matches newlines), and <strong>u</strong> (unicode).</p>
+      </article>
+      <article class="faq-item">
+        <h3>Can I use capture groups?</h3>
+        <p>Yes. Wrap any sub-pattern in parentheses to create a capture group. The match list shows each group's matched value alongside its index and character position in the input.</p>
+      </article>
+      <article class="faq-item">
+        <h3>Does the tester run in the browser?</h3>
+        <p>Yes — it uses the browser's built-in JavaScript <code>RegExp</code> engine. Nothing is sent to a server.</p>
+      </article>
+    </div>
+  </section>
 
   <footer>Built with precision — <a href="index.html">DevTools</a> · <a href="privacy-policy.html">Privacy Policy</a> · <a href="about.html">About</a></footer>
   <!-- Scrollable tool rail -->
