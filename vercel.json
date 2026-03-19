@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "redirects": [
+
     { "source": "/base64",              "destination": "/base64-encoder", "permanent": true },
     { "source": "/base-64",             "destination": "/base64-encoder", "permanent": true },
     { "source": "/base64-converter",    "destination": "/base64-encoder", "permanent": true },
