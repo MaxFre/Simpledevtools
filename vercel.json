@@ -1,6 +1,14 @@
 {
   "cleanUrls": true,
   "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.simpledevtools.dev" }],
+      "destination": "https://simpledevtools.dev/$1",
+      "permanent": true
+    },
+
+
 
     { "source": "/base64",              "destination": "/base64-encoder", "permanent": true },
     { "source": "/base-64",             "destination": "/base64-encoder", "permanent": true },
