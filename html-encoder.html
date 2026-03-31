@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <!-- AdSense disabled
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3379757990050247" crossorigin="anonymous"></script>
+-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Encode and decode HTML entities online. Convert &lt; &gt; &amp; &quot; and all special characters to and from HTML entities. Free, instant, no signup." />
+  <meta name="theme-color" content="#1a1a2e" />
+  <link rel="canonical" href="https://simpledevtools.dev/html-encoder" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="HTML Encode & Decode — HTML Entity Converter | SimpleDevTools" />
+  <meta property="og:description" content="Encode and decode HTML entities online. Convert &lt; &gt; &amp; &quot; and all special characters to and from HTML entities. Free, instant, no signup." />
+  <meta property="og:url" content="https://simpledevtools.dev/html-encoder" />
+  <meta property="og:site_name" content="SimpleDevTools" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="HTML Encode & Decode — HTML Entity Converter | SimpleDevTools" />
+  <meta name="twitter:description" content="Encode and decode HTML entities online. Convert &lt; &gt; &amp; &quot; and all special characters to and from HTML entities. Free, instant, no signup." />
+  <title>HTML Encode & Decode — HTML Entity Converter | SimpleDevTools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" /></noscript>
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+  <style>
+    .editor-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    @media (max-width: 680px) { .editor-wrap { grid-template-columns: 1fr; } }
+
+    .editor-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .panel-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    #input-text, #output-text {
+      min-height: 260px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      resize: vertical;
+      line-height: 1.7;
+    }
+    #output-text { cursor: default; }
+
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .char-count {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+      font-family: var(--mono);
+    }
+  </style>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "HTML Encode & Decode",
+    "url": "https://simpledevtools.dev/html-encoder",
+    "description": "Encode and decode HTML entities online. Convert special characters to and from HTML entities.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isPartOf": { "@type": "WebSite", "name": "SimpleDevTools", "url": "https://simpledevtools.dev/" }
+  }
+  </script>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <div class="nav-left">
+      <a href="/" class="nav-brand">
+        <img src="images/icon.png" alt="" class="logo-icon" />
+        DevTools
+      </a>
+      <button id="theme-toggle" onclick="window.__toggleTheme()" title="Switch theme">
+        <span class="theme-icon">☾</span>
+      </button>
+    </div>
+    <div class="nav-search-wrap">
+      <div class="nav-search-row">
+        <span class="ns-icon">🔍</span>
+        <input id="nav-search-input" type="text" placeholder="Search tools…" autocomplete="off" spellcheck="false" />
+        <button id="nav-search-clear" aria-label="Clear">✕</button>
+      </div>
+      <div class="nav-search-dropdown" id="nav-search-dropdown"></div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/">← All Tools</a></li>
+    </ul>
+  </nav>
+
+  <main class="fade-in">
+
+    <div class="page-header">
+      <div class="badge" style="background:rgba(230,119,0,0.07);color:#b85c00;border-color:rgba(230,119,0,0.2);">🏷 Encoding</div>
+      <h1>HTML Encode / Decode</h1>
+      <p>Convert special characters to HTML entities and back. Handles <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code>, <code>&quot;</code>, <code>&#39;</code> and all Unicode characters.</p>
+    </div>
+
+    <div class="card">
+      <div class="action-bar">
+        <button class="btn btn-primary" onclick="encode()" style="background:linear-gradient(135deg,#e67300,#ffa94d);border:none;color:#fff;box-shadow:0 2px 8px rgba(230,115,0,0.25);">→ Encode</button>
+        <button class="btn btn-primary" onclick="decode()" style="background:linear-gradient(135deg,#1971c2,#74c0fc);border:none;color:#fff;box-shadow:0 2px 8px rgba(25,113,194,0.25);">← Decode</button>
+        <button class="btn btn-secondary" onclick="swap()">⇄ Swap panels</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear</button>
+      </div>
+
+      <div class="editor-wrap">
+        <div class="editor-panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="panel-label">Input</span>
+            <button class="btn btn-ghost" style="padding:0.25rem 0.6rem;font-size:0.72rem;" onclick="pasteInput()">⧉ Paste</button>
+          </div>
+          <textarea id="input-text" spellcheck="false" placeholder="Enter text or HTML to encode / decode…" oninput="updateCount()"></textarea>
+          <div class="char-count" id="in-count">0 chars</div>
+        </div>
+        <div class="editor-panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="panel-label">Output</span>
+            <button class="btn btn-ghost" style="padding:0.25rem 0.6rem;font-size:0.72rem;" onclick="copyOutput()">📋 Copy</button>
+          </div>
+          <textarea id="output-text" readonly spellcheck="false" placeholder="Result will appear here…"></textarea>
+          <div class="char-count" id="out-count">0 chars</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>Built with precision — <a href="/">DevTools</a> · <a href="/privacy-policy">Privacy Policy</a> · <a href="/about">About</a></footer>
+  <!-- Scrollable tool rail -->
+  <aside class="tool-rail">
+    <div class="tool-rail-label">Tools</div>
+    <a href="/uuid-generator" class="tool-rail-btn">🔑 UUID</a>
+    <a href="/json-formatter" class="tool-rail-btn">{ } JSON</a>
+    <a href="/json-validator" class="tool-rail-btn">✓ JSON Lint</a>
+    <a href="/base64-encoder" class="tool-rail-btn">⇄ Base64</a>
+    <a href="/url-encoder" class="tool-rail-btn">🔗 URL</a>
+    <a href="/html-encoder" class="tool-rail-btn active">🏷 HTML</a>
+    <a href="/hash-generator" class="tool-rail-btn">⬡ Hash</a>
+    <a href="/regex-tester" class="tool-rail-btn">.* Regex</a>
+    <a href="/timestamp-converter" class="tool-rail-btn">⌚ Timestamp</a>
+    <a href="/case-converter" class="tool-rail-btn">Aa Case</a>
+    <a href="/lorem-ipsum-generator" class="tool-rail-btn">📝 Lorem</a>
+    <a href="/random-string-generator" class="tool-rail-btn">🎲 Random</a>
+    <a href="/password-generator" class="tool-rail-btn">🔐 Password</a>
+    <a href="/uuid-validator" class="tool-rail-btn">✓ UUID Val</a>
+    <a href="/jwt-decoder" class="tool-rail-btn">🔓 JWT</a>
+    <a href="/yaml-to-json" class="tool-rail-btn">⇅ YAML</a>
+    <a href="/font-generator" class="tool-rail-btn">𝓐 Fonts</a>
+    <a href="/bg-changer" class="tool-rail-btn">🖼 BG</a>
+  </aside>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function encode() {
+      const val = document.getElementById('input-text').value;
+      const result = val
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+      setOutput(result);
+    }
+
+    function decode() {
+      const val = document.getElementById('input-text').value;
+      const txt = document.createElement('textarea');
+      txt.innerHTML = val;
+      setOutput(txt.value);
+    }
+
+    function swap() {
+      const a = document.getElementById('input-text');
+      const b = document.getElementById('output-text');
+      const tmp = a.value; a.value = b.value; b.value = tmp;
+      updateCount();
+    }
+
+    function clearAll() {
+      document.getElementById('input-text').value = '';
+      document.getElementById('output-text').value = '';
+      document.getElementById('in-count').textContent = '0 chars';
+      document.getElementById('out-count').textContent = '0 chars';
+    }
+
+    function setOutput(val) {
+      document.getElementById('output-text').value = val;
+      document.getElementById('out-count').textContent = val.length + ' chars';
+    }
+
+    function updateCount() {
+      const len = document.getElementById('input-text').value.length;
+      document.getElementById('in-count').textContent = len + ' chars';
+    }
+
+    async function pasteInput() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('input-text').value = text;
+        updateCount();
+      } catch(e) { showToast('Clipboard access denied'); }
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('output-text').value;
+      if (!val) return showToast('Nothing to copy');
+      navigator.clipboard.writeText(val).then(() => showToast('Copied!'));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+  </script>
+  <script src="search.js"></script>
+</body>
+</html>

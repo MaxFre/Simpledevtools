@@ -19,8 +19,8 @@
     { "source": "/base64decode",        "destination": "/base64-encoder", "permanent": true },
     { "source": "/encode-base64",       "destination": "/base64-encoder", "permanent": true },
     { "source": "/decode-base64",       "destination": "/base64-encoder", "permanent": true },
-    { "source": "/html-encode",         "destination": "/base64-encoder", "permanent": true },
-    { "source": "/html-decode",         "destination": "/base64-encoder", "permanent": true },
+    { "source": "/html-encode",          "destination": "/html-encoder", "permanent": true },
+    { "source": "/html-decode",          "destination": "/html-encoder", "permanent": true },
 
     { "source": "/url-encode",          "destination": "/url-encoder", "permanent": true },
     { "source": "/url-decode",          "destination": "/url-encoder", "permanent": true },
