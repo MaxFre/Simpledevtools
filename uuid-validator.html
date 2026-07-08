@@ -197,7 +197,7 @@
         const box = document.getElementById('single-result');
         document.getElementById('bulk-card').style.display = 'none';
         box.className = 'result-box ' + (r.valid ? 'valid' : 'invalid');
-        box.style.display = '';
+        box.style.display = 'block';
         document.getElementById('res-icon').textContent = r.valid ? '✅' : '❌';
         const st = document.getElementById('res-status');
         st.textContent = r.valid ? 'Valid UUID' : 'Invalid UUID';

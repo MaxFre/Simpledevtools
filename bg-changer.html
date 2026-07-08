@@ -44,9 +44,9 @@
     .preview-panel { display: flex; flex-direction: column; gap: 0.6rem; }
     .preview-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
     .preview-canvas-wrap {
-      border-radius: 10px; overflow: hidden; position: relative;
+      border-radius: 10px; overflow: auto; position: relative;
       background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 0 0 / 16px 16px;
-      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; min-height: 200px;
+      border: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: flex-start; min-height: 200px;
     }
     [data-theme="dark"] .preview-canvas-wrap {
       background: repeating-conic-gradient(#2a2a3a 0% 25%, #1a1a2a 0% 50%) 0 0 / 16px 16px;
@@ -168,7 +168,7 @@
         <div class="canvas-wrap">
           <div class="preview-panel">
             <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="preview-label">Original — click to pick a background color</span>
+              <span class="preview-label">Original — click to pick color &nbsp;·&nbsp; scroll to zoom &nbsp;·&nbsp; dbl-click to reset</span>
               <span class="info-chip" id="img-info"></span>
             </div>
             <div class="preview-canvas-wrap" id="src-wrap">
@@ -181,7 +181,7 @@
           </div>
           <div class="preview-panel">
             <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="preview-label">Result</span>
+              <span class="preview-label">Result &nbsp;·&nbsp; scroll to zoom &nbsp;·&nbsp; dbl-click to reset</span>
               <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.75rem;" onclick="downloadResult()">⬇ Download PNG</button>
             </div>
             <div class="preview-canvas-wrap"><canvas id="out-canvas"></canvas></div>
@@ -324,6 +324,25 @@
     const outCanvas = document.getElementById('out-canvas');
     const srcCtx    = srcCanvas.getContext('2d', { willReadFrequently: true });
     const outCtx    = outCanvas.getContext('2d');
+
+    // ── Zoom (scroll wheel) ────────────────────────────
+    function makeZoomable(wrap, canvas) {
+      let zoom = 1;
+      wrap.addEventListener('wheel', e => {
+        if (!canvas.width) return;
+        e.preventDefault();
+        zoom = Math.min(8, Math.max(0.25, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
+        canvas.style.width    = Math.round(canvas.width  * zoom) + 'px';
+        canvas.style.height   = Math.round(canvas.height * zoom) + 'px';
+        canvas.style.maxWidth = 'none';
+      }, { passive: false });
+      canvas.addEventListener('dblclick', () => {
+        zoom = 1;
+        canvas.style.width = canvas.style.height = canvas.style.maxWidth = '';
+      });
+    }
+    makeZoomable(document.getElementById('src-wrap'), srcCanvas);
+    makeZoomable(document.querySelector('#out-canvas').closest('.preview-canvas-wrap'), outCanvas);
 
     // ── CIE76 Lab distance (perceptually uniform) ──────
     function srgbToLinear(c) {
