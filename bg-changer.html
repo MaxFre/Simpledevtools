@@ -44,7 +44,7 @@
     .preview-panel { display: flex; flex-direction: column; gap: 0.6rem; }
     .preview-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
     .preview-canvas-wrap {
-      border-radius: 10px; overflow: auto; position: relative;
+      border-radius: 10px; overflow: hidden; position: relative;
       background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 0 0 / 16px 16px;
       border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; min-height: 200px;
     }
@@ -326,35 +326,47 @@
     const outCtx    = outCanvas.getContext('2d');
 
     // ── Zoom (scroll wheel) ────────────────────────────
+    // Frame stays fixed; image zooms inside it, focused on the mouse position.
     function makeZoomable(wrap, canvas) {
-      // Sizer div: drives scroll area; canvas transform drives visual scale
-      const sizer = document.createElement('div');
-      sizer.style.cssText = 'flex-shrink:0;position:relative;';
-      canvas.parentNode.insertBefore(sizer, canvas);
-      sizer.appendChild(canvas);
+      wrap.style.overflow = 'hidden';
       canvas.style.transformOrigin = '0 0';
 
-      let zoom = 1, lockedH = 0;
+      let zoom = 1, tx = 0, ty = 0;
+
+      function applyTransform() {
+        canvas.style.transform = zoom === 1 && tx === 0 && ty === 0
+          ? '' : `translate(${tx}px,${ty}px) scale(${zoom})`;
+      }
 
       wrap.addEventListener('wheel', e => {
         if (!canvas.width) return;
         e.preventDefault();
-        if (zoom === 1) {
-          lockedH = wrap.offsetHeight;
-          wrap.style.height = lockedH + 'px';
-          wrap.style.alignItems = 'flex-start';
-        }
+
+        const wrapRect = wrap.getBoundingClientRect();
+        // Mouse position relative to the wrap's top-left
+        const mx = e.clientX - wrapRect.left;
+        const my = e.clientY - wrapRect.top;
+
+        // Natural (unscaled) centered position of the canvas inside the wrap
+        const natLeft = (wrap.clientWidth  - canvas.offsetWidth)  / 2;
+        const natTop  = (wrap.clientHeight - canvas.offsetHeight) / 2;
+
+        // Point in canvas-image space that's currently under the mouse
+        const cx = (mx - natLeft - tx) / zoom;
+        const cy = (my - natTop  - ty) / zoom;
+
         zoom = Math.min(8, Math.max(0.25, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
-        canvas.style.transform = 'scale(' + zoom + ')';
-        sizer.style.width  = Math.round(canvas.width  * zoom) + 'px';
-        sizer.style.height = Math.round(canvas.height * zoom) + 'px';
+
+        // Recalculate translation so cx,cy stays pinned under the mouse
+        tx = mx - natLeft - cx * zoom;
+        ty = my - natTop  - cy * zoom;
+
+        applyTransform();
       }, { passive: false });
 
       canvas.addEventListener('dblclick', () => {
-        zoom = 1; lockedH = 0;
-        canvas.style.transform = '';
-        sizer.style.width = sizer.style.height = '';
-        wrap.style.height = wrap.style.alignItems = '';
+        zoom = 1; tx = 0; ty = 0;
+        applyTransform();
       });
     }
     makeZoomable(document.getElementById('src-wrap'), srcCanvas);
