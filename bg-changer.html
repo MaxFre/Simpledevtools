@@ -46,7 +46,7 @@
     .preview-canvas-wrap {
       border-radius: 10px; overflow: auto; position: relative;
       background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 0 0 / 16px 16px;
-      border: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: flex-start; min-height: 200px;
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; min-height: 200px;
     }
     [data-theme="dark"] .preview-canvas-wrap {
       background: repeating-conic-gradient(#2a2a3a 0% 25%, #1a1a2a 0% 50%) 0 0 / 16px 16px;
@@ -327,22 +327,38 @@
 
     // ── Zoom (scroll wheel) ────────────────────────────
     function makeZoomable(wrap, canvas) {
-      let zoom = 1;
+      // Sizer div: drives scroll area; canvas transform drives visual scale
+      const sizer = document.createElement('div');
+      sizer.style.cssText = 'flex-shrink:0;position:relative;';
+      canvas.parentNode.insertBefore(sizer, canvas);
+      sizer.appendChild(canvas);
+      canvas.style.transformOrigin = '0 0';
+
+      let zoom = 1, lockedH = 0;
+
       wrap.addEventListener('wheel', e => {
         if (!canvas.width) return;
         e.preventDefault();
+        if (zoom === 1) {
+          lockedH = wrap.offsetHeight;
+          wrap.style.height = lockedH + 'px';
+          wrap.style.alignItems = 'flex-start';
+        }
         zoom = Math.min(8, Math.max(0.25, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
-        canvas.style.width    = Math.round(canvas.width  * zoom) + 'px';
-        canvas.style.height   = Math.round(canvas.height * zoom) + 'px';
-        canvas.style.maxWidth = 'none';
+        canvas.style.transform = 'scale(' + zoom + ')';
+        sizer.style.width  = Math.round(canvas.width  * zoom) + 'px';
+        sizer.style.height = Math.round(canvas.height * zoom) + 'px';
       }, { passive: false });
+
       canvas.addEventListener('dblclick', () => {
-        zoom = 1;
-        canvas.style.width = canvas.style.height = canvas.style.maxWidth = '';
+        zoom = 1; lockedH = 0;
+        canvas.style.transform = '';
+        sizer.style.width = sizer.style.height = '';
+        wrap.style.height = wrap.style.alignItems = '';
       });
     }
     makeZoomable(document.getElementById('src-wrap'), srcCanvas);
-    makeZoomable(document.querySelector('#out-canvas').closest('.preview-canvas-wrap'), outCanvas);
+    makeZoomable(outCanvas.closest('.preview-canvas-wrap'), outCanvas);
 
     // ── CIE76 Lab distance (perceptually uniform) ──────
     function srgbToLinear(c) {
